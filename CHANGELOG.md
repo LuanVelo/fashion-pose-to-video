@@ -11,6 +11,9 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #49 W6 v2 removed from ComfyUI again
+**User's decision:** remove it. `WF/motion_W6_upscale_v2.json` (re-saved by the user at 12:39) had the same nodes, values and links as the archived copy; only node positions, groups and canvas view differed. Archived as `PROJ/2 - files/workflows/ui_tests/motion_W6_upscale_v2_resaved-2026-11-22.json` (the earlier archive `motion_W6_upscale_v2.json` is kept), then removed from `WF/` (backup in the session scratchpad). `WF/` now has only the 3 production workflows: `motion_W1_extract-pose_v3`, `motion_W5_quality_v16`, `motion_W6_upscale_v3`.
+
 ## 2026-11-22 — #48 W5 v16 = PRODUCTION 2/3 (v15 promoted)
 **User's decision:** promote v15 (8.4 min end to end, #47) to production.
 **Created:** `WF/motion_W5_quality_v16.json` (copy in `PROJ/2 - files/workflows/ui_production/`), `build_W5_v16.py`, `W5_quality_v16_api.json`.
