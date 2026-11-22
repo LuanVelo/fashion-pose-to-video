@@ -11,6 +11,15 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #41 W5 v12 run — 2× faster, but skeleton lines painted on the body; NOT approved
+Ran without error (default values, product `caramel-tank-jeans`, pose `look-02` = v9 skeleton): **14 min 19 s** in total (v9: 27 min 40 s). Stage 1: 28 steps in 4 min 53 s (10.4 s/step at 1088×1920; v9: 15.7 s/step at 1536×2720 — only ~1.5× faster, the 4 MP product reference keeps the token count high). Stage 2: 8 steps in 7 min 38 s (~57 s/step, same cost per step as v9; LoRA loaded, 208 patches). Remaining ~1.5 min = model loads + decode.
+Outputs in `OUT/motion/W5_v12/caramel-tank-jeans_look-02/`: `frame0_00001_.png`, `video_00001_.mp4`, `side-by-side_v9_vs_v12.mp4` (SKELETON | v9 | v12, `W4_compare_versions.py`), `side-by-side_v9_vs_v12_zoom.mp4` and `zoom_v9_vs_v12.png` (face + torso, crop following the skeleton head; script `zoom_cmp.py` in the session scratchpad).
+**Result:**
+- First frame: clean, faithful garment and face (the 1088×1920 frame is fine).
+- Video: **pale skeleton lines drawn over the body and clothes** from the first frames on (shoulder line, a "V" on the chest, lines down the arms and the jeans) — the same kind of defect as v8. Face and garment otherwise comparable to v9; motion follows the pose.
+**Diagnosis (hypothesis):** the `fl2v` 8-step LoRA was trained for first/last-frame video without ControlNet; with only 8 steps and ControlNet strength 1.0 until 70%, the distilled model copies the control video almost literally into the pixels. The official `video_minimax_h3_fun_controlnet_union` template pairs the ControlNet with the `ref2v` 4-step LoRA instead.
+**Decision pending (user):** next test candidates — (a) ControlNet strength 0.5–0.7 and/or end 0.5 with the same LoRA; (b) the ref2v 4-step LoRA (official pairing) at 6–8 steps; (c) LoRA strength ~0.6 with 12 steps.
+
 ## 2026-11-22 — #40 Catalog pose `look-02` created (fix for W5 v12 "Invalid input")
 **Error:** first run of W5 v12 failed on validation: `Catalog POSE (motion/poses/<pose>/pose.mp4) - file` — invalid input. Cause: `IN/motion/poses/look-02/pose.mp4` did not exist (W1 v3 has never run, so the English catalog was empty). `LoadVideo` accepts subfolder paths (its `validate_inputs` only checks that the file exists), so no workflow change is needed.
 **Created:** `IN/motion/poses/look-02/pose.mp4` = copy of `OUT/motion/W5_v9/regata-caramelo-jeans_look-02_q9/pose_sem-rosto_00001_.mp4` (576×1024, 124 frames, 24 fps) — the exact skeleton the approved v9 video used, so v9 × v12 is a fair comparison. No `original.mp4` yet (`catalog.py compare` needs it; W1 v3 will create the full catalog entry later).

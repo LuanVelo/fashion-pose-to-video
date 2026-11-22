@@ -75,7 +75,7 @@ Every workflow exists in three forms in this repo:
 - **API** (`*_api.json`): the same graph in ComfyUI's API format.
 - **Generator** (`build_*.py`): the Python script that writes the API JSON. It is the source of truth for each version.
 
-**In testing — faster W5:** [`motion_W5_quality_v12`](2%20-%20files/workflows/ui_tests/motion_W5_quality_v12.json) = v11 with the official 8-step turbo LoRA on (8 steps instead of 20) and a 1088×1920 first frame (was 1536×2720). Target: ~27 min → ~10 min. Not run yet; output goes to `output/motion/W5_v12/`.
+**In testing — faster W5:** [`motion_W5_quality_v12`](2%20-%20files/workflows/ui_tests/motion_W5_quality_v12.json) = v11 with the official 8-step turbo LoRA on (8 steps instead of 20) and a 1088×1920 first frame (was 1536×2720). Ran in 14.3 min (v11/v9: ~27 min), but the turbo LoRA paints skeleton lines on the body — not approved yet (CHANGELOG #41).
 
 The test workflows (W1 v1/v2, W2, W3a, W5 v1–v10, W6 v1/v2) are archived in [`ui_tests/`](2%20-%20files/workflows/ui_tests). Their labels are in Portuguese.
 
