@@ -1,0 +1,20 @@
+# Modelos: nunca versionar (baixar pelos links do README)
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.gguf
+*.bin
+
+# Videos de referencia (conteudo de terceiros)
+3 - Assets/**/*.mp4
+3 - Assets/**/*.mov
+3 - Assets/**/*.webm
+
+# Copias substituidas pelo catalogo.py e lixo do sistema
+*.anterior-*
+__pycache__/
+*.pyc
+Thumbs.db
+desktop.ini
+.DS_Store

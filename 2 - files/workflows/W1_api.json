@@ -1,0 +1,304 @@
+{
+ "1": {
+  "class_type": "PrimitiveString",
+  "_meta": {
+   "title": "Nome do movimento"
+  },
+  "inputs": {
+   "value": "_teste_B4-P13"
+  }
+ },
+ "2": {
+  "class_type": "StringConcatenate",
+  "_meta": {
+   "title": "Pasta base"
+  },
+  "inputs": {
+   "string_a": "motion/catalogo/",
+   "string_b": [
+    "1",
+    0
+   ],
+   "delimiter": ""
+  }
+ },
+ "3": {
+  "class_type": "StringConcatenate",
+  "_meta": {
+   "title": "Prefixo pose"
+  },
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/pose",
+   "delimiter": ""
+  }
+ },
+ "4": {
+  "class_type": "StringConcatenate",
+  "_meta": {
+   "title": "Prefixo original"
+  },
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/original",
+   "delimiter": ""
+  }
+ },
+ "5": {
+  "class_type": "StringConcatenate",
+  "_meta": {
+   "title": "Prefixo keyframes pose"
+  },
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/keyframes/pose",
+   "delimiter": ""
+  }
+ },
+ "6": {
+  "class_type": "StringConcatenate",
+  "_meta": {
+   "title": "Prefixo keyframes original"
+  },
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/keyframes/original",
+   "delimiter": ""
+  }
+ },
+ "10": {
+  "class_type": "LoadVideo",
+  "_meta": {
+   "title": "Video de movimento"
+  },
+  "inputs": {
+   "file": "motion/_teste_B4-P13.mp4"
+  }
+ },
+ "11": {
+  "class_type": "VideoTemporalCrop",
+  "_meta": {
+   "title": "Trecho (frames)"
+  },
+  "inputs": {
+   "video": [
+    "10",
+    0
+   ],
+   "start_frame": 0,
+   "length": 360
+  }
+ },
+ "12": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "11",
+    0
+   ]
+  }
+ },
+ "20": {
+  "class_type": "CheckpointLoaderSimple",
+  "inputs": {
+   "ckpt_name": "sdpose_wholebody_fp16.safetensors"
+  }
+ },
+ "21": {
+  "class_type": "ResizeImageMaskNode",
+  "inputs": {
+   "input": [
+    "12",
+    0
+   ],
+   "resize_type": "scale longer dimension",
+   "resize_type.longer_size": 1024,
+   "scale_method": "lanczos"
+  }
+ },
+ "22": {
+  "class_type": "SDPoseKeypointExtractor",
+  "inputs": {
+   "model": [
+    "20",
+    0
+   ],
+   "vae": [
+    "20",
+    2
+   ],
+   "image": [
+    "24",
+    0
+   ],
+   "batch_size": 16
+  }
+ },
+ "23": {
+  "class_type": "SDPoseDrawKeypoints",
+  "inputs": {
+   "keypoints": [
+    "22",
+    0
+   ],
+   "draw_body": true,
+   "draw_hands": true,
+   "draw_face": true,
+   "draw_feet": true,
+   "stick_width": 4,
+   "face_point_size": 2,
+   "score_threshold": 0.5,
+   "draw_head": true
+  }
+ },
+ "30": {
+  "class_type": "CreateVideo",
+  "inputs": {
+   "images": [
+    "23",
+    0
+   ],
+   "fps": [
+    "12",
+    2
+   ]
+  }
+ },
+ "31": {
+  "class_type": "SaveVideo",
+  "_meta": {
+   "title": "Salva pose.mp4"
+  },
+  "inputs": {
+   "video": [
+    "30",
+    0
+   ],
+   "filename_prefix": [
+    "3",
+    0
+   ],
+   "format": "auto",
+   "format.codec": "auto"
+  }
+ },
+ "32": {
+  "class_type": "SaveVideo",
+  "_meta": {
+   "title": "Salva original.mp4"
+  },
+  "inputs": {
+   "video": [
+    "11",
+    0
+   ],
+   "filename_prefix": [
+    "4",
+    0
+   ],
+   "format": "auto",
+   "format.codec": "auto"
+  }
+ },
+ "40": {
+  "class_type": "VideoFrameSample",
+  "inputs": {
+   "video": [
+    "30",
+    0
+   ],
+   "num_frames": 4,
+   "strategy": "uniform",
+   "seed": 0
+  }
+ },
+ "41": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "40",
+    0
+   ]
+  }
+ },
+ "42": {
+  "class_type": "SaveImage",
+  "_meta": {
+   "title": "Keyframes pose"
+  },
+  "inputs": {
+   "images": [
+    "41",
+    0
+   ],
+   "filename_prefix": [
+    "5",
+    0
+   ]
+  }
+ },
+ "43": {
+  "class_type": "VideoFrameSample",
+  "inputs": {
+   "video": [
+    "11",
+    0
+   ],
+   "num_frames": 4,
+   "strategy": "uniform",
+   "seed": 0
+  }
+ },
+ "44": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "43",
+    0
+   ]
+  }
+ },
+ "45": {
+  "class_type": "SaveImage",
+  "_meta": {
+   "title": "Keyframes original"
+  },
+  "inputs": {
+   "images": [
+    "44",
+    0
+   ],
+   "filename_prefix": [
+    "6",
+    0
+   ]
+  }
+ },
+ "24": {
+  "class_type": "ResizeImageMaskNode",
+  "_meta": {
+   "title": "Grid de 32 px"
+  },
+  "inputs": {
+   "input": [
+    "21",
+    0
+   ],
+   "resize_type": "scale to multiple",
+   "resize_type.multiple": 32,
+   "scale_method": "area"
+  }
+ }
+}

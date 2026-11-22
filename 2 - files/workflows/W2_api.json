@@ -1,0 +1,776 @@
+{
+ "1": {
+  "class_type": "PrimitiveString",
+  "inputs": {
+   "value": "regata-rosa_look-02"
+  },
+  "_meta": {
+   "title": "Nome do teste"
+  }
+ },
+ "2": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": "motion/W2/",
+   "string_b": [
+    "1",
+    0
+   ],
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "Pasta base"
+  }
+ },
+ "3": {
+  "class_type": "PrimitiveString",
+  "inputs": {
+   "value": ""
+  },
+  "_meta": {
+   "title": "Descricao da peca (opcional, ingles, igual a imagem 1)"
+  }
+ },
+ "4": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": "Image 1 shows a fashion model wearing the product outfit. Image 2 is a pose skeleton (a colored stick figure on a black background): use it only as the target body pose. Create a new full-body fashion photograph of the same model from image 1, wearing exactly the same outfit from image 1, standing in exactly the pose shown by the skeleton in image 2: same position of head, shoulders, arms, hands, legs and feet, whole body visible from head to feet. The clothing must be copied only from image 1: keep every garment and accessory identical to image 1, with the same colors, fabric, texture, print, stripes, logos, trims, length and fit. Do not invent or replace any clothing. Keep the same face, hair, background, lighting and camera as image 1. Photorealistic photo. Do not draw any skeleton lines or colored dots.",
+   "string_b": [
+    "3",
+    0
+   ],
+   "delimiter": "\n\nOutfit details, exactly as in image 1: "
+  },
+  "_meta": {
+   "title": "Prompt completo"
+  }
+ },
+ "10": {
+  "class_type": "UNETLoader",
+  "inputs": {
+   "unet_name": "flux-2-klein-base-9b-fp8.safetensors",
+   "weight_dtype": "default"
+  }
+ },
+ "11": {
+  "class_type": "CLIPLoader",
+  "inputs": {
+   "clip_name": "qwen_3_8b_fp8mixed.safetensors",
+   "type": "flux2",
+   "device": "default"
+  }
+ },
+ "12": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "full_encoder_small_decoder.safetensors"
+  }
+ },
+ "13": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "11",
+    0
+   ],
+   "text": [
+    "4",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Prompt (positivo)"
+  }
+ },
+ "14": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "11",
+    0
+   ],
+   "text": ""
+  },
+  "_meta": {
+   "title": "Negativo (vazio)"
+  }
+ },
+ "20": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "motion/W2/produtos/regata-rosa_frente.png"
+  },
+  "_meta": {
+   "title": "Image 1 - Produto (frente, corpo inteiro)"
+  }
+ },
+ "21": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "20",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "megapixels": 1.0,
+   "resolution_steps": 1
+  }
+ },
+ "22": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "21",
+    0
+   ],
+   "vae": [
+    "12",
+    0
+   ]
+  }
+ },
+ "23": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "13",
+    0
+   ],
+   "latent": [
+    "22",
+    0
+   ]
+  }
+ },
+ "24": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "14",
+    0
+   ],
+   "latent": [
+    "22",
+    0
+   ]
+  }
+ },
+ "30": {
+  "class_type": "RandomNoise",
+  "inputs": {
+   "noise_seed": 20261121
+  },
+  "_meta": {
+   "title": "Seed (fixa p/ comparar)"
+  }
+ },
+ "31": {
+  "class_type": "KSamplerSelect",
+  "inputs": {
+   "sampler_name": "euler"
+  }
+ },
+ "32": {
+  "class_type": "Flux2Scheduler",
+  "inputs": {
+   "steps": 20,
+   "width": 480,
+   "height": 848
+  }
+ },
+ "33": {
+  "class_type": "EmptyFlux2LatentImage",
+  "inputs": {
+   "width": 480,
+   "height": 848,
+   "batch_size": 1
+  },
+  "_meta": {
+   "title": "Tamanho de saida"
+  }
+ },
+ "100": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "motion/W2/look-02/pose-1.png"
+  },
+  "_meta": {
+   "title": "Image 2 - Pose 1"
+  }
+ },
+ "101": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "100",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "megapixels": 0.5,
+   "resolution_steps": 1
+  }
+ },
+ "102": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "101",
+    0
+   ],
+   "vae": [
+    "12",
+    0
+   ]
+  }
+ },
+ "103": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "23",
+    0
+   ],
+   "latent": [
+    "102",
+    0
+   ]
+  }
+ },
+ "104": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "24",
+    0
+   ],
+   "latent": [
+    "102",
+    0
+   ]
+  }
+ },
+ "105": {
+  "class_type": "CFGGuider",
+  "inputs": {
+   "model": [
+    "10",
+    0
+   ],
+   "positive": [
+    "103",
+    0
+   ],
+   "negative": [
+    "104",
+    0
+   ],
+   "cfg": 3.5
+  }
+ },
+ "106": {
+  "class_type": "SamplerCustomAdvanced",
+  "inputs": {
+   "noise": [
+    "30",
+    0
+   ],
+   "guider": [
+    "105",
+    0
+   ],
+   "sampler": [
+    "31",
+    0
+   ],
+   "sigmas": [
+    "32",
+    0
+   ],
+   "latent_image": [
+    "33",
+    0
+   ]
+  }
+ },
+ "107": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "106",
+    0
+   ],
+   "vae": [
+    "12",
+    0
+   ]
+  }
+ },
+ "108": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/pose-1",
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "Prefixo pose 1"
+  }
+ },
+ "109": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "107",
+    0
+   ],
+   "filename_prefix": [
+    "108",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Salva pose 1"
+  }
+ },
+ "200": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "motion/W2/look-02/pose-2.png"
+  },
+  "_meta": {
+   "title": "Image 2 - Pose 2"
+  }
+ },
+ "201": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "200",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "megapixels": 0.5,
+   "resolution_steps": 1
+  }
+ },
+ "202": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "201",
+    0
+   ],
+   "vae": [
+    "12",
+    0
+   ]
+  }
+ },
+ "203": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "23",
+    0
+   ],
+   "latent": [
+    "202",
+    0
+   ]
+  }
+ },
+ "204": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "24",
+    0
+   ],
+   "latent": [
+    "202",
+    0
+   ]
+  }
+ },
+ "205": {
+  "class_type": "CFGGuider",
+  "inputs": {
+   "model": [
+    "10",
+    0
+   ],
+   "positive": [
+    "203",
+    0
+   ],
+   "negative": [
+    "204",
+    0
+   ],
+   "cfg": 3.5
+  }
+ },
+ "206": {
+  "class_type": "SamplerCustomAdvanced",
+  "inputs": {
+   "noise": [
+    "30",
+    0
+   ],
+   "guider": [
+    "205",
+    0
+   ],
+   "sampler": [
+    "31",
+    0
+   ],
+   "sigmas": [
+    "32",
+    0
+   ],
+   "latent_image": [
+    "33",
+    0
+   ]
+  }
+ },
+ "207": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "206",
+    0
+   ],
+   "vae": [
+    "12",
+    0
+   ]
+  }
+ },
+ "208": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/pose-2",
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "Prefixo pose 2"
+  }
+ },
+ "209": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "207",
+    0
+   ],
+   "filename_prefix": [
+    "208",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Salva pose 2"
+  }
+ },
+ "300": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "motion/W2/look-02/pose-3.png"
+  },
+  "_meta": {
+   "title": "Image 2 - Pose 3"
+  }
+ },
+ "301": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "300",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "megapixels": 0.5,
+   "resolution_steps": 1
+  }
+ },
+ "302": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "301",
+    0
+   ],
+   "vae": [
+    "12",
+    0
+   ]
+  }
+ },
+ "303": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "23",
+    0
+   ],
+   "latent": [
+    "302",
+    0
+   ]
+  }
+ },
+ "304": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "24",
+    0
+   ],
+   "latent": [
+    "302",
+    0
+   ]
+  }
+ },
+ "305": {
+  "class_type": "CFGGuider",
+  "inputs": {
+   "model": [
+    "10",
+    0
+   ],
+   "positive": [
+    "303",
+    0
+   ],
+   "negative": [
+    "304",
+    0
+   ],
+   "cfg": 3.5
+  }
+ },
+ "306": {
+  "class_type": "SamplerCustomAdvanced",
+  "inputs": {
+   "noise": [
+    "30",
+    0
+   ],
+   "guider": [
+    "305",
+    0
+   ],
+   "sampler": [
+    "31",
+    0
+   ],
+   "sigmas": [
+    "32",
+    0
+   ],
+   "latent_image": [
+    "33",
+    0
+   ]
+  }
+ },
+ "307": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "306",
+    0
+   ],
+   "vae": [
+    "12",
+    0
+   ]
+  }
+ },
+ "308": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/pose-3",
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "Prefixo pose 3"
+  }
+ },
+ "309": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "307",
+    0
+   ],
+   "filename_prefix": [
+    "308",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Salva pose 3"
+  }
+ },
+ "400": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "motion/W2/look-02/pose-4.png"
+  },
+  "_meta": {
+   "title": "Image 2 - Pose 4"
+  }
+ },
+ "401": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "400",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "megapixels": 0.5,
+   "resolution_steps": 1
+  }
+ },
+ "402": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "401",
+    0
+   ],
+   "vae": [
+    "12",
+    0
+   ]
+  }
+ },
+ "403": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "23",
+    0
+   ],
+   "latent": [
+    "402",
+    0
+   ]
+  }
+ },
+ "404": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "24",
+    0
+   ],
+   "latent": [
+    "402",
+    0
+   ]
+  }
+ },
+ "405": {
+  "class_type": "CFGGuider",
+  "inputs": {
+   "model": [
+    "10",
+    0
+   ],
+   "positive": [
+    "403",
+    0
+   ],
+   "negative": [
+    "404",
+    0
+   ],
+   "cfg": 3.5
+  }
+ },
+ "406": {
+  "class_type": "SamplerCustomAdvanced",
+  "inputs": {
+   "noise": [
+    "30",
+    0
+   ],
+   "guider": [
+    "405",
+    0
+   ],
+   "sampler": [
+    "31",
+    0
+   ],
+   "sigmas": [
+    "32",
+    0
+   ],
+   "latent_image": [
+    "33",
+    0
+   ]
+  }
+ },
+ "407": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "406",
+    0
+   ],
+   "vae": [
+    "12",
+    0
+   ]
+  }
+ },
+ "408": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/pose-4",
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "Prefixo pose 4"
+  }
+ },
+ "409": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "407",
+    0
+   ],
+   "filename_prefix": [
+    "408",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Salva pose 4"
+  }
+ }
+}
