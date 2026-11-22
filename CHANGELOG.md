@@ -11,6 +11,9 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #50 Upscale test input for the fast W5 (v15 video)
+**User's request:** check whether the W6 upscale still makes sense with the fast W5. Created `IN/motion/production/caramel-tank-jeans_look-02.mp4` = copy of `OUT/motion/W5_v15/caramel-tank-jeans_look-02/video_00001_.mp4` (v15 = same graph as production W5 v16), which is exactly the default input of `motion_W6_upscale_v3` (name `caramel-tank-jeans_look-02`). W6 v3 will save to `OUT/motion/production/caramel-tank-jeans_look-02/` (video_2x 1792x3200, video_1080x1920). **Status:** ready, not run (first W6 v3 run).
+
 ## 2026-11-22 — #49 W6 v2 removed from ComfyUI again
 **User's decision:** remove it. `WF/motion_W6_upscale_v2.json` (re-saved by the user at 12:39) had the same nodes, values and links as the archived copy; only node positions, groups and canvas view differed. Archived as `PROJ/2 - files/workflows/ui_tests/motion_W6_upscale_v2_resaved-2026-11-22.json` (the earlier archive `motion_W6_upscale_v2.json` is kept), then removed from `WF/` (backup in the session scratchpad). `WF/` now has only the 3 production workflows: `motion_W1_extract-pose_v3`, `motion_W5_quality_v16`, `motion_W6_upscale_v3`.
 
