@@ -11,8 +11,11 @@ Caminhos abreviados:
 
 ---
 
+## 2026-11-22 — #37 Repositório tornado público
+A pedido do usuário (vai compartilhar com outras pessoas): https://github.com/LuanVelo/fashion-pose-to-video passou de privado para **público**. Conteúdo igual ao #36 (sem modelos, sem vídeos de referência).
+
 ## 2026-11-22 — #36 Projeto no GitHub (privado) + README
-**Criado:** repositório git em `PROJ/` (branch `main`) e repositório **privado** https://github.com/LuanVelo/fashion-pose-to-video (pedido do usuário; privado por padrão, dá para tornar público em Settings).
+**Criado:** repositório git em `PROJ/` (branch `main`) e repositório https://github.com/LuanVelo/fashion-pose-to-video (pedido do usuário; privado por padrão, dá para tornar público em Settings).
 - `README.md`: o que é, fluxo em Mermaid, os 3 workflows de produção, passo a passo, requisitos, **tabela dos 12 modelos com links originais** (os mesmos dos templates oficiais do ComfyUI) e árvore de `models/`, pastas de input/output, configuração da base, resultados e aprendizados com imagens.
 - `docs/media/`: `exemplo_4-etapas.gif` (960 px, 12 fps, aparece direto no README), `exemplo_4-etapas.mp4` (2400 px, 2,3 MB), `pipeline.jpg`, `rosto_v7_x_v9.jpg`, `corpo_v7_x_v9.jpg`, `v8_x_v9.jpg`, `zoom_upscale.jpg`.
 - `.gitignore`: modelos (`*.safetensors` etc.), vídeos de `3 - Assets/` (conteúdo de terceiros), `*.anterior-*`.

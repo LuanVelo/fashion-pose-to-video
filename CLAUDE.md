@@ -23,7 +23,7 @@ Extrair o movimento (pose) de vídeos de referência e aplicar numa foto de mode
 - **Toda comparação (versão A × B, antes × depois) vira VÍDEO LADO A LADO simultâneo com rótulos** (`W4_compara_versoes.py` / `W4_lado_a_lado.py`), + zoom lado a lado quando o detalhe importa. Só depois que o ComfyUI estiver livre (nada pesado durante render).
 
 ## Repositório
-- GitHub **privado**: https://github.com/LuanVelo/fashion-pose-to-video (branch `main`). `README.md` é a documentação pública do projeto: manter atualizado (workflows, modelos, exemplos em `docs/media/`).
+- GitHub **público** (desde 2026-11-22, a pedido do usuário): https://github.com/LuanVelo/fashion-pose-to-video (branch `main`). `README.md` é a documentação pública do projeto: manter atualizado (workflows, modelos, exemplos em `docs/media/`).
 - Nunca versionar modelos nem vídeos de `3 - Assets/` (ver `.gitignore`). Após cada entrada no HISTORICO: commit + push.
 
 ## Ambiente
