@@ -11,6 +11,17 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #42 W5 v13 — v12 with a weaker ControlNet
+**User's decision** (between "official ref2v LoRA" and "weaker ControlNet"): weaker ControlNet, keeping the 8-step fl2v LoRA.
+**Created:** `WF/motion_W5_quality_v13.json` (copy in `PROJ/2 - files/workflows/ui_tests/`), `build_W5_v13.py`, `W5_quality_v13_api.json`.
+| Node | v12 | v13 | Why |
+|---|---|---|---|
+| MiniMaxH3FunControlNetApply (214) strength | 1.0 | **0.6** | v12 painted the skeleton lines on the body/clothes (#41) |
+| MiniMaxH3FunControlNetApply (214) end_percent | 0.7 | **0.5** | with 8 steps, control stops after step 4 instead of ~6 |
+| Base folder (2) | `motion/W5_v12/` | **`motion/W5_v13/`** | separate test output |
+Everything else = v12 (turbo 8 steps ON, first frame 1088×1920). **Check:** API diff v12 → v13 = only these values; UI built from the v12 UI (same links), every API value/title matches the UI widgets.
+**Risk:** motion may follow the reference pose less closely. **Expected time:** ~14 min. **Status:** built, not run. Pose `look-02` (v9 skeleton) already in the catalog.
+
 ## 2026-11-22 — #41 W5 v12 run — 2× faster, but skeleton lines painted on the body; NOT approved
 Ran without error (default values, product `caramel-tank-jeans`, pose `look-02` = v9 skeleton): **14 min 19 s** in total (v9: 27 min 40 s). Stage 1: 28 steps in 4 min 53 s (10.4 s/step at 1088×1920; v9: 15.7 s/step at 1536×2720 — only ~1.5× faster, the 4 MP product reference keeps the token count high). Stage 2: 8 steps in 7 min 38 s (~57 s/step, same cost per step as v9; LoRA loaded, 208 patches). Remaining ~1.5 min = model loads + decode.
 Outputs in `OUT/motion/W5_v12/caramel-tank-jeans_look-02/`: `frame0_00001_.png`, `video_00001_.mp4`, `side-by-side_v9_vs_v12.mp4` (SKELETON | v9 | v12, `W4_compare_versions.py`), `side-by-side_v9_vs_v12_zoom.mp4` and `zoom_v9_vs_v12.png` (face + torso, crop following the skeleton head; script `zoom_cmp.py` in the session scratchpad).
