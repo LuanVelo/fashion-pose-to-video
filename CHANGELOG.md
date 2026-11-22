@@ -11,6 +11,13 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #47 W5 v15 run — 8.4 min end to end from a cold cache (v9: 27.7 min)
+The user cleared ComfyUI's cache completely before running, so this is the real end-to-end time including model loads: **8 min 24 s** (504 s). Stage 1: 28 steps in **3 min 04 s** (6.6 s/step; v14: 4 min 53 s, 10.4 s/step → 1.6× faster). Video: 8 steps in **3 min 33 s** (~26 s/step, same as v14). The rest (~1.8 min) = model loads + decodes.
+Outputs in `OUT/motion/W5_v15/caramel-tank-jeans_look-02/`: `video_00001_.mp4`, `frame0_00001_.png`, `side-by-side_v9_v14_v15.mp4`, `frame0_v14_vs_v15.png`, `frame0_zoom_v14_vs_v15.png` (face/top and torso crops), `body_v14-top_v15-bottom.png` (frames 10/40/70/110).
+**Quality:** first frame practically identical to v14 (mean pixel difference 1.6/255): same face, curls, knit texture, V neck, jeans. Video differs a bit more (3.9/255 on average, because it starts from a slightly different first frame) but the face, garment, bag, motion and framing match frame by frame; no skeleton lines.
+**Summary of the speed work (#39–#47):** 27.7 min (v9) → 14.3 (v12 turbo, lines) → ~14 (v13, lines fixed) → ~9.5 (v14, INT8 video) → **8.4 min (v15, INT8 image too)**, 3.3× faster, with the face slightly softer than v9 (8 vs 20 steps) and the bag now kept.
+**Pending (user):** promote v15 to the production W5.
+
 ## 2026-11-22 — #46 W5 v15 — INT8 attention on the first frame (FLUX) too
 **User's request:** optimize the first frame (now the slowest stage, ~5 min of v14's ~9.5 min).
 **Created:** `WF/motion_W5_quality_v15.json` (copy in `PROJ/2 - files/workflows/ui_tests/`), `build_W5_v15.py`, `W5_quality_v15_api.json`.
