@@ -11,6 +11,12 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #45 W5 v14 run — INT8 attention: video 2.1× faster, same image
+Ran without error: **4 min 36 s** (stage 1 from cache, same first frame as v12/v13; video 8 steps in **3 min 23 s**, ~25 s/step — v13: 7 min 02 s, ~53 s/step). Full run without cache ≈ 5 min (stage 1) + 3.4 min (video) + ~1 min (loads/decode) ≈ **~9.5 min** (v9: 27.7 min).
+Outputs in `OUT/motion/W5_v14/caramel-tank-jeans_look-02/`: `video_00001_.mp4`, `frame0_00001_.png`, `side-by-side_v9_v13_v14.mp4`, `faces_v13-top_v14-bottom.png`, `body_v13-top_v14-bottom.png` (frames 10/40/70/110).
+**Quality:** v14 is practically identical to v13 (same seed): mean absolute pixel difference 1.7/255 (max 2.8 mid-video); face, eyes, hair, garment, bag and motion match frame by frame; no skeleton lines.
+**Conclusion:** INT8 attention is a free ~2× on the video stage. Now the first frame (FLUX, ~5 min) is the biggest stage. Next levers: INT8 attention on the FLUX model too (stage 1), native `BlockSparseAttention` on H3, product reference at 2 MP.
+
 ## 2026-11-22 — #44 W5 v14 — native INT8 attention (SageAttention-like, no install)
 **User's request:** test SageAttention. **Finding:** no install needed. ComfyUI 0.46 ships `ModelAttentionBackend` ("Model Attention Backend", experimental, `comfy_extras/nodes_model_advanced.py`) with the option **`comfy kitchen attention`** = quantized INT8 attention from `comfy_kitchen` (same idea as SageAttention). Checked: `comfy_kitchen.int8_attention_is_available()` is true on the 4090 and the option is listed by `/object_info`. SageAttention itself (pip `triton-windows` + `sageattention`, flag `--use-sage-attention`) was NOT installed. Also found, not used yet: native `BlockSparseAttention` ("Model Sparse Attention", method `sol-attn`, training-free, H3-aware) — a possible next test.
 **Created:** `WF/motion_W5_quality_v14.json` (copy in `PROJ/2 - files/workflows/ui_tests/`), `build_W5_v14.py`, `W5_quality_v14_api.json`.
