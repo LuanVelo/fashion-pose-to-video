@@ -75,6 +75,8 @@ Every workflow exists in three forms in this repo:
 - **API** (`*_api.json`): the same graph in ComfyUI's API format.
 - **Generator** (`build_*.py`): the Python script that writes the API JSON. It is the source of truth for each version.
 
+**In testing — faster W5:** [`motion_W5_quality_v12`](2%20-%20files/workflows/ui_tests/motion_W5_quality_v12.json) = v11 with the official 8-step turbo LoRA on (8 steps instead of 20) and a 1088×1920 first frame (was 1536×2720). Target: ~27 min → ~10 min. Not run yet; output goes to `output/motion/W5_v12/`.
+
 The test workflows (W1 v1/v2, W2, W3a, W5 v1–v10, W6 v1/v2) are archived in [`ui_tests/`](2%20-%20files/workflows/ui_tests). Their labels are in Portuguese.
 
 ---
@@ -134,6 +136,7 @@ No model files are in this repository; download them from the original repositor
 | `vae/` | `minimax_h3_audio_vae_fp32.safetensors` | 577 MB | W5 stage 2 | [Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_audio_vae_fp32.safetensors) |
 | `model_patches/` | `minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors` | 2.1 GB | W5 stage 2 (pose ControlNet) | [Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/model_patches/minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors) |
 | `loras/` | `minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors` | 1.8 GB | W5, optional (turbo mode, off by default) | [Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/loras/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors) |
+| `loras/` | `minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors` | 2.0 GB | W5 v12 (speed test, turbo on by default) | [lightx2v/Minimax-h3-Turbo](https://huggingface.co/lightx2v/Minimax-h3-Turbo/resolve/main/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors) |
 | `diffusion_models/` | `relayvsr_x2_lightx2v_int8_convrot.safetensors` | 4.8 GB | W6 | [Comfy-Org/RelayVSR](https://huggingface.co/Comfy-Org/RelayVSR/resolve/main/diffusion_models/relayvsr_x2_lightx2v_int8_convrot.safetensors) |
 | `vae/` | `relayvsr_flash_vae_x2_fp32.safetensors` | 121 MB | W6 | [Comfy-Org/RelayVSR](https://huggingface.co/Comfy-Org/RelayVSR/resolve/main/vae/relayvsr_flash_vae_x2_fp32.safetensors) |
 
@@ -149,6 +152,7 @@ ComfyUI/models/
 │   ├── minimax_h3_ref2va_pruned_int8_convrot.safetensors
 │   └── relayvsr_x2_lightx2v_int8_convrot.safetensors
 ├── loras/
+│   ├── minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors
 │   └── minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors
 ├── model_patches/
 │   └── minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors

@@ -11,6 +11,24 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #39 W5 v12 — speed test (turbo 8 steps + smaller first frame)
+**User's request:** cut the ~27 min per video a lot while losing little quality. Research (web): the standard levers are step-distilled LoRAs (turbo/lightning), attention kernels (SageAttention, torch.compile), step caching (TeaCache/EasyCache) and low-res + upscale. For H3, a public benchmark measured the official 8-step turbo at 2.1× faster with near-identical quality, and 4 steps clearly worse; the ComfyUI docs call the 4-step ref2v LoRA (the one in v11) weaker on references. Low-res + upscale was ruled out: our own tests showed 704×1248 deforms the face and upscaling does not fix it.
+**Created:**
+- `WF/motion_W5_quality_v12.json` (copy in `PROJ/2 - files/workflows/ui_tests/`), `PROJ/2 - files/workflows/build_W5_v12.py`, `W5_quality_v12_api.json`.
+**Changes vs v11 (everything else identical):**
+| Node | v11 | v12 | Why |
+|---|---|---|---|
+| Turbo LoRA (204) | `minimax_h3_ref2v_turbo_4step_v0.1` | **`minimax_h3_fl2v_turbo_8step_v1.0`** (already on disk, lightx2v) | official 8-step LoRA; 8 steps keep quality, the 4-step one is weak on references |
+| Turbo switch (205) | OFF | **ON** | fast by default; OFF = exactly v11 (20 steps, no LoRA) |
+| Steps (turbo) (208) | 4 | **8** | LoRA is trained for 8 |
+| Stage 1 frame (118/119) | 1536×2720 (~4.2 MP) | **1088×1920 (~2.1 MP)** | the video is 896×1600; ~2× fewer image tokens |
+| Base folder (2) | `motion/production/` | **`motion/W5_v12/`** | test output kept apart from production |
+Sampler/scheduler kept at `res_multistep` + `simple` (same as the official `video_minimax_h3_i2v` template that ships this LoRA). Product reference stays at 4 MP (garment fidelity).
+**Risk:** the 8-step LoRA was trained on fl2va; on ref2va it is untested here (third parties report it works). If the garment or face degrade: try the LoRA at strength 0.8 or 10 steps, or fall back to turbo OFF.
+**Check:** API diff v11 → v12 = only the values above; UI built from the v11 UI (same links), every API value/title matches the UI widgets. ComfyUI was not running, so `graphToPrompt()` was not checked in the frontend.
+**Expected time:** ~10 min (stage 1 ~2–3 min, video 8 × ~52 s ≈ 7 min). **Status:** built, not run. Next: run with `caramel-tank-jeans` + `look-02` and compare side by side with the approved v9 video.
+**Later options (not done):** SageAttention (`--use-sage-attention`; needs `triton-windows` + `sageattention` pip packages — awaiting authorization; H3 head_dim 128 is compatible), native `EasyCache` on the 20-step path, distilled FLUX.2 klein 9B for stage 1 (download).
+
 ## 2026-11-22 — #38 Everything in English (to share the project publicly, e.g. on Reddit)
 **User's request:** translate the whole project to English.
 **Docs:** `README.md` rewritten in English. `HISTORICO.md` → **`CHANGELOG.md`** (full translation of #1–#37, done by a sub-agent; identifiers, paths and node titles kept as they were at the time). `1 - AI instructions/pesquisa-olhos-pose-h3.md` → `research-eyes-pose-h3.md`, `prompt_pesquisa_olhos_H3.md` → `prompt-research-eyes-h3.md`, `3 - Assets/referencias de pose/LEIA-ME.md` → `README.md`. `CLAUDE.md` rewritten in English (adds: talk to the user in Portuguese, keep the repo in English). The Portuguese originals were removed from the repo (still in git history).
