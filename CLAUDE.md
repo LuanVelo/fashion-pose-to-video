@@ -22,6 +22,10 @@ Extrair o movimento (pose) de vídeos de referência e aplicar numa foto de mode
 - Vídeo/imagem pedido pelo usuário vai também no chat (SendUserFile).
 - **Toda comparação (versão A × B, antes × depois) vira VÍDEO LADO A LADO simultâneo com rótulos** (`W4_compara_versoes.py` / `W4_lado_a_lado.py`), + zoom lado a lado quando o detalhe importa. Só depois que o ComfyUI estiver livre (nada pesado durante render).
 
+## Repositório
+- GitHub **privado**: https://github.com/LuanVelo/fashion-pose-to-video (branch `main`). `README.md` é a documentação pública do projeto: manter atualizado (workflows, modelos, exemplos em `docs/media/`).
+- Nunca versionar modelos nem vídeos de `3 - Assets/` (ver `.gitignore`). Após cada entrada no HISTORICO: commit + push.
+
 ## Ambiente
 - GPU RTX 4090 24 GB, Windows.
 - ComfyUI Desktop, instância **cfui01**: `D:\Comfy-Desktop\ComfyUI-Installs\cfui01` — versão 0.46.2, em http://127.0.0.1:8188. Zero custom nodes.

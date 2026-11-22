@@ -11,6 +11,15 @@ Caminhos abreviados:
 
 ---
 
+## 2026-11-22 — #36 Projeto no GitHub (privado) + README
+**Criado:** repositório git em `PROJ/` (branch `main`) e repositório **privado** https://github.com/LuanVelo/fashion-pose-to-video (pedido do usuário; privado por padrão, dá para tornar público em Settings).
+- `README.md`: o que é, fluxo em Mermaid, os 3 workflows de produção, passo a passo, requisitos, **tabela dos 12 modelos com links originais** (os mesmos dos templates oficiais do ComfyUI) e árvore de `models/`, pastas de input/output, configuração da base, resultados e aprendizados com imagens.
+- `docs/media/`: `exemplo_4-etapas.gif` (960 px, 12 fps, aparece direto no README), `exemplo_4-etapas.mp4` (2400 px, 2,3 MB), `pipeline.jpg`, `rosto_v7_x_v9.jpg`, `corpo_v7_x_v9.jpg`, `v8_x_v9.jpg`, `zoom_upscale.jpg`.
+- `.gitignore`: modelos (`*.safetensors` etc.), vídeos de `3 - Assets/` (conteúdo de terceiros), `*.anterior-*`.
+- `3 - Assets/referencias de pose/LEIA-ME.md`: explica que os vídeos não sobem.
+**Não sobe:** modelos, vídeos de referência, saídas do ComfyUI (só os exemplos em `docs/media`).
+**Daqui em diante:** cada mudança registrada aqui vira um commit + push.
+
 ## 2026-11-22 — #35 Comparativo das 4 etapas + opções no W4_compara_versoes.py
 **Alterado:** `PROJ/2 - files/workflows/W4_compara_versoes.py` — antes: altura = maior vídeo e nº de quadros = do 1º vídeo → depois: opções `--altura=N` e `--frames=N` (sem elas, igual a antes). Motivo: 4 painéis a 1920 px passariam de 4.300 px de largura (muitos players não tocam); e o original tem 150 quadros, os outros 124.
 **Criado:** `OUT/motion/producao/regata-caramelo-jeans_look-02/lado-a-lado_4-etapas.mp4` (3634×1644, 124 quadros, 24 fps, sem áudio): 1 ORIGINAL (`catalogo/_teste_B4-P13/original_00001_.mp4`) | 2 ESQUELETO (v9 `pose_sem-rosto_00001_`) | 3 GERADO 896x1600 (v9 `video_00001_`) | 4 SUPER-RESOLUÇÃO 1080x1920 (W6 v2). Painéis a 1600 px (altura nativa do gerado).
