@@ -11,6 +11,17 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #46 W5 v15 — INT8 attention on the first frame (FLUX) too
+**User's request:** optimize the first frame (now the slowest stage, ~5 min of v14's ~9.5 min).
+**Created:** `WF/motion_W5_quality_v15.json` (copy in `PROJ/2 - files/workflows/ui_tests/`), `build_W5_v15.py`, `W5_quality_v15_api.json`.
+| Node | v14 | v15 |
+|---|---|---|
+| **new** `ModelAttentionBackend` (130) "Attention (image): INT8 comfy kitchen" | — | between the FLUX `UNETLoader` (100) and the `CFGGuider` (116), `comfy kitchen attention` |
+| Base folder (2) | `motion/W5_v14/` | **`motion/W5_v15/`** |
+Everything else = v14 (INT8 attention on the video model too). One change only, so its effect on the first frame is measurable; the product reference stays at 4 MP (2 MP is the next lever if needed). The first frame changes slightly, so the video re-runs too: this run measures the **full time end to end**.
+**Check:** API diff v14 → v15 = only the new node, the re-wired CFGGuider model input and the folder; UI from the v14 UI (+1 node, +1 link, link 22 now 130 → 116); every API value, link and title matches the UI.
+**Expected:** first frame ~2.5–3.5 min (v14: 4 min 53 s); total ~7–8 min. **Status:** built, not run.
+
 ## 2026-11-22 — #45 W5 v14 run — INT8 attention: video 2.1× faster, same image
 Ran without error: **4 min 36 s** (stage 1 from cache, same first frame as v12/v13; video 8 steps in **3 min 23 s**, ~25 s/step — v13: 7 min 02 s, ~53 s/step). Full run without cache ≈ 5 min (stage 1) + 3.4 min (video) + ~1 min (loads/decode) ≈ **~9.5 min** (v9: 27.7 min).
 Outputs in `OUT/motion/W5_v14/caramel-tank-jeans_look-02/`: `video_00001_.mp4`, `frame0_00001_.png`, `side-by-side_v9_v13_v14.mp4`, `faces_v13-top_v14-bottom.png`, `body_v13-top_v14-bottom.png` (frames 10/40/70/110).
