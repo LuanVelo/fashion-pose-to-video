@@ -11,6 +11,10 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #40 Catalog pose `look-02` created (fix for W5 v12 "Invalid input")
+**Error:** first run of W5 v12 failed on validation: `Catalog POSE (motion/poses/<pose>/pose.mp4) - file` — invalid input. Cause: `IN/motion/poses/look-02/pose.mp4` did not exist (W1 v3 has never run, so the English catalog was empty). `LoadVideo` accepts subfolder paths (its `validate_inputs` only checks that the file exists), so no workflow change is needed.
+**Created:** `IN/motion/poses/look-02/pose.mp4` = copy of `OUT/motion/W5_v9/regata-caramelo-jeans_look-02_q9/pose_sem-rosto_00001_.mp4` (576×1024, 124 frames, 24 fps) — the exact skeleton the approved v9 video used, so v9 × v12 is a fair comparison. No `original.mp4` yet (`catalog.py compare` needs it; W1 v3 will create the full catalog entry later).
+
 ## 2026-11-22 — #39 W5 v12 — speed test (turbo 8 steps + smaller first frame)
 **User's request:** cut the ~27 min per video a lot while losing little quality. Research (web): the standard levers are step-distilled LoRAs (turbo/lightning), attention kernels (SageAttention, torch.compile), step caching (TeaCache/EasyCache) and low-res + upscale. For H3, a public benchmark measured the official 8-step turbo at 2.1× faster with near-identical quality, and 4 steps clearly worse; the ComfyUI docs call the 4-step ref2v LoRA (the one in v11) weaker on references. Low-res + upscale was ruled out: our own tests showed 704×1248 deforms the face and upscaling does not fix it.
 **Created:**
