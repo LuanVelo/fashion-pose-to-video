@@ -1,0 +1,399 @@
+{
+ "1": {
+  "class_type": "PrimitiveString",
+  "inputs": {
+   "value": "look-02"
+  },
+  "_meta": {
+   "title": "Pose name (becomes the catalog folder)"
+  }
+ },
+ "2": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": "motion/catalog/",
+   "string_b": [
+    "1",
+    0
+   ],
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "Base folder"
+  }
+ },
+ "3": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/pose",
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "Pose prefix"
+  }
+ },
+ "4": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/original",
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "Original prefix"
+  }
+ },
+ "5": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/keyframes/pose",
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "Pose keyframes prefix"
+  }
+ },
+ "6": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/keyframes/original",
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "Original keyframes prefix"
+  }
+ },
+ "10": {
+  "class_type": "LoadVideo",
+  "inputs": {
+   "file": "fashion-lookbook-look-02-video.mp4"
+  },
+  "_meta": {
+   "title": "Reference video"
+  }
+ },
+ "11": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "10",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Read video fps"
+  }
+ },
+ "12": {
+  "class_type": "PrimitiveFloat",
+  "inputs": {
+   "value": 0.0
+  },
+  "_meta": {
+   "title": "Clip start (seconds)"
+  }
+ },
+ "13": {
+  "class_type": "PrimitiveFloat",
+  "inputs": {
+   "value": 5.2
+  },
+  "_meta": {
+   "title": "Clip length (seconds; 5.2 ~ 124 frames at 24 fps)"
+  }
+ },
+ "14": {
+  "class_type": "ComfyMathExpression",
+  "inputs": {
+   "expression": "round(a * b)",
+   "values.a": [
+    "12",
+    0
+   ],
+   "values.b": [
+    "11",
+    2
+   ]
+  },
+  "_meta": {
+   "title": "Start in frames"
+  }
+ },
+ "15": {
+  "class_type": "ComfyMathExpression",
+  "inputs": {
+   "expression": "max(1, round(a * b))",
+   "values.a": [
+    "13",
+    0
+   ],
+   "values.b": [
+    "11",
+    2
+   ]
+  },
+  "_meta": {
+   "title": "Length in frames"
+  }
+ },
+ "16": {
+  "class_type": "VideoTemporalCrop",
+  "inputs": {
+   "video": [
+    "10",
+    0
+   ],
+   "start_frame": [
+    "14",
+    1
+   ],
+   "length": [
+    "15",
+    1
+   ]
+  },
+  "_meta": {
+   "title": "Cut the clip"
+  }
+ },
+ "17": {
+  "class_type": "VideoFrameSample",
+  "inputs": {
+   "video": [
+    "16",
+    0
+   ],
+   "num_frames": 124,
+   "strategy": "uniform",
+   "seed": 0
+  },
+  "_meta": {
+   "title": "Resample to 124 frames"
+  }
+ },
+ "18": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "17",
+    0
+   ]
+  }
+ },
+ "20": {
+  "class_type": "CheckpointLoaderSimple",
+  "inputs": {
+   "ckpt_name": "sdpose_wholebody_fp16.safetensors"
+  }
+ },
+ "21": {
+  "class_type": "ResizeImageMaskNode",
+  "inputs": {
+   "input": [
+    "18",
+    0
+   ],
+   "resize_type": "scale longer dimension",
+   "resize_type.longer_size": 1024,
+   "scale_method": "lanczos"
+  }
+ },
+ "22": {
+  "class_type": "ResizeImageMaskNode",
+  "inputs": {
+   "input": [
+    "21",
+    0
+   ],
+   "resize_type": "scale to multiple",
+   "resize_type.multiple": 32,
+   "scale_method": "area"
+  },
+  "_meta": {
+   "title": "32 px grid"
+  }
+ },
+ "23": {
+  "class_type": "SDPoseKeypointExtractor",
+  "inputs": {
+   "model": [
+    "20",
+    0
+   ],
+   "vae": [
+    "20",
+    2
+   ],
+   "image": [
+    "22",
+    0
+   ],
+   "batch_size": 16
+  }
+ },
+ "24": {
+  "class_type": "SDPoseDrawKeypoints",
+  "inputs": {
+   "keypoints": [
+    "23",
+    0
+   ],
+   "draw_body": true,
+   "draw_hands": true,
+   "draw_face": false,
+   "draw_feet": true,
+   "stick_width": 4,
+   "face_point_size": 2,
+   "score_threshold": 0.5,
+   "draw_head": true
+  },
+  "_meta": {
+   "title": "Skeleton without face, WITH head (never turn the head off)"
+  }
+ },
+ "30": {
+  "class_type": "CreateVideo",
+  "inputs": {
+   "images": [
+    "24",
+    0
+   ],
+   "fps": 24
+  }
+ },
+ "31": {
+  "class_type": "SaveVideo",
+  "inputs": {
+   "video": [
+    "30",
+    0
+   ],
+   "filename_prefix": [
+    "3",
+    0
+   ],
+   "format": "auto",
+   "format.codec": "auto"
+  },
+  "_meta": {
+   "title": "Save pose.mp4"
+  }
+ },
+ "32": {
+  "class_type": "CreateVideo",
+  "inputs": {
+   "images": [
+    "18",
+    0
+   ],
+   "fps": 24
+  }
+ },
+ "33": {
+  "class_type": "SaveVideo",
+  "inputs": {
+   "video": [
+    "32",
+    0
+   ],
+   "filename_prefix": [
+    "4",
+    0
+   ],
+   "format": "auto",
+   "format.codec": "auto"
+  },
+  "_meta": {
+   "title": "Save original.mp4 (same 124 frames)"
+  }
+ },
+ "40": {
+  "class_type": "VideoFrameSample",
+  "inputs": {
+   "video": [
+    "30",
+    0
+   ],
+   "num_frames": 4,
+   "strategy": "uniform",
+   "seed": 0
+  }
+ },
+ "41": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "40",
+    0
+   ]
+  }
+ },
+ "42": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "41",
+    0
+   ],
+   "filename_prefix": [
+    "5",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Save pose keyframes"
+  }
+ },
+ "43": {
+  "class_type": "VideoFrameSample",
+  "inputs": {
+   "video": [
+    "32",
+    0
+   ],
+   "num_frames": 4,
+   "strategy": "uniform",
+   "seed": 0
+  }
+ },
+ "44": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "43",
+    0
+   ]
+  }
+ },
+ "45": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "44",
+    0
+   ],
+   "filename_prefix": [
+    "6",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Save original keyframes"
+  }
+ }
+}

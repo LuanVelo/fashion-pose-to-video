@@ -1,0 +1,240 @@
+{
+ "1": {
+  "class_type": "PrimitiveString",
+  "inputs": {
+   "value": "caramel-tank-jeans_look-02"
+  },
+  "_meta": {
+   "title": "Video name (same as in W5, <product>_<pose>)"
+  }
+ },
+ "2": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": "motion/production/",
+   "string_b": [
+    "1",
+    0
+   ],
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "Base folder (production)"
+  }
+ },
+ "3": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/video_2x",
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "2x prefix"
+  }
+ },
+ "4": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/video_1080x1920",
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "1080p prefix"
+  }
+ },
+ "10": {
+  "class_type": "LoadVideo",
+  "inputs": {
+   "file": "motion/production/caramel-tank-jeans_look-02.mp4"
+  },
+  "_meta": {
+   "title": "Video to upscale (motion/production/<name>.mp4)"
+  }
+ },
+ "11": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "10",
+    0
+   ]
+  }
+ },
+ "12": {
+  "class_type": "UNETLoader",
+  "inputs": {
+   "unet_name": "relayvsr_x2_lightx2v_int8_convrot.safetensors",
+   "weight_dtype": "default"
+  },
+  "_meta": {
+   "title": "RelayVSR x2"
+  }
+ },
+ "13": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "relayvsr_flash_vae_x2_fp32.safetensors"
+  },
+  "_meta": {
+   "title": "RelayVSR Flash VAE x2"
+  }
+ },
+ "14": {
+  "class_type": "RelayVSRConditioning",
+  "inputs": {
+   "model": [
+    "12",
+    0
+   ],
+   "images": [
+    "11",
+    0
+   ]
+  }
+ },
+ "15": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "12",
+    0
+   ],
+   "positive": [
+    "14",
+    0
+   ],
+   "negative": [
+    "14",
+    0
+   ],
+   "latent_image": [
+    "14",
+    1
+   ],
+   "seed": 42,
+   "steps": 1,
+   "cfg": 1.0,
+   "sampler_name": "euler",
+   "scheduler": "simple",
+   "denoise": 1.0
+  },
+  "_meta": {
+   "title": "KSampler (1 step, cfg 1 - do not change)"
+  }
+ },
+ "16": {
+  "class_type": "VSRDecode",
+  "inputs": {
+   "vae": [
+    "13",
+    0
+   ],
+   "samples": [
+    "15",
+    0
+   ],
+   "images": [
+    "11",
+    0
+   ],
+   "detail": 1.0
+  },
+  "_meta": {
+   "title": "VSR Decode (detail 1.0 = all model detail; lower = more conservative)"
+  }
+ },
+ "17": {
+  "class_type": "CreateVideo",
+  "inputs": {
+   "images": [
+    "16",
+    0
+   ],
+   "audio": [
+    "11",
+    1
+   ],
+   "fps": [
+    "11",
+    2
+   ]
+  }
+ },
+ "18": {
+  "class_type": "SaveVideo",
+  "inputs": {
+   "video": [
+    "17",
+    0
+   ],
+   "filename_prefix": [
+    "3",
+    0
+   ],
+   "format": "auto",
+   "format.codec": "auto"
+  },
+  "_meta": {
+   "title": "Save 2x (1792x3200)"
+  }
+ },
+ "19": {
+  "class_type": "ImageScale",
+  "inputs": {
+   "image": [
+    "16",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "width": 1080,
+   "height": 1920,
+   "crop": "center"
+  },
+  "_meta": {
+   "title": "Downscale to 1080x1920"
+  }
+ },
+ "20": {
+  "class_type": "CreateVideo",
+  "inputs": {
+   "images": [
+    "19",
+    0
+   ],
+   "audio": [
+    "11",
+    1
+   ],
+   "fps": [
+    "11",
+    2
+   ]
+  }
+ },
+ "21": {
+  "class_type": "SaveVideo",
+  "inputs": {
+   "video": [
+    "20",
+    0
+   ],
+   "filename_prefix": [
+    "4",
+    0
+   ],
+   "format": "auto",
+   "format.codec": "auto"
+  },
+  "_meta": {
+   "title": "Save 1080x1920"
+  }
+ }
+}

@@ -1,13 +1,13 @@
-# W4 - comparativo lado a lado: original | esqueleto | gerado (para aprovacao).
-# Roda fora do ComfyUI (so le/grava arquivos). Uso:
-#   python -I -X utf8 W4_lado_a_lado.py <original.mp4> <pose.mp4> <gerado.mp4> <saida.mp4>
-# Alinhamento: o gerado tem N frames (24 fps); original e pose sao amostrados de forma uniforme
-# nos mesmos N pontos - igual ao VideoFrameSample(uniform) usado no W3a. Audio vem do gerado.
+# W4 - side-by-side comparison: original | skeleton | generated (for review).
+# Runs outside ComfyUI (only reads/writes files). Usage:
+#   python -I -X utf8 W4_side_by_side.py <original.mp4> <pose.mp4> <generated.mp4> <output.mp4>
+# Alignment: the generated video has N frames (24 fps); original and pose are sampled uniformly
+# at the same N points - same as VideoFrameSample(uniform) in the workflows. Audio comes from the generated video.
 import sys, av, numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 orig_p, pose_p, gen_p, out_p = sys.argv[1:5]
-H = 864          # altura comum dos 3 paineis
+H = 864          # common height of the 3 panels
 GAP = 8
 LABEL_H = 40
 
@@ -46,7 +46,7 @@ a_out = out.add_stream("aac", rate=a_in.rate) if a_in else None
 for i in range(n):
     canvas = Image.new("RGB", (W, H + LABEL_H), (18, 18, 18))
     x = 0
-    for img, label in ((fit(orig[io[i]], H), "ORIGINAL"), (fit(pose[ip[i]], H), "ESQUELETO"), (fit(gen[i], H), "GERADO")):
+    for img, label in ((fit(orig[io[i]], H), "ORIGINAL"), (fit(pose[ip[i]], H), "SKELETON"), (fit(gen[i], H), "GENERATED")):
         canvas.paste(img, (x, LABEL_H))
         d = ImageDraw.Draw(canvas)
         tw = d.textlength(label, font=font)
@@ -66,4 +66,4 @@ if a_in:
     for p in a_out.encode():
         out.mux(p)
 out.close(); gin.close()
-print("ok", out_p, f"{W}x{H + LABEL_H}", n, "frames", float(fps), "fps", "com audio" if a_in else "sem audio")
+print("ok", out_p, f"{W}x{H + LABEL_H}", n, "frames", float(fps), "fps", "with audio" if a_in else "no audio")

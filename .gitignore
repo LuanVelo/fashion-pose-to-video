@@ -1,4 +1,4 @@
-# Modelos: nunca versionar (baixar pelos links do README)
+# Models: never commit them (download from the links in the README)
 *.safetensors
 *.ckpt
 *.pt
@@ -6,13 +6,14 @@
 *.gguf
 *.bin
 
-# Videos de referencia (conteudo de terceiros)
+# Reference videos (third-party content)
 3 - Assets/**/*.mp4
 3 - Assets/**/*.mov
 3 - Assets/**/*.webm
 
-# Copias substituidas pelo catalogo.py e lixo do sistema
+# Files replaced by catalog.py, and OS clutter
 *.anterior-*
+*.previous-*
 __pycache__/
 *.pyc
 Thumbs.db

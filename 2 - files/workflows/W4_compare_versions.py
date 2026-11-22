@@ -1,11 +1,11 @@
-# Comparativo de N videos lado a lado, com rotulos (ex.: v1 x v4). Fora do ComfyUI.
-# Uso: python -I -X utf8 W4_compara_versoes.py <saida.mp4> <rotulo1> <video1> <rotulo2> <video2> [...]
-# Todos os paineis na mesma altura (a do maior video); alinhamento por amostragem uniforme no numero de frames do 1o.
+# Side-by-side comparison of N videos with labels (e.g. v1 vs v4, before vs after upscale). Runs outside ComfyUI.
+# Usage: python -I -X utf8 W4_compare_versions.py [--height=N] [--frames=N] <output.mp4> <label1> <video1> <label2> <video2> [...]
+# All panels share one height (default: the tallest video); frames are aligned by uniform sampling.
 import sys, av, numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-# Opcoes (antes de <saida.mp4>): --altura=N (altura dos paineis; padrao = maior video)
-#                                --frames=N (quadros na saida; padrao = do 1o video)
+# Options: --height=N (panel height; default = tallest video; --altura also accepted)
+#          --frames=N (frames in the output; default = frames of the 1st video)
 opts = {a[2:].split("=")[0]: int(a.split("=")[1]) for a in sys.argv[1:] if a.startswith("--")}
 args = [a for a in sys.argv[1:] if not a.startswith("--")]
 out_p = args[0]
@@ -16,7 +16,7 @@ def frames(p):
     c = av.open(p); fr = [f.to_image() for f in c.decode(video=0)]; c.close(); return fr
 
 vids = [(lab, frames(p)) for lab, p in pairs]
-H = opts.get("altura", max(f[0].height for _, f in vids))
+H = opts.get("height", opts.get("altura", max(f[0].height for _, f in vids)))
 H -= H % 2
 n = opts.get("frames", len(vids[0][1]))
 def fit(im):
