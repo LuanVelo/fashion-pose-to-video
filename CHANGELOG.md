@@ -11,6 +11,18 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #43 W5 v13 run — skeleton lines gone; candidate for the fast production version
+Ran without error: **8 min 05 s** (stage 1 came from cache — same first frame as v12; video 8 steps in **7 min 02 s**, ~53 s/step). Full run without cache ≈ v12's 14.3 min (stage 1 ~5 min + video ~7 min + loads).
+Outputs in `OUT/motion/W5_v13/caramel-tank-jeans_look-02/`: `video_00001_.mp4`, `frame0_00001_.png`, `side-by-side_v9_v12_v13.mp4` (SKELETON | v9 | v12 | v13), `faces_v13-top_v9-bottom.png` (frames 10/40/70/110), `pose_check_skeleton_v9_v13.png` (frames 10/40/70/100/123). `side-by-side_v9_v12_v13_zoom.mp4` / `zoom_v9_v12_v13.png` are also there, but the crop follows the skeleton head, and v13 frames the model larger than the skeleton, so its face panel is off-center — use the faces PNG instead.
+**Result:**
+- **No skeleton lines** on body or clothes (v12's defect is gone with ControlNet strength 0.6 / end 0.5).
+- **Motion follows the pose** (step, crossed leg at frame 70, arm positions); slightly freer than v9.
+- **Face:** natural eyes, consistent identity, a little softer than v9 (8 vs 20 steps).
+- **Garment:** faithful (color, knit texture, V neck, jeans seams).
+- **The bag stays in the hand** for the whole video (v9 lost it — an old lesson).
+- Framing: the model is a bit larger in frame than in v9 (follows the first frame more than the skeleton's scale).
+**Pending (user):** approve v13 as the fast production W5 (then: promote to `motion_W5_quality_v14` with output `motion/production/`), or try another tweak.
+
 ## 2026-11-22 — #42 W5 v13 — v12 with a weaker ControlNet
 **User's decision** (between "official ref2v LoRA" and "weaker ControlNet"): weaker ControlNet, keeping the 8-step fl2v LoRA.
 **Created:** `WF/motion_W5_quality_v13.json` (copy in `PROJ/2 - files/workflows/ui_tests/`), `build_W5_v13.py`, `W5_quality_v13_api.json`.
