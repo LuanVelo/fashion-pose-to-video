@@ -240,6 +240,10 @@ RelayVSR x2 makes the face, hair and fabric texture much sharper, with a bit mor
 
 Measured on an RTX 4090, product `caramel-tank-jeans`, pose `look-02`, same seeds.
 
+![All versions side by side, v9 to v16 + upscale](docs/media/speed_v9_to_v16.jpg)
+
+*Frame 60 of each version. Video: [`docs/media/speed_v9_to_v16.mp4`](docs/media/speed_v9_to_v16.mp4). v12 shows the skeleton lines painted by the turbo LoRA with a strong ControlNet; from v13 on the bag stays in the hand.*
+
 | Version | Change | Stage 1 | Video | Total | Image |
 |---|---|---|---|---|---|
 | v9 / v11 | base (20 steps, first frame 1536×2720) | ~7 min | ~20 min | **27.7 min** | approved base |
@@ -247,10 +251,14 @@ Measured on an RTX 4090, product `caramel-tank-jeans`, pose `look-02`, same seed
 | v13 | + ControlNet strength 0.6, end 0.5 | (cache) | 7.0 min | ~14 min | lines gone, bag kept, face slightly softer |
 | v14 | + INT8 attention on the video model | (cache) | 3.4 min | ~9.5 min | same as v13 |
 | **v15 → v16** | + INT8 attention on the first frame | 3.1 min | 3.6 min | **8.4 min** (cold cache) | same as v14 |
+| v16 + W6 v3 | + RelayVSR upscale to 1080×1920 | | +47 s | **~9.2 min** | sharper face, curls and knit |
 
 - The **turbo LoRA** with a strong ControlNet copies the stick figure into the pixels; loosening the ControlNet fixes it and the motion still follows the pose.
 - **INT8 attention** (`Model Attention Backend` → `comfy kitchen attention`) is native in ComfyUI 0.46: the same idea as SageAttention, nothing to install, ~2× on the video with no visible change.
 - Not used: lower resolution + upscale (704×1248 deforms the face and upscaling does not fix it).
+- The **W6 upscale** is still worth it with the fast W5: it delivers the 1080×1920 size the platforms want and gives back the detail the 8-step face loses, for under a minute.
+
+![Fast W5 (v16) vs W6 upscale, frame 60](docs/media/upscale_zoom_v16.jpg)
 
 ### Other lessons
 

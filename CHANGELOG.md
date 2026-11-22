@@ -11,6 +11,12 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #51 W6 v3 run on the fast W5 video + comparison of all versions
+**W6 v3** (first run, default values): input `IN/motion/production/caramel-tank-jeans_look-02.mp4` (= v15 video, #50). No error, **47 s**. Outputs in `OUT/motion/production/caramel-tank-jeans_look-02/`: `video_2x_00001_.mp4` (1792×3200), `video_1080x1920_00001_.mp4`.
+**Comparison** (same folder): `side-by-side_v15_vs_upscale.mp4`, `side-by-side_v15_vs_upscale_zoom.mp4` and `zoom_v15_vs_upscale_f60.png` (face + top, fixed crop). The upscale is clearly sharper (eyes, eyebrows, curls, knit texture) with no new artifacts → **the upscale still makes sense** with the fast W5 (fast flow ≈ 8.4 + 0.8 ≈ 9.2 min, output 1080×1920).
+**All versions** (the user's request): `versions_v9_to_v16.mp4` (v9 | v12 | v13 | v14 | v15=v16 | v16 + upscale, labels with times).
+**Repo media (`docs/media/`):** `speed_v9_to_v16.mp4` (2180 px wide, 1.0 MB), `speed_v9_to_v16.jpg` (frame 60), `upscale_zoom_v16.jpg`. README "Speed" section: image + video link, W6 row in the table, upscale note and zoom image.
+
 ## 2026-11-22 — #50 Upscale test input for the fast W5 (v15 video)
 **User's request:** check whether the W6 upscale still makes sense with the fast W5. Created `IN/motion/production/caramel-tank-jeans_look-02.mp4` = copy of `OUT/motion/W5_v15/caramel-tank-jeans_look-02/video_00001_.mp4` (v15 = same graph as production W5 v16), which is exactly the default input of `motion_W6_upscale_v3` (name `caramel-tank-jeans_look-02`). W6 v3 will save to `OUT/motion/production/caramel-tank-jeans_look-02/` (video_2x 1792x3200, video_1080x1920). **Status:** ready, not run (first W6 v3 run).
 
