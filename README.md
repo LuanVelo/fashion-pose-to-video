@@ -39,10 +39,10 @@ flowchart LR
 
     D --> K[("Pose catalog<br/>input/motion/poses/#lt;pose#gt;/<br/>pose.mp4 · original.mp4")]
 
-    subgraph P2["2 · First frame + video (W5) · ~27 min"]
-        E["Product photo<br/>(model wearing the garment)"] --> F["Stage 1 · FLUX.2 klein 9B<br/>product + skeleton of frame 0<br/>→ first frame 1536×2720"]
+    subgraph P2["2 · First frame + video (W5) · ~8.5 min"]
+        E["Product photo<br/>(model wearing the garment)"] --> F["Stage 1 · FLUX.2 klein 9B<br/>product + skeleton of frame 0<br/>→ first frame 1088×1920"]
         K --> F
-        F --> G["Stage 2 · MiniMax H3 ref2va<br/>+ Fun ControlNet (pose)<br/>→ video 896×1600, 124 frames"]
+        F --> G["Stage 2 · MiniMax H3 ref2va<br/>+ turbo LoRA 8 steps<br/>+ Fun ControlNet (pose)<br/>→ video 896×1600, 124 frames"]
         K --> G
         E --> G
     end
@@ -67,7 +67,7 @@ flowchart LR
 | # | Workflow (ComfyUI) | Input | What it does | Output |
 |---|---|---|---|---|
 | 1 | [`motion_W1_extract-pose_v3`](2%20-%20files/workflows/ui_production/motion_W1_extract-pose_v3.json) | reference video, pose name, clip start and length (default 5.2 s) | cuts the clip using the fps (`ComfyMathExpression`), resamples to 124 frames, runs SDPose → skeleton without face and with head, at 24 fps | `output/motion/catalog/<pose>/`: pose, original and 4 thumbnails of each |
-| 2 | [`motion_W5_quality_v11`](2%20-%20files/workflows/ui_production/motion_W5_quality_v11.json) | product photo + `motion/poses/<pose>/pose.mp4` | stage 1: first frame (FLUX.2 klein 9B). Stage 2: video (H3 + ControlNet). The pose for the first frame is frame 0 of `pose.mp4` | `output/motion/production/<product>_<pose>/`: frame0 and video |
+| 2 | [`motion_W5_quality_v16`](2%20-%20files/workflows/ui_production/motion_W5_quality_v16.json) | product photo + `motion/poses/<pose>/pose.mp4` | stage 1: first frame (FLUX.2 klein 9B). Stage 2: video (H3 + turbo LoRA + ControlNet). INT8 attention on both. ~8.5 min. The pose for the first frame is frame 0 of `pose.mp4` | `output/motion/production/<product>_<pose>/`: frame0 and video |
 | 3 | [`motion_W6_upscale_v3`](2%20-%20files/workflows/ui_production/motion_W6_upscale_v3.json) | `motion/production/<name>.mp4` | RelayVSR x2, then downscale to 1080×1920; audio and fps copied from the input | same production folder: `video_2x` and `video_1080x1920` |
 
 Every workflow exists in three forms in this repo:
@@ -75,9 +75,9 @@ Every workflow exists in three forms in this repo:
 - **API** (`*_api.json`): the same graph in ComfyUI's API format.
 - **Generator** (`build_*.py`): the Python script that writes the API JSON. It is the source of truth for each version.
 
-**In testing — faster W5:** [`motion_W5_quality_v12`](2%20-%20files/workflows/ui_tests/motion_W5_quality_v12.json) = v11 with the official 8-step turbo LoRA on (8 steps instead of 20) and a 1088×1920 first frame (was 1536×2720). Ran in 14.3 min (v11/v9: ~27 min), but the turbo LoRA paints skeleton lines on the body — not approved yet (CHANGELOG #41). Next try: [`motion_W5_quality_v13`](2%20-%20files/workflows/ui_tests/motion_W5_quality_v13.json) = v12 with a weaker ControlNet (strength 0.6, end 0.5). It removed the lines with the same speed (~14 min in total, video 7 min) — candidate for production (CHANGELOG #43). [`motion_W5_quality_v14`](2%20-%20files/workflows/ui_tests/motion_W5_quality_v14.json) adds ComfyUI's native INT8 attention (`Model Attention Backend` → `comfy kitchen attention`, the same idea as SageAttention, nothing to install) to the video model: the video stage went from 7 to 3.4 min with an identical image (~9.5 min in total; CHANGELOG #45). [`motion_W5_quality_v15`](2%20-%20files/workflows/ui_tests/motion_W5_quality_v15.json) applies the same INT8 attention to the first frame (FLUX): **8.4 min end to end** from a cold cache (v9: 27.7 min), same image (CHANGELOG #47).
+**Speed (W5 v12 → v16, 2026-11-22):** the video went from ~27 min (v9/v11) to **~8.5 min end to end** with the same garment and motion and a slightly softer face. Steps: turbo LoRA 8 steps (v12, 14 min, but it painted the skeleton on the body) → ControlNet strength 0.6 / end 0.5 (v13, lines gone) → ComfyUI's native INT8 attention on the video model (v14, video 7 → 3.4 min) and on the first frame (v15, 4.9 → 3.1 min). v15 was promoted to production as v16. Details in [Speed](#speed) and in `CHANGELOG.md` #39–#48.
 
-The test workflows (W1 v1/v2, W2, W3a, W5 v1–v10, W6 v1/v2) are archived in [`ui_tests/`](2%20-%20files/workflows/ui_tests). Their labels are in Portuguese.
+The test workflows (W1 v1/v2, W2, W3a, W5 v1–v15, W6 v1/v2) are archived in [`ui_tests/`](2%20-%20files/workflows/ui_tests). Up to W5 v10 / W1 v2 / W6 v2 their labels are in Portuguese.
 
 ---
 
@@ -90,7 +90,7 @@ The test workflows (W1 v1/v2, W2, W3a, W5 v1–v10, W6 v1/v2) are archived in [`
    ```bash
    python -I -X utf8 "2 - files/workflows/catalog.py" pose look-02
    ```
-5. **Generate the video:** put the product photo in `input/` and open `motion_W5_quality_v11`. Pick the product and `motion/poses/<pose>/pose.mp4`, and name it `<product>_<pose>`. Run it (~27 min on an RTX 4090).
+5. **Generate the video:** put the product photo in `input/` and open `motion_W5_quality_v16`. Pick the product and `motion/poses/<pose>/pose.mp4`, and name it `<product>_<pose>`. Run it (~8.5 min on an RTX 4090).
 6. **Optional, comparison video:** builds the original | skeleton | generated video.
    ```bash
    python -I -X utf8 "2 - files/workflows/catalog.py" compare caramel-tank-jeans_look-02 look-02
@@ -136,7 +136,7 @@ No model files are in this repository; download them from the original repositor
 | `vae/` | `minimax_h3_audio_vae_fp32.safetensors` | 577 MB | W5 stage 2 | [Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_audio_vae_fp32.safetensors) |
 | `model_patches/` | `minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors` | 2.1 GB | W5 stage 2 (pose ControlNet) | [Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/model_patches/minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors) |
 | `loras/` | `minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors` | 1.8 GB | W5, optional (turbo mode, off by default) | [Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/loras/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors) |
-| `loras/` | `minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors` | 2.0 GB | W5 v12 (speed test, turbo on by default) | [lightx2v/Minimax-h3-Turbo](https://huggingface.co/lightx2v/Minimax-h3-Turbo/resolve/main/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors) |
+| `loras/` | `minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors` | 2.0 GB | W5 (turbo on by default, 8 steps) | [lightx2v/Minimax-h3-Turbo](https://huggingface.co/lightx2v/Minimax-h3-Turbo/resolve/main/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors) |
 | `diffusion_models/` | `relayvsr_x2_lightx2v_int8_convrot.safetensors` | 4.8 GB | W6 | [Comfy-Org/RelayVSR](https://huggingface.co/Comfy-Org/RelayVSR/resolve/main/diffusion_models/relayvsr_x2_lightx2v_int8_convrot.safetensors) |
 | `vae/` | `relayvsr_flash_vae_x2_fp32.safetensors` | 121 MB | W6 | [Comfy-Org/RelayVSR](https://huggingface.co/Comfy-Org/RelayVSR/resolve/main/vae/relayvsr_flash_vae_x2_fp32.safetensors) |
 
@@ -203,9 +203,10 @@ output/motion/
 |---|---|---|
 | Model | FLUX.2 klein 9B base fp8 + qwen_3_8b | MiniMax H3 ref2va int8 + qwen3vl 32B |
 | References | image 1 = product (4 MP) · image 2 = skeleton of frame 0 (1 MP), via `ReferenceLatent` | ref 1 = product (`max`) · frame 0 = stage 1 output (`MiniMaxH3AddGuide`) |
-| Resolution | 1536×2720 | 896×1600, 124 frames, 24 fps |
-| Sampling | 28 steps · CFG 3.5 · euler | 20 steps · guidance 1.0 · res_multistep |
-| Control | — | Fun ControlNet union, strength 1.0, **end_percent 0.7** |
+| Resolution | 1088×1920 | 896×1600, 124 frames, 24 fps |
+| Sampling | 28 steps · CFG 3.5 · euler | **turbo LoRA `minimax_h3_fl2v_turbo_8step_v1.0`, 8 steps** · guidance 1.0 · res_multistep (turbo OFF = 20 steps) |
+| Control | — | Fun ControlNet union, **strength 0.6, end_percent 0.5** |
+| Attention | INT8 (`Model Attention Backend` → `comfy kitchen attention`) | INT8 (same) |
 | VAE | `flux2-vae` | video fp16 + audio fp32 |
 | Seed | 20261121 (fixed) | 20261121 (fixed) |
 
@@ -235,6 +236,22 @@ RelayVSR x2 makes the face, hair and fabric texture much sharper, with a bit mor
 
 ![Zoom before vs after upscale](docs/media/upscale_zoom.jpg)
 
+### Speed
+
+Measured on an RTX 4090, product `caramel-tank-jeans`, pose `look-02`, same seeds.
+
+| Version | Change | Stage 1 | Video | Total | Image |
+|---|---|---|---|---|---|
+| v9 / v11 | base (20 steps, first frame 1536×2720) | ~7 min | ~20 min | **27.7 min** | approved base |
+| v12 | turbo LoRA 8 steps + first frame 1088×1920 | 4.9 min | 7.6 min | 14.3 min | skeleton lines painted on the body |
+| v13 | + ControlNet strength 0.6, end 0.5 | (cache) | 7.0 min | ~14 min | lines gone, bag kept, face slightly softer |
+| v14 | + INT8 attention on the video model | (cache) | 3.4 min | ~9.5 min | same as v13 |
+| **v15 → v16** | + INT8 attention on the first frame | 3.1 min | 3.6 min | **8.4 min** (cold cache) | same as v14 |
+
+- The **turbo LoRA** with a strong ControlNet copies the stick figure into the pixels; loosening the ControlNet fixes it and the motion still follows the pose.
+- **INT8 attention** (`Model Attention Backend` → `comfy kitchen attention`) is native in ComfyUI 0.46: the same idea as SageAttention, nothing to install, ~2× on the video with no visible change.
+- Not used: lower resolution + upscale (704×1248 deforms the face and upscaling does not fix it).
+
 ### Other lessons
 
 | Test | Result |
@@ -243,7 +260,7 @@ RelayVSR x2 makes the face, hair and fabric texture much sharper, with a bit mor
 | Video at 1088×1920 | good face, but **the garment changed** and it took 59 min: not viable locally |
 | Video at 896×1600 | best balance: faithful garment, good face, ~18–27 min |
 | Skeleton without the 68 face points | no effect on the face (kept, since it is cleaner) |
-| Bag carried in the hand | shows up in the first frame but **disappears in the video** (the skeleton has no bag) |
+| Bag carried in the hand | disappeared in the 20-step video (v9); **kept for the whole video** with turbo + ControlNet 0.6/0.5 (v13–v16) |
 | ComfyUI 0.46.2 bug | occasional `IndexError` in `free_memory` during VAEDecode; running again fixes it |
 
 ---

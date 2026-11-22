@@ -11,6 +11,13 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #48 W5 v16 = PRODUCTION 2/3 (v15 promoted)
+**User's decision:** promote v15 (8.4 min end to end, #47) to production.
+**Created:** `WF/motion_W5_quality_v16.json` (copy in `PROJ/2 - files/workflows/ui_production/`), `build_W5_v16.py`, `W5_quality_v16_api.json`.
+**v15 → v16:** same graph and values; only the base folder `motion/W5_v15/` → **`motion/production/`** (node 2, title "Base folder (production)"), the ControlNet title without the "(v12: …)" note, a rewritten usage note (PRODUCTION 2/3, ~8.5 min, what makes it fast and how to turn each part off) and a clean generator header. **Check:** API diff v15 → v16 = only those; every API value, link and title matches the UI.
+**ComfyUI (`WF/`):** removed `motion_W5_quality_v11` and the tests v12–v15 (only production stays). Archived copies: `ui_tests/` (v11 moved there from `ui_production/`; v12–v15 already there). v11 and v15 were byte-identical; v12–v14 in `WF/` had been re-saved by ComfyUI (same nodes, values and links; only formatting/canvas view). A backup of the removed `WF/` files is in the session scratchpad (`wf_removed_2026-11-22/`). `WF/` now has `motion_W1_extract-pose_v3`, `motion_W5_quality_v16`, `motion_W6_upscale_v3` — plus `motion_W6_upscale_v2`, saved again by the user at 12:39 and different from the archived copy (left untouched).
+**Docs:** README (production table, step 5, flowchart ~8.5 min, base settings, new "Speed" section with the v9 → v16 table, bag lesson), CLAUDE.md (production flow, current state).
+
 ## 2026-11-22 — #47 W5 v15 run — 8.4 min end to end from a cold cache (v9: 27.7 min)
 The user cleared ComfyUI's cache completely before running, so this is the real end-to-end time including model loads: **8 min 24 s** (504 s). Stage 1: 28 steps in **3 min 04 s** (6.6 s/step; v14: 4 min 53 s, 10.4 s/step → 1.6× faster). Video: 8 steps in **3 min 33 s** (~26 s/step, same as v14). The rest (~1.8 min) = model loads + decodes.
 Outputs in `OUT/motion/W5_v15/caramel-tank-jeans_look-02/`: `video_00001_.mp4`, `frame0_00001_.png`, `side-by-side_v9_v14_v15.mp4`, `frame0_v14_vs_v15.png`, `frame0_zoom_v14_vs_v15.png` (face/top and torso crops), `body_v14-top_v15-bottom.png` (frames 10/40/70/110).
