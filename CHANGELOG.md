@@ -11,6 +11,17 @@ Path abbreviations:
 
 ---
 
+## 2026-11-22 — #44 W5 v14 — native INT8 attention (SageAttention-like, no install)
+**User's request:** test SageAttention. **Finding:** no install needed. ComfyUI 0.46 ships `ModelAttentionBackend` ("Model Attention Backend", experimental, `comfy_extras/nodes_model_advanced.py`) with the option **`comfy kitchen attention`** = quantized INT8 attention from `comfy_kitchen` (same idea as SageAttention). Checked: `comfy_kitchen.int8_attention_is_available()` is true on the 4090 and the option is listed by `/object_info`. SageAttention itself (pip `triton-windows` + `sageattention`, flag `--use-sage-attention`) was NOT installed. Also found, not used yet: native `BlockSparseAttention` ("Model Sparse Attention", method `sol-attn`, training-free, H3-aware) — a possible next test.
+**Created:** `WF/motion_W5_quality_v14.json` (copy in `PROJ/2 - files/workflows/ui_tests/`), `build_W5_v14.py`, `W5_quality_v14_api.json`.
+| Node | v13 | v14 |
+|---|---|---|
+| **new** `ModelAttentionBackend` (230) "Attention: INT8 comfy kitchen (like SageAttention)" | — | between the model switch (206) and the ControlNet (214), `attention` = `comfy kitchen attention` |
+| Base folder (2) | `motion/W5_v13/` | **`motion/W5_v14/`** |
+Only the H3 video model is patched; FLUX stage 1 is untouched, so the first frame is the same as v12/v13 (comes from cache) and the comparison isolates the attention change. Setting the node to `pytorch attention` = exactly v13.
+**Check:** API diff v13 → v14 = only the new node, the re-wired ControlNet model input and the folder. UI built from the v13 UI (+1 node, +1 link, link 43 now 230 → 214); every API value, link and title matches the UI. Also confirmed through `/history` that the v12 and v13 runs used exactly the generator values (the stale `widgets_values_named` copy in the UI JSON is ignored by the frontend; fixed in v14 anyway).
+**Expected:** video 8 steps faster than v13's 7 min (typical INT8-attention gain 20–40%). **Status:** built, not run.
+
 ## 2026-11-22 — #43 W5 v13 run — skeleton lines gone; candidate for the fast production version
 Ran without error: **8 min 05 s** (stage 1 came from cache — same first frame as v12; video 8 steps in **7 min 02 s**, ~53 s/step). Full run without cache ≈ v12's 14.3 min (stage 1 ~5 min + video ~7 min + loads).
 Outputs in `OUT/motion/W5_v13/caramel-tank-jeans_look-02/`: `video_00001_.mp4`, `frame0_00001_.png`, `side-by-side_v9_v12_v13.mp4` (SKELETON | v9 | v12 | v13), `faces_v13-top_v9-bottom.png` (frames 10/40/70/110), `pose_check_skeleton_v9_v13.png` (frames 10/40/70/100/123). `side-by-side_v9_v12_v13_zoom.mp4` / `zoom_v9_v12_v13.png` are also there, but the crop follows the skeleton head, and v13 frames the model larger than the skeleton, so its face panel is off-center — use the faces PNG instead.
