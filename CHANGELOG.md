@@ -11,6 +11,12 @@ Path abbreviations:
 
 ---
 
+## 2026-11-23 — #53 W5 v17 run: sparse attention works, small gain (~20 s)
+**Run** (the user, cold cache, default values): success, **485.8 s = 8.1 min** end to end (v15/v16: 8.4 min). Outputs in `OUT/motion/W5_v17/caramel-tank-jeans_look-02/` (`frame0_00001_.png`, `video_00001_.mp4`).
+**Log:** stage 1 FLUX 28 steps 3:05 (6.6 s/step, unchanged). Video 8 steps 3:10 (incl. ~28 s model init): steps 1–2 dense ("sigma outside the start/end window", start 0.2), steps 3–8 **sparse** ("sparse producer path: 63949 tokens, sinks (0, 190)/(183, 190)"). Sparse steps ≈ 21.5 s vs ≈ 30.6 s dense (**~30% faster per step**); the video stage gained ~25 s.
+**Image:** `frame0` identical to v15/v16 pixel for pixel (sparse is only on the video model). Video frame 60 mean difference 5/255; face, curls, knit and bag unchanged to the eye. Comparison in the same folder: `side-by-side_v16_vs_v17.mp4`, `side-by-side_v16_vs_v17_zoom.mp4` (fixed crops: face, top), `zoom_v16_vs_v17_f60.png`.
+**Reading:** no quality cost, but the gain is small because the video stage is now short (8 steps); the biggest remaining block is stage 1 (FLUX klein base 28 steps + CFG ≈ 3.1 min) and model loading (~1.5 min). Possible extra on the sparse side: start 0.0 (2 more sparse steps, ~15–20 s) or a higher tau.
+
 ## 2026-11-23 — #52 W5 v17 speed test: native block-sparse attention on the video model
 **Goal:** cut the video stage (~3.6 min in v16) further with no visible change. Production stays W5 v16.
 **Created:** `WF/motion_W5_quality_v17.json` (copy in `PROJ/2 - files/workflows/ui_tests/`), `build_W5_v17.py`, `W5_quality_v17_api.json`.
