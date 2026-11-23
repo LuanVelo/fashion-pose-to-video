@@ -41,7 +41,7 @@ Extract the motion (pose) from reference videos and apply it to a photo of a mod
 
 ## Available models
 - Full MiniMax H3 (ref2va, fl2va, turbo LoRAs 4/8 steps, qwen3vl_32b text encoder, video/audio VAEs) — also used by the h3_* and vovo_* workflows.
-- Flux 2 Klein 9B base + qwen_3_8b (image editing/variation).
+- Flux 2 Klein 9B base + qwen_3_8b (image editing/variation). Klein 9B **KV distilled** fp8 (4 steps, CFG 1, `FluxKVCache`) downloaded 2026-11-23 for the W5 v18 speed test (#54).
 - Downloaded for this project: sdpose_wholebody_fp16 (checkpoints), rt_detr_v4-x-hgnet_fp16 (diffusion_models), minimax_h3_fun_controlnet_union_pruned_int8_convrot (model_patches), minimax_h3_video_vae_fp16 (vae), flux2-vae (vae), RelayVSR x2 + flash VAE.
 - Plan B NOT downloaded: Wan Animate 2 (~26 GB, template video_wan_animate2) and Qwen Image Edit 2511 (~31 GB).
 - The README has the full table with original links.

@@ -11,6 +11,14 @@ Path abbreviations:
 
 ---
 
+## 2026-11-23 — #54 W5 v18 speed test: distilled first-frame model (FLUX.2 klein 9B KV, 4 steps)
+**Goal:** stage 1 (klein 9B base, 28 steps, CFG 3.5 = 56 model passes, ~3.1 min) is now the largest block of the run. The user chose to test a distilled model.
+**Model downloaded (user's go-ahead "Testar klein destilado"):** `flux-2-klein-9b-kv-fp8.safetensors` (9,818,935,984 bytes) → `models/diffusion_models/`, from https://huggingface.co/black-forest-labs/FLUX.2-klein-9b-kv-fp8 (public; the plain distilled `FLUX.2-klein-9b-fp8` is gated and returned 401). It is the model of the official template `image_flux2_klein_9b_kv_image_edit`: distilled (4 steps, CFG 1) and trained for the **KV cache** of reference images. License: FLUX non-commercial, same as the klein 9B base already in use.
+**Created:** `WF/motion_W5_quality_v18.json` (copy in `ui_tests/`), `build_W5_v18.py`, `W5_quality_v18_api.json`.
+**v17 → v18 (stage 1 only):** node 100 `flux-2-klein-base-9b-fp8` → `flux-2-klein-9b-kv-fp8`; new node 131 `FluxKVCache` between the INT8 attention node 130 and the CFGGuider 116 (link 22 now 131→116, new link 89 130→131); CFGGuider cfg 3.5 → **1.0** (negative branch skipped); Flux2Scheduler 28 → **4** steps. Unchanged: prompts, seed, euler, flux2-vae, product 4 MP + skeleton 1 MP references, 1088×1920, all of stage 2 (= v17, incl. sparse attention). Base folder → `motion/W5_v18/`.
+**Check:** the UI JSON loaded in the frontend; `graphToPrompt()` = the generator's API JSON (60 nodes). Not run (the user runs it).
+**Expected:** stage 1 ~3.1 min → well under 1 min (~5.5 min end to end). Risk: the distilled model may copy the garment less faithfully than the base → compare frame0 v17 vs v18 closely (print, knit, bag, face).
+
 ## 2026-11-23 — #53 W5 v17 run: sparse attention works, small gain (~20 s)
 **Run** (the user, cold cache, default values): success, **485.8 s = 8.1 min** end to end (v15/v16: 8.4 min). Outputs in `OUT/motion/W5_v17/caramel-tank-jeans_look-02/` (`frame0_00001_.png`, `video_00001_.mp4`).
 **Log:** stage 1 FLUX 28 steps 3:05 (6.6 s/step, unchanged). Video 8 steps 3:10 (incl. ~28 s model init): steps 1–2 dense ("sigma outside the start/end window", start 0.2), steps 3–8 **sparse** ("sparse producer path: 63949 tokens, sinks (0, 190)/(183, 190)"). Sparse steps ≈ 21.5 s vs ≈ 30.6 s dense (**~30% faster per step**); the video stage gained ~25 s.
