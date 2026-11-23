@@ -11,6 +11,13 @@ Path abbreviations:
 
 ---
 
+## 2026-11-23 — #55 W5 v18 run: 5.0 min, garment faithful, but the first frame ignores the skeleton
+**Run** (the user, cold cache, default values): success, **299.4 s = 5.0 min** end to end (v17: 8.1 min). Outputs in `OUT/motion/W5_v18/caramel-tank-jeans_look-02/`.
+**Log:** stage 1 klein 9B KV, 4 steps in **15 s** (v17: 28 steps in 3:05); model loads unchanged. Video 8 steps 2:57 (sparse from step 3, same as v17).
+**Image:** the KV-distilled first frame copies the garment very well (knit texture, color, neckline, bag, sandals; arguably closer to the product photo than v17) **but ignores the skeleton (image 2): it reproduces the pose of the product photo** (right hand in the pocket, model larger in frame, like the product shot). Because frame 0 does not match pose frame 0, the video starts with the hand in the pocket and the ControlNet pulls the body into the skeleton pose only after ~1.5 s (frame 40 on it follows the skeleton like v17).
+**Comparison** (same folder): `side-by-side_skeleton_v17_v18.mp4`, `frames_skeleton_v17_v18.png` (frames 0/12/40/80/123), `frame0_product_v17_v18.png`, `frame0_top_v17_v18.png`.
+**Reading:** big speed win (stage 1 −2:50) but not usable as is: the first frame must follow pose frame 0. Next options: (a) skeleton reference stronger in the distilled model (e.g. skeleton first, higher resolution, prompt wording) or without the KV cache; (b) klein base with fewer steps (e.g. 12–16, smaller gain, keeps pose following).
+
 ## 2026-11-23 — #54 W5 v18 speed test: distilled first-frame model (FLUX.2 klein 9B KV, 4 steps)
 **Goal:** stage 1 (klein 9B base, 28 steps, CFG 3.5 = 56 model passes, ~3.1 min) is now the largest block of the run. The user chose to test a distilled model.
 **Model downloaded (user's go-ahead "Testar klein destilado"):** `flux-2-klein-9b-kv-fp8.safetensors` (9,818,935,984 bytes) → `models/diffusion_models/`, from https://huggingface.co/black-forest-labs/FLUX.2-klein-9b-kv-fp8 (public; the plain distilled `FLUX.2-klein-9b-fp8` is gated and returned 401). It is the model of the official template `image_flux2_klein_9b_kv_image_edit`: distilled (4 steps, CFG 1) and trained for the **KV cache** of reference images. License: FLUX non-commercial, same as the klein 9B base already in use.
