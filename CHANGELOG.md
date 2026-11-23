@@ -11,6 +11,13 @@ Path abbreviations:
 
 ---
 
+## 2026-11-23 — #57 W5 v19 run: 4.9 min and the first frame follows the skeleton
+**Run** (the user, cold cache, default values): success, **291.8 s = 4.9 min** end to end (v17: 8.1, v16: 8.4, v9: 27.7). Outputs in `OUT/motion/W5_v19/caramel-tank-jeans_look-02/`.
+**Log:** stage 1 klein 9B KV, 4 steps in **3 s** (v18: 15 s with the 4 MP product; v17: 3:05). The rest of the run is model loading/encoding (~1.3 min), video 8 steps 2:55 (sparse from step 3) and decode.
+**Image:** the first frame now follows the skeleton (both arms down, no hand in the pocket), so the video follows the pose from frame 0 like v17. Garment faithful (knit, color, neckline, jeans, bag kept in the hand the whole video, sandals). The model is a bit larger in frame than in v17 (head and feet closer to the edges), whole body still visible. Face and curls at frame 60 comparable to v17.
+**Comparison** (same folder): `side-by-side_skeleton_v17_v18_v19.mp4`, `frames_skeleton_v17_v18_v19.png`, `frame0_skeleton_product_v17_v18_v19.png`, `zoom_v17_vs_v19_f60.png`.
+**Reading:** the 2 MP product + 2 MP skeleton + "do not copy the pose of image 1" fixed v18. v19 is a production candidate (~5 min, or ~5.7 min with the W6 upscale). License note: klein 9B (base and KV) is FLUX non-commercial.
+
 ## 2026-11-23 — #56 W5 v19 speed test: make the distilled first frame follow the skeleton
 **Problem (#55):** the klein 9B KV first frame (v18) copied the pose and framing of the product photo instead of the skeleton.
 **Created:** `WF/motion_W5_quality_v19.json` (copy in `ui_tests/`), `build_W5_v19.py`, `W5_quality_v19_api.json`.
