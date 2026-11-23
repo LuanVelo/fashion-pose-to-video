@@ -11,6 +11,13 @@ Path abbreviations:
 
 ---
 
+## 2026-11-23 — #52 W5 v17 speed test: native block-sparse attention on the video model
+**Goal:** cut the video stage (~3.6 min in v16) further with no visible change. Production stays W5 v16.
+**Created:** `WF/motion_W5_quality_v17.json` (copy in `PROJ/2 - files/workflows/ui_tests/`), `build_W5_v17.py`, `W5_quality_v17_api.json`.
+**v16 → v17 (one change):** new node 231 `BlockSparseAttention` ("Model Sparse Attention", native, `comfy_extras/nodes_sparse_attention.py`) between the INT8 attention node 230 and the ControlNet 214 (214 model: 230 → 231). Settings = node defaults: method **sol-attn** (training-free adaptive threshold), **tau 1.3**, start 0.2, end 1.0, min_tokens 12288, extra_tokens 256, sink_conditioning `exact_kv_and_rows` (text/audio/reference rows stay exact; H3-aware block patches); **verbose ON** so the server log shows which attention calls went sparse. Dense calls (first 20% of the schedule, short sequences) fall back to the INT8 backend of node 230. `sol_attn_is_available` = True on the RTX 4090 (checked). Base folder `motion/production/` → `motion/W5_v17/` (test). Usage note rewritten for the test.
+**Check:** the UI JSON loaded in the frontend; `graphToPrompt()` = the generator's API JSON (59 nodes, same values and links). Not run (the user runs it).
+**Expected:** video ~3.6 → ~2.5–3 min; compare v16 vs v17 side by side after the run.
+
 ## 2026-11-22 — #51 W6 v3 run on the fast W5 video + comparison of all versions
 **W6 v3** (first run, default values): input `IN/motion/production/caramel-tank-jeans_look-02.mp4` (= v15 video, #50). No error, **47 s**. Outputs in `OUT/motion/production/caramel-tank-jeans_look-02/`: `video_2x_00001_.mp4` (1792×3200), `video_1080x1920_00001_.mp4`.
 **Comparison** (same folder): `side-by-side_v15_vs_upscale.mp4`, `side-by-side_v15_vs_upscale_zoom.mp4` and `zoom_v15_vs_upscale_f60.png` (face + top, fixed crop). The upscale is clearly sharper (eyes, eyebrows, curls, knit texture) with no new artifacts → **the upscale still makes sense** with the fast W5 (fast flow ≈ 8.4 + 0.8 ≈ 9.2 min, output 1080×1920).
