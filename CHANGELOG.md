@@ -11,6 +11,13 @@ Path abbreviations:
 
 ---
 
+## 2026-11-23 — #56 W5 v19 speed test: make the distilled first frame follow the skeleton
+**Problem (#55):** the klein 9B KV first frame (v18) copied the pose and framing of the product photo instead of the skeleton.
+**Created:** `WF/motion_W5_quality_v19.json` (copy in `ui_tests/`), `build_W5_v19.py`, `W5_quality_v19_api.json`.
+**v18 → v19 (stage 1 inputs only):** product reference (node 107) **4 MP → 2 MP**; skeleton reference (node 110) **1 MP → 2 MP**; image prompt (node 104): added "Do not copy the pose of image 1: the arms, hands, legs, head position, body framing and size in the frame come only from the skeleton in image 2." and removed "camera" from "Keep the same face, hair, background, lighting and camera as image 1". Titles cleaned. Unchanged: klein 9B KV + FluxKVCache, 4 steps, CFG 1, seed, 1088×1920, stage 2. Base folder → `motion/W5_v19/`.
+**Check:** UI JSON vs API JSON by script (values of nodes 2/104/107/110 equal; every other node and every link identical to the frontend-verified v18). The browser pane was in use by the user, so no `graphToPrompt()` this time. Not run (the user runs it).
+**Expected:** first frame in the skeleton pose (arms down, no hand in the pocket), garment as faithful as v18, ~5 min end to end.
+
 ## 2026-11-23 — #55 W5 v18 run: 5.0 min, garment faithful, but the first frame ignores the skeleton
 **Run** (the user, cold cache, default values): success, **299.4 s = 5.0 min** end to end (v17: 8.1 min). Outputs in `OUT/motion/W5_v18/caramel-tank-jeans_look-02/`.
 **Log:** stage 1 klein 9B KV, 4 steps in **15 s** (v17: 28 steps in 3:05); model loads unchanged. Video 8 steps 2:57 (sparse from step 3, same as v17).
