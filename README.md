@@ -39,8 +39,8 @@ flowchart LR
 
     D --> K[("Pose catalog<br/>input/motion/poses/#lt;pose#gt;/<br/>pose.mp4 · original.mp4")]
 
-    subgraph P2["2 · First frame + video (W5) · ~8.5 min"]
-        E["Product photo<br/>(model wearing the garment)"] --> F["Stage 1 · FLUX.2 klein 9B<br/>product + skeleton of frame 0<br/>→ first frame 1088×1920"]
+    subgraph P2["2 · First frame + video (W5) · ~5 min"]
+        E["Product photo<br/>(model wearing the garment)"] --> F["Stage 1 · FLUX.2 klein 9B KV<br/>(distilled, 4 steps)<br/>product + skeleton of frame 0<br/>→ first frame 1088×1920"]
         K --> F
         F --> G["Stage 2 · MiniMax H3 ref2va<br/>+ turbo LoRA 8 steps<br/>+ Fun ControlNet (pose)<br/>→ video 896×1600, 124 frames"]
         K --> G
@@ -67,7 +67,7 @@ flowchart LR
 | # | Workflow (ComfyUI) | Input | What it does | Output |
 |---|---|---|---|---|
 | 1 | [`motion_W1_extract-pose_v3`](2%20-%20files/workflows/ui_production/motion_W1_extract-pose_v3.json) | reference video, pose name, clip start and length (default 5.2 s) | cuts the clip using the fps (`ComfyMathExpression`), resamples to 124 frames, runs SDPose → skeleton without face and with head, at 24 fps | `output/motion/catalog/<pose>/`: pose, original and 4 thumbnails of each |
-| 2 | [`motion_W5_quality_v16`](2%20-%20files/workflows/ui_production/motion_W5_quality_v16.json) | product photo + `motion/poses/<pose>/pose.mp4` | stage 1: first frame (FLUX.2 klein 9B). Stage 2: video (H3 + turbo LoRA + ControlNet). INT8 attention on both. ~8.5 min. The pose for the first frame is frame 0 of `pose.mp4` | `output/motion/production/<product>_<pose>/`: frame0 and video |
+| 2 | [`motion_W5_quality_v20`](2%20-%20files/workflows/ui_production/motion_W5_quality_v20.json) | product photo + `motion/poses/<pose>/pose.mp4` | stage 1: first frame (FLUX.2 klein 9B KV, 4 steps). Stage 2: video (H3 + turbo LoRA + ControlNet + sparse attention). INT8 attention on both. ~5 min. The pose for the first frame is frame 0 of `pose.mp4` | `output/motion/production/<product>_<pose>/`: frame0 and video |
 | 3 | [`motion_W6_upscale_v3`](2%20-%20files/workflows/ui_production/motion_W6_upscale_v3.json) | `motion/production/<name>.mp4` | RelayVSR x2, then downscale to 1080×1920; audio and fps copied from the input | same production folder: `video_2x` and `video_1080x1920` |
 
 Every workflow exists in three forms in this repo:
@@ -75,9 +75,9 @@ Every workflow exists in three forms in this repo:
 - **API** (`*_api.json`): the same graph in ComfyUI's API format.
 - **Generator** (`build_*.py`): the Python script that writes the API JSON. It is the source of truth for each version.
 
-**Speed (W5 v12 → v16, 2026-11-22):** the video went from ~27 min (v9/v11) to **~8.5 min end to end** with the same garment and motion and a slightly softer face. Steps: turbo LoRA 8 steps (v12, 14 min, but it painted the skeleton on the body) → ControlNet strength 0.6 / end 0.5 (v13, lines gone) → ComfyUI's native INT8 attention on the video model (v14, video 7 → 3.4 min) and on the first frame (v15, 4.9 → 3.1 min). v15 was promoted to production as v16. Details in [Speed](#speed) and in `CHANGELOG.md` #39–#48.
+**Speed (W5 v12 → v16, 2026-11-22):** the video went from ~27 min (v9/v11) to **~8.5 min end to end** with the same garment and motion and a slightly softer face. Steps: turbo LoRA 8 steps (v12, 14 min, but it painted the skeleton on the body) → ControlNet strength 0.6 / end 0.5 (v13, lines gone) → ComfyUI's native INT8 attention on the video model (v14, video 7 → 3.4 min) and on the first frame (v15, 4.9 → 3.1 min). v15 was promoted to production as v16. **W5 v17 → v20 (2026-11-23): ~8.4 → ~4.9 min** with native sparse attention on the video (v17) and the distilled FLUX.2 klein 9B KV for the first frame (4 steps in 3 s instead of 28 steps in 3 min; v18 copied the pose of the product photo, fixed in v19). v19 was promoted as v20. Details in [Speed](#speed) and in `CHANGELOG.md` #39–#58.
 
-The test workflows (W1 v1/v2, W2, W3a, W5 v1–v15, W6 v1/v2) are archived in [`ui_tests/`](2%20-%20files/workflows/ui_tests). Up to W5 v10 / W1 v2 / W6 v2 their labels are in Portuguese.
+The test workflows (W1 v1/v2, W2, W3a, W5 v1–v19, W6 v1/v2) are archived in [`ui_tests/`](2%20-%20files/workflows/ui_tests). Up to W5 v10 / W1 v2 / W6 v2 their labels are in Portuguese.
 
 ---
 
@@ -90,7 +90,7 @@ The test workflows (W1 v1/v2, W2, W3a, W5 v1–v15, W6 v1/v2) are archived in [`
    ```bash
    python -I -X utf8 "2 - files/workflows/catalog.py" pose look-02
    ```
-5. **Generate the video:** put the product photo in `input/` and open `motion_W5_quality_v16`. Pick the product and `motion/poses/<pose>/pose.mp4`, and name it `<product>_<pose>`. Run it (~8.5 min on an RTX 4090).
+5. **Generate the video:** put the product photo in `input/` and open `motion_W5_quality_v20`. Pick the product and `motion/poses/<pose>/pose.mp4`, and name it `<product>_<pose>`. Run it (~5 min on an RTX 4090).
 6. **Optional, comparison video:** builds the original | skeleton | generated video.
    ```bash
    python -I -X utf8 "2 - files/workflows/catalog.py" compare caramel-tank-jeans_look-02 look-02
@@ -127,7 +127,8 @@ No model files are in this repository; download them from the original repositor
 | Folder in `ComfyUI/models/` | File | Size | Used in | Link |
 |---|---|---:|---|---|
 | `checkpoints/` | `sdpose_wholebody_fp16.safetensors` | 1.8 GB | W1 (skeleton) | [Comfy-Org/SDPose](https://huggingface.co/Comfy-Org/SDPose/resolve/main/checkpoints/sdpose_wholebody_fp16.safetensors) |
-| `diffusion_models/` | `flux-2-klein-base-9b-fp8.safetensors` | 8.9 GB | W5 stage 1 | [black-forest-labs/FLUX.2-klein-base-9b-fp8](https://huggingface.co/black-forest-labs/FLUX.2-klein-base-9b-fp8) ¹ |
+| `diffusion_models/` | `flux-2-klein-9b-kv-fp8.safetensors` | 9.8 GB | W5 stage 1 (v18+) | [black-forest-labs/FLUX.2-klein-9b-kv-fp8](https://huggingface.co/black-forest-labs/FLUX.2-klein-9b-kv-fp8/resolve/main/flux-2-klein-9b-kv-fp8.safetensors) ³ |
+| `diffusion_models/` | `flux-2-klein-base-9b-fp8.safetensors` | 8.9 GB | W5 stage 1 up to v17 (archived) | [black-forest-labs/FLUX.2-klein-base-9b-fp8](https://huggingface.co/black-forest-labs/FLUX.2-klein-base-9b-fp8) ¹ |
 | `text_encoders/` | `qwen_3_8b_fp8mixed.safetensors` | 8.1 GB | W5 stage 1 | [Comfy-Org/flux2-klein-9B](https://huggingface.co/Comfy-Org/flux2-klein-9B/resolve/main/split_files/text_encoders/qwen_3_8b_fp8mixed.safetensors) |
 | `vae/` | `flux2-vae.safetensors` | 320 MB | W5 stage 1 | [Comfy-Org/flux2-dev](https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/vae/flux2-vae.safetensors) ² |
 | `diffusion_models/` | `minimax_h3_ref2va_pruned_int8_convrot.safetensors` | 19.5 GB | W5 stage 2 | [Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors) |
@@ -142,12 +143,14 @@ No model files are in this repository; download them from the original repositor
 
 ¹ Gated repository: accept the Black Forest Labs license on Hugging Face before downloading.
 ² Use this full VAE. The `full_encoder_small_decoder` from the klein template makes the first frame blurry.
+³ Public repository. Both klein 9B models are under the FLUX non-commercial license.
 
 ```text
 ComfyUI/models/
 ├── checkpoints/
 │   └── sdpose_wholebody_fp16.safetensors
 ├── diffusion_models/
+│   ├── flux-2-klein-9b-kv-fp8.safetensors
 │   ├── flux-2-klein-base-9b-fp8.safetensors
 │   ├── minimax_h3_ref2va_pruned_int8_convrot.safetensors
 │   └── relayvsr_x2_lightx2v_int8_convrot.safetensors
@@ -201,16 +204,16 @@ output/motion/
 
 | | Stage 1 · first frame | Stage 2 · video |
 |---|---|---|
-| Model | FLUX.2 klein 9B base fp8 + qwen_3_8b | MiniMax H3 ref2va int8 + qwen3vl 32B |
-| References | image 1 = product (4 MP) · image 2 = skeleton of frame 0 (1 MP), via `ReferenceLatent` | ref 1 = product (`max`) · frame 0 = stage 1 output (`MiniMaxH3AddGuide`) |
+| Model | FLUX.2 klein 9B **KV** (distilled) fp8 + qwen_3_8b, `FluxKVCache` | MiniMax H3 ref2va int8 + qwen3vl 32B |
+| References | image 1 = product (**2 MP**) · image 2 = skeleton of frame 0 (**2 MP**), via `ReferenceLatent` | ref 1 = product (`max`) · frame 0 = stage 1 output (`MiniMaxH3AddGuide`) |
 | Resolution | 1088×1920 | 896×1600, 124 frames, 24 fps |
-| Sampling | 28 steps · CFG 3.5 · euler | **turbo LoRA `minimax_h3_fl2v_turbo_8step_v1.0`, 8 steps** · guidance 1.0 · res_multistep (turbo OFF = 20 steps) |
+| Sampling | **4 steps · CFG 1** · euler | **turbo LoRA `minimax_h3_fl2v_turbo_8step_v1.0`, 8 steps** · guidance 1.0 · res_multistep (turbo OFF = 20 steps) |
 | Control | — | Fun ControlNet union, **strength 0.6, end_percent 0.5** |
-| Attention | INT8 (`Model Attention Backend` → `comfy kitchen attention`) | INT8 (same) |
+| Attention | INT8 (`Model Attention Backend` → `comfy kitchen attention`) | INT8 (same) + block-sparse (`Model Sparse Attention`, sol-attn, tau 1.3, from 20%) |
 | VAE | `flux2-vae` | video fp16 + audio fp32 |
 | Seed | 20261121 (fixed) | 20261121 (fixed) |
 
-The stage 1 prompt tells the model to copy the garment **only from image 1**, and the garment description field is left empty on purpose: when there is text describing the outfit, the text wins over the image.
+The stage 1 prompt tells the model to copy the garment **only from image 1** and the pose, framing and size in the frame **only from the skeleton in image 2** (without that, the distilled model copies the pose of the product photo), and the garment description field is left empty on purpose: when there is text describing the outfit, the text wins over the image.
 
 ---
 
@@ -251,14 +254,24 @@ Measured on an RTX 4090, product `caramel-tank-jeans`, pose `look-02`, same seed
 | v13 | + ControlNet strength 0.6, end 0.5 | (cache) | 7.0 min | ~14 min | lines gone, bag kept, face slightly softer |
 | v14 | + INT8 attention on the video model | (cache) | 3.4 min | ~9.5 min | same as v13 |
 | **v15 → v16** | + INT8 attention on the first frame | 3.1 min | 3.6 min | **8.4 min** (cold cache) | same as v14 |
-| v16 + W6 v3 | + RelayVSR upscale to 1080×1920 | | +47 s | **~9.2 min** | sharper face, curls and knit |
+| v16 + W6 v3 | + RelayVSR upscale to 1080×1920 | | +47 s | ~9.2 min | sharper face, curls and knit |
+| v17 | + sparse attention on the video (sol-attn) | 3.1 min | 3.2 min | 8.1 min | same as v16 |
+| v18 | + first frame with klein 9B **KV distilled**, 4 steps | 15 s | 3.0 min | 5.0 min | garment faithful, but **copied the pose of the product photo** |
+| **v19 → v20** | + product 2 MP, skeleton 2 MP, prompt "pose only from image 2" | **3 s** | 2.9 min | **4.9 min** (cold cache) | follows the skeleton from frame 0 |
+| v20 + W6 v3 | + RelayVSR upscale to 1080×1920 | | +47 s | **~5.7 min** | |
 
 - The **turbo LoRA** with a strong ControlNet copies the stick figure into the pixels; loosening the ControlNet fixes it and the motion still follows the pose.
 - **INT8 attention** (`Model Attention Backend` → `comfy kitchen attention`) is native in ComfyUI 0.46: the same idea as SageAttention, nothing to install, ~2× on the video with no visible change.
+- **Sparse attention** (`Model Sparse Attention`, native, sol-attn) makes each sparse video step ~30% faster with no visible change; the gain is small (~20 s) because the turbo video has only 8 steps.
+- The **distilled klein 9B KV** (4 steps, CFG 1, reference images cached) makes the first frame ~60× faster. It needs the skeleton at the same size as the product and an explicit prompt, otherwise it copies the pose of the product photo.
 - Not used: lower resolution + upscale (704×1248 deforms the face and upscaling does not fix it).
 - The **W6 upscale** is still worth it with the fast W5: it delivers the 1080×1920 size the platforms want and gives back the detail the 8-step face loses, for under a minute.
 
 ![Fast W5 (v16) vs W6 upscale, frame 60](docs/media/upscale_zoom_v16.jpg)
+
+![Skeleton, v17, v18 and v19 (= v20), frames 0 to 123](docs/media/speed_v17_to_v20_frames.jpg)
+
+*v18 starts with the hand in the pocket (the pose of the product photo); v19/v20 follow the skeleton from frame 0.*
 
 ### Other lessons
 

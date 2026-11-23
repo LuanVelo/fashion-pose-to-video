@@ -11,6 +11,13 @@ Path abbreviations:
 
 ---
 
+## 2026-11-23 — #58 W5 v20 = PRODUCTION 2/3 (v19 promoted), ~4.9 min
+**User's decision:** promote v19 (#57) to production.
+**Created:** `WF/motion_W5_quality_v20.json` (copy in `PROJ/2 - files/workflows/ui_production/`), `build_W5_v20.py`, `W5_quality_v20_api.json`.
+**v19 → v20:** same graph and values; base folder `motion/W5_v19/` → **`motion/production/`**, sparse attention `verbose` ON → OFF (log only), titles without "(v18: …)" notes, usage note rewritten (PRODUCTION 2/3, ~5 min, what makes it fast, license). **Check:** API diff v19 → v20 = only those; UI widgets and links equal to v19 except nodes 2, 231 and the note.
+**ComfyUI (`WF/`):** added v20; removed the tests v17, v18, v19 (repo copies in `ui_tests/`; v17/v19 identical in content, v18 re-saved by ComfyUI with only an empty `widgets_values` on node 131). `ui_production/motion_W5_quality_v16.json` moved to `ui_tests/`. **`WF/motion_W5_quality_v16.json` left in place:** the user re-organized it in ComfyUI into subgraphs ("stage 1 - First frame setup" and three "New Subgraph") at 14:42; a copy is archived as `ui_tests/motion_W5_quality_v16_resaved-2026-11-23.json`. Backup of the removed files in the session scratchpad (`wf_removed_2026-11-23/`).
+**Docs:** README (production table, step 5, flowchart ~5 min + klein KV, base settings: klein 9B KV / 2 MP + 2 MP / 4 steps CFG 1 / sparse attention, prompt note, Speed table v17–v20 + W6 row, notes, new image `docs/media/speed_v17_to_v20_frames.jpg`, models table + tree with `flux-2-klein-9b-kv-fp8` and the license note), CLAUDE.md (production flow, current state).
+
 ## 2026-11-23 — #57 W5 v19 run: 4.9 min and the first frame follows the skeleton
 **Run** (the user, cold cache, default values): success, **291.8 s = 4.9 min** end to end (v17: 8.1, v16: 8.4, v9: 27.7). Outputs in `OUT/motion/W5_v19/caramel-tank-jeans_look-02/`.
 **Log:** stage 1 klein 9B KV, 4 steps in **3 s** (v18: 15 s with the 4 MP product; v17: 3:05). The rest of the run is model loading/encoding (~1.3 min), video 8 steps 2:55 (sparse from step 3) and decode.
