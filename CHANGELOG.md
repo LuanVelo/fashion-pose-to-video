@@ -11,6 +11,9 @@ Path abbreviations:
 
 ---
 
+## 2026-11-23 — #59 Remove the re-saved W5 v16 from ComfyUI
+**User's decision:** remove it. `WF/motion_W5_quality_v16.json` (the user's subgraph re-organization, #58) was identical to the archived `ui_tests/motion_W5_quality_v16_resaved-2026-11-23.json` and was removed from `WF/` (backup also in the session scratchpad). `WF/` now has only production: `motion_W1_extract-pose_v3`, `motion_W5_quality_v20`, `motion_W6_upscale_v3`.
+
 ## 2026-11-23 — #58 W5 v20 = PRODUCTION 2/3 (v19 promoted), ~4.9 min
 **User's decision:** promote v19 (#57) to production.
 **Created:** `WF/motion_W5_quality_v20.json` (copy in `PROJ/2 - files/workflows/ui_production/`), `build_W5_v20.py`, `W5_quality_v20_api.json`.
