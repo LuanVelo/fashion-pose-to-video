@@ -11,6 +11,12 @@ Path abbreviations:
 
 ---
 
+## 2026-11-25 — #62 W7 image SR v2 (x2, any size) + W7 image SR x4 v1
+**Bug (W7 v1, user's run on `fernanda_ref.png`, 406×483):** `RuntimeError: size of tensor a (101) must match ... (102)` in SamplerCustomAdvanced. The ×2 image (812×966) gives an odd latent width; the native Kandinsky 5 pads the latent to the 2×2 patch and does not crop its output back. v1 only worked because 1088×1920 ×2 is a multiple of 16.
+**Fix (v2 and x4):** after the bicubic upscale, `PadImageNode` (pad to multiple of 16, mirror, like the official pipeline's replicate padding) → VAE … decode → `ImageCrop` back to exactly factor × input (offsets from `GetImageSize` + `ComfyMathExpression` `((-a) % 16) // 2`). Output prefixes now generic: `OUT/motion/sr/x2/` and `OUT/motion/sr/x4/` (`kandinsky_*`, `bicubic_*`).
+**Created:** `build_W7_v2.py` (shared `build()`), `W7_image-sr_v2_api.json`, `WF/motion_W7_image-sr_v2.json` (default input `fernanda_ref.png`); `build_W7x4_v1.py`, `W7_image-sr-x4_v1_api.json`, `WF/motion_W7_image-sr-x4_v1.json`; x4 model `models/diffusion_models/kandinsky_imagesr2_t0.244_comfy_bf16.safetensors` (`convert_kandinsky_sr.py --t 0.244`, x4 default, creativity 4); x4 test input `IN/motion/sr/caramel-tank-jeans_front_480x680.png` (the product photo reduced to 1/4 with lanczos, so the 1920×2720 x4 result can be compared with the real photo). Copies in `ui_tests/`, plus the user's re-saved v1 (subgraph "Setup") as `ui_tests/motion_W7_image-sr_v1_resaved-2026-11-25.json`.
+**Check:** `graphToPrompt()` equals both API JSONs. Not run (the user runs them). x4 is for small inputs (whole image in one pass): keep the input ≤ ~600 px.
+
 ## 2026-11-25 — #61 W7 image SR v1 run: 30 s, clearly sharper, no color shift
 **Run** (the user, default values, frame0 1088×1920 → 2176×3840): success, **30 s** end to end (cold start, includes loading the 11.7 GB model and the encoders). Whole image in one pass, no memory problem.
 **Image:** much sharper than the original enlarged with lanczos: eyes, brows, lashes, lips and skin texture defined, curls separated, knit rows visible on the tank, denim twill visible, nails and fingers clean. Identity, garment, color and composition unchanged (global mean RGB within ~1 level, mean abs difference 2.6/255 after reducing back to 1088×1920). A little more local contrast on the face (looks retouched rather than wrong).
