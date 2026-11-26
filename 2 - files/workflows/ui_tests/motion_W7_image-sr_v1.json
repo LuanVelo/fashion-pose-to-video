@@ -1,0 +1,1188 @@
+{
+  "id": "db329bef-94dd-4998-9f88-d7a1b418606f",
+  "revision": 0,
+  "last_node_id": 20,
+  "last_link_id": 20,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [
+        0,
+        200
+      ],
+      "size": [
+        282.798828125,
+        102
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "COMBO",
+          "widget": {
+            "name": "image"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "IMAGEUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            1,
+            6
+          ]
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "title": "Image to upscale (input/motion/sr/)",
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "motion/sr/caramel-tank-jeans_look-02_frame0.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "motion/sr/caramel-tank-jeans_look-02_frame0.png",
+        "upload": "image"
+      }
+    },
+    {
+      "id": 2,
+      "type": "ImageScaleBy",
+      "pos": [
+        0,
+        620
+      ],
+      "size": [
+        270,
+        82
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        },
+        {
+          "localized_name": "upscale_method",
+          "name": "upscale_method",
+          "type": "COMBO",
+          "widget": {
+            "name": "upscale_method"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "scale_by",
+          "name": "scale_by",
+          "type": "FLOAT",
+          "widget": {
+            "name": "scale_by"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            4,
+            20
+          ]
+        }
+      ],
+      "title": "Bicubic x2 (model input - keep bicubic and 2.0)",
+      "properties": {
+        "Node name for S&R": "ImageScaleBy"
+      },
+      "widgets_values": [
+        "bicubic",
+        2
+      ],
+      "widgets_values_named": {
+        "upscale_method": "bicubic",
+        "scale_by": 2
+      }
+    },
+    {
+      "id": 3,
+      "type": "UNETLoader",
+      "pos": [
+        400,
+        200
+      ],
+      "size": [
+        270,
+        82
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "unet_name",
+          "name": "unet_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "unet_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "weight_dtype",
+          "name": "weight_dtype",
+          "type": "COMBO",
+          "widget": {
+            "name": "weight_dtype"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "MODEL",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            10
+          ]
+        }
+      ],
+      "title": "Kandinsky ImageSR 2.0 (converted, t=0.15)",
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "kandinsky_imagesr2_t0.15_comfy_bf16.safetensors",
+        "default"
+      ],
+      "widgets_values_named": {
+        "unet_name": "kandinsky_imagesr2_t0.15_comfy_bf16.safetensors",
+        "weight_dtype": "default"
+      }
+    },
+    {
+      "id": 4,
+      "type": "DualCLIPLoader",
+      "pos": [
+        400,
+        340
+      ],
+      "size": [
+        270,
+        130
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip_name1",
+          "name": "clip_name1",
+          "type": "COMBO",
+          "widget": {
+            "name": "clip_name1"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "clip_name2",
+          "name": "clip_name2",
+          "type": "COMBO",
+          "widget": {
+            "name": "clip_name2"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "type",
+          "name": "type",
+          "type": "COMBO",
+          "widget": {
+            "name": "type"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "device",
+          "name": "device",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "device"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "title": "Text encoders (required by the native model; ignored)",
+      "properties": {
+        "Node name for S&R": "DualCLIPLoader"
+      },
+      "widgets_values": [
+        "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+        "clip_l.safetensors",
+        "kandinsky5_image",
+        "default"
+      ],
+      "widgets_values_named": {
+        "clip_name1": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+        "clip_name2": "clip_l.safetensors",
+        "type": "kandinsky5_image",
+        "device": "default"
+      }
+    },
+    {
+      "id": 5,
+      "type": "CLIPTextEncode",
+      "pos": [
+        400,
+        530
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 2
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CONDITIONING",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "title": "Empty prompt (the model has no text)",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "widgets_values_named": {
+        "text": ""
+      }
+    },
+    {
+      "id": 6,
+      "type": "ConditioningZeroOut",
+      "pos": [
+        400,
+        760
+      ],
+      "size": [
+        204.134765625,
+        26
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "conditioning",
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CONDITIONING",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ConditioningZeroOut"
+      }
+    },
+    {
+      "id": 7,
+      "type": "VAELoader",
+      "pos": [
+        800,
+        200
+      ],
+      "size": [
+        270,
+        58
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "vae_name",
+          "name": "vae_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "vae_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            5,
+            18
+          ]
+        }
+      ],
+      "title": "FLUX.1 VAE (from the SR release)",
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "kandinsky_imagesr2_flux1_vae.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "kandinsky_imagesr2_flux1_vae.safetensors"
+      }
+    },
+    {
+      "id": 8,
+      "type": "VAEEncode",
+      "pos": [
+        800,
+        330
+      ],
+      "size": [
+        140,
+        46
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "pixels",
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 4
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "LATENT",
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEEncode"
+      }
+    },
+    {
+      "id": 9,
+      "type": "GetImageSize",
+      "pos": [
+        0,
+        760
+      ],
+      "size": [
+        140,
+        66
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "links": [
+            7
+          ]
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "links": null
+        },
+        {
+          "localized_name": "batch_size",
+          "name": "batch_size",
+          "type": "INT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GetImageSize"
+      }
+    },
+    {
+      "id": 10,
+      "type": "ComfyMathExpression",
+      "pos": [
+        800,
+        450
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "a",
+          "name": "values.a",
+          "type": "FLOAT,INT,BOOLEAN",
+          "link": 7
+        },
+        {
+          "localized_name": "b",
+          "name": "values.b",
+          "shape": 7,
+          "type": "FLOAT,INT,BOOLEAN",
+          "link": null
+        },
+        {
+          "localized_name": "expression",
+          "name": "expression",
+          "type": "STRING",
+          "widget": {
+            "name": "expression"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "FLOAT",
+          "name": "FLOAT",
+          "type": "FLOAT",
+          "links": [
+            9
+          ]
+        },
+        {
+          "localized_name": "INT",
+          "name": "INT",
+          "type": "INT",
+          "links": null
+        },
+        {
+          "localized_name": "BOOL",
+          "name": "BOOL",
+          "type": "BOOLEAN",
+          "links": null
+        }
+      ],
+      "title": "Latent gain 1/(1-t), t=0.15 (a is unused)",
+      "properties": {
+        "Node name for S&R": "ComfyMathExpression"
+      },
+      "widgets_values": [
+        "1 / (1 - 0.15) + 0 * a"
+      ],
+      "widgets_values_named": {
+        "expression": "1 / (1 - 0.15) + 0 * a"
+      }
+    },
+    {
+      "id": 11,
+      "type": "LatentMultiply",
+      "pos": [
+        800,
+        650
+      ],
+      "size": [
+        270,
+        58
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "LATENT",
+          "link": 8
+        },
+        {
+          "localized_name": "multiplier",
+          "name": "multiplier",
+          "type": "FLOAT",
+          "widget": {
+            "name": "multiplier"
+          },
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "LATENT",
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            16
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LatentMultiply"
+      },
+      "widgets_values": [
+        1
+      ],
+      "widgets_values_named": {
+        "multiplier": 1
+      }
+    },
+    {
+      "id": 12,
+      "type": "DisableNoise",
+      "pos": [
+        1200,
+        200
+      ],
+      "size": [
+        140,
+        26
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "localized_name": "NOISE",
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "title": "No noise (the bicubic latent is the start)",
+      "properties": {
+        "Node name for S&R": "DisableNoise"
+      }
+    },
+    {
+      "id": 13,
+      "type": "BasicGuider",
+      "pos": [
+        1200,
+        290
+      ],
+      "size": [
+        159.568359375,
+        46
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 10
+        },
+        {
+          "localized_name": "conditioning",
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 11
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "GUIDER",
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicGuider"
+      }
+    },
+    {
+      "id": 14,
+      "type": "KSamplerSelect",
+      "pos": [
+        1200,
+        400
+      ],
+      "size": [
+        270,
+        58
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "sampler_name",
+          "name": "sampler_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "sampler_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "SAMPLER",
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            14
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect"
+      },
+      "widgets_values": [
+        "euler"
+      ],
+      "widgets_values_named": {
+        "sampler_name": "euler"
+      }
+    },
+    {
+      "id": 15,
+      "type": "ManualSigmas",
+      "pos": [
+        1200,
+        500
+      ],
+      "size": [
+        270,
+        58
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "sigmas",
+          "name": "sigmas",
+          "type": "STRING",
+          "widget": {
+            "name": "sigmas"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "SIGMAS",
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            15
+          ]
+        }
+      ],
+      "title": "One step: sigma 0.15 -> 0 (must match the model t)",
+      "properties": {
+        "Node name for S&R": "ManualSigmas"
+      },
+      "widgets_values": [
+        "0.15, 0"
+      ],
+      "widgets_values_named": {
+        "sigmas": "0.15, 0"
+      }
+    },
+    {
+      "id": 16,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        1200,
+        620
+      ],
+      "size": [
+        212.3638671875,
+        106
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "noise",
+          "name": "noise",
+          "type": "NOISE",
+          "link": 12
+        },
+        {
+          "localized_name": "guider",
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 13
+        },
+        {
+          "localized_name": "sampler",
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 14
+        },
+        {
+          "localized_name": "sigmas",
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 15
+        },
+        {
+          "localized_name": "latent_image",
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 16
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "output",
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            17
+          ]
+        },
+        {
+          "localized_name": "denoised_output",
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": null
+        }
+      ],
+      "title": "One-step SR",
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      }
+    },
+    {
+      "id": 17,
+      "type": "VAEDecode",
+      "pos": [
+        1600,
+        200
+      ],
+      "size": [
+        140,
+        46
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "LATENT",
+          "link": 17
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 18
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            19
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      }
+    },
+    {
+      "id": 18,
+      "type": "SaveImage",
+      "pos": [
+        1600,
+        310
+      ],
+      "size": [
+        270,
+        58
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 19
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "title": "Save Kandinsky x2",
+      "properties": {},
+      "widgets_values": [
+        "motion/sr/caramel-tank-jeans_look-02_frame0_kandinsky-x2"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "motion/sr/caramel-tank-jeans_look-02_frame0_kandinsky-x2"
+      }
+    },
+    {
+      "id": 19,
+      "type": "SaveImage",
+      "pos": [
+        2000,
+        310
+      ],
+      "size": [
+        270,
+        58
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 20
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "title": "Save bicubic x2 (baseline)",
+      "properties": {},
+      "widgets_values": [
+        "motion/sr/caramel-tank-jeans_look-02_frame0_bicubic-x2"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "motion/sr/caramel-tank-jeans_look-02_frame0_bicubic-x2"
+      }
+    },
+    {
+      "id": 20,
+      "type": "MarkdownNote",
+      "pos": [
+        0,
+        -60
+      ],
+      "size": [
+        1150,
+        240
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "## W7 image SR v1 (TEST) - Kandinsky ImageSR 2.0 x2, native nodes\n\n- Put the image in `input/motion/sr/`, pick it in **Image to upscale**, run. Output: `output/motion/sr/<name>_kandinsky-x2_*.png` + `<name>_bicubic-x2_*.png` (baseline, for the side by side).\n- The model file is a native conversion (`convert_kandinsky_sr.py`) for **t = 0.15** (x2 default, creativity 4). **t must match** in 3 places: the model file, **Latent gain** (1/(1-t)) and **ManualSigmas** (`t, 0`). Keep bicubic x2, euler, no noise.\n- The prompt is ignored (the text path is zeroed); the encoders are loaded only because the native Kandinsky 5 needs them.\n- No 1024 px tiling (the official pipeline tiles): the whole image goes in one pass. 1088x1920 -> 2176x3840.\n- License: MIT (model and code)."
+      ],
+      "widgets_values_named": {
+        "text": "## W7 image SR v1 (TEST) - Kandinsky ImageSR 2.0 x2, native nodes\n\n- Put the image in `input/motion/sr/`, pick it in **Image to upscale**, run. Output: `output/motion/sr/<name>_kandinsky-x2_*.png` + `<name>_bicubic-x2_*.png` (baseline, for the side by side).\n- The model file is a native conversion (`convert_kandinsky_sr.py`) for **t = 0.15** (x2 default, creativity 4). **t must match** in 3 places: the model file, **Latent gain** (1/(1-t)) and **ManualSigmas** (`t, 0`). Keep bicubic x2, euler, no noise.\n- The prompt is ignored (the text path is zeroed); the encoders are loaded only because the native Kandinsky 5 needs them.\n- No 1024 px tiling (the official pipeline tiles): the whole image goes in one pass. 1088x1920 -> 2176x3840.\n- License: MIT (model and code)."
+      },
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      4,
+      0,
+      5,
+      0,
+      "CLIP"
+    ],
+    [
+      3,
+      5,
+      0,
+      6,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      4,
+      2,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ],
+    [
+      5,
+      7,
+      0,
+      8,
+      1,
+      "VAE"
+    ],
+    [
+      6,
+      1,
+      0,
+      9,
+      0,
+      "IMAGE"
+    ],
+    [
+      7,
+      9,
+      0,
+      10,
+      0,
+      "INT"
+    ],
+    [
+      8,
+      8,
+      0,
+      11,
+      0,
+      "LATENT"
+    ],
+    [
+      9,
+      10,
+      0,
+      11,
+      1,
+      "FLOAT"
+    ],
+    [
+      10,
+      3,
+      0,
+      13,
+      0,
+      "MODEL"
+    ],
+    [
+      11,
+      6,
+      0,
+      13,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      12,
+      12,
+      0,
+      16,
+      0,
+      "NOISE"
+    ],
+    [
+      13,
+      13,
+      0,
+      16,
+      1,
+      "GUIDER"
+    ],
+    [
+      14,
+      14,
+      0,
+      16,
+      2,
+      "SAMPLER"
+    ],
+    [
+      15,
+      15,
+      0,
+      16,
+      3,
+      "SIGMAS"
+    ],
+    [
+      16,
+      11,
+      0,
+      16,
+      4,
+      "LATENT"
+    ],
+    [
+      17,
+      16,
+      0,
+      17,
+      0,
+      "LATENT"
+    ],
+    [
+      18,
+      7,
+      0,
+      17,
+      1,
+      "VAE"
+    ],
+    [
+      19,
+      17,
+      0,
+      18,
+      0,
+      "IMAGE"
+    ],
+    [
+      20,
+      2,
+      0,
+      19,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

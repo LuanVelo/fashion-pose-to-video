@@ -11,6 +11,13 @@ Path abbreviations:
 
 ---
 
+## 2026-11-25 — #60 W7 image SR v1 (TEST): Kandinsky ImageSR 2.0 x2 for stills, native nodes
+**User's request:** test https://github.com/kandinskylab/kandinsky-image-sr (one-step diffusion SR, x2/x4, MIT) in a separate workflow, native nodes only. Image only (no temporal consistency), so it is for stills (frame0, product photos), not for the video (W6 RelayVSR stays).
+**Downloaded (authorized):** `kandinskylab/Kandinsky-ImageSR-2.0@7d5b5ed7` (transformer 10.3 GB + FLUX.1 VAE) into `models/diffusers/Kandinsky-ImageSR-2.0/`; text encoders of the official `image_kandinsky5_t2i` template, `qwen_2.5_vl_7b_fp8_scaled` (9.4 GB) and `clip_l` (0.25 GB), in `models/text_encoders/`.
+**Created:** `PROJ/2 - files/workflows/convert_kandinsky_sr.py` → `models/diffusion_models/kandinsky_imagesr2_t0.15_comfy_bf16.safetensors` (11.7 GB); `models/vae/kandinsky_imagesr2_flux1_vae.safetensors` (copy of the release VAE); `build_W7_v1.py`, `W7_image-sr_v1_api.json`, `WF/motion_W7_image-sr_v1.json` (copy in `ui_tests/`); test input `IN/motion/sr/caramel-tank-jeans_look-02_frame0.png` (W5 v19 frame0, 1088×1920).
+**Why a conversion:** the release is a "baked" Kandinsky 5 DiT without the text tower and cross-attention (their zero-text outputs are per-timestep tables). ComfyUI natively loads Kandinsky 5 Image, so the converter rebuilds those modules as constants for one t (time embedding = table, cross-attention = table bias with gate 1, text weights 0) and folds two native-vs-pipeline differences into the weights: the Flux latent shift (ComfyUI subtracts 0.1159, the pipeline does not) and the flow start (1−t)·latent with zero noise (the workflow multiplies the latent by 1/(1−t)). Checked offline: ComfyUI detects it as `Kandinsky5Image` / Flux latent; time embedding and cross-attention bias equal the release tables (bf16 error only).
+**Graph:** LoadImage → bicubic ×2 → VAE encode → latent ×1/(1−0.15) → SamplerCustomAdvanced (DisableNoise, euler, ManualSigmas `0.15, 0`, empty prompt zeroed) → decode → save `OUT/motion/sr/<name>_kandinsky-x2_*` + bicubic ×2 baseline. t=0.15 = x2 default (creativity 4). Difference from the official pipeline: no 1024 px tiling (whole image in one pass, 2176×3840 for frame0). `graphToPrompt()` equals the generator's API JSON. Not run (the user runs it).
+
 ## 2026-11-23 — #59 Remove the re-saved W5 v16 from ComfyUI
 **User's decision:** remove it. `WF/motion_W5_quality_v16.json` (the user's subgraph re-organization, #58) was identical to the archived `ui_tests/motion_W5_quality_v16_resaved-2026-11-23.json` and was removed from `WF/` (backup also in the session scratchpad). `WF/` now has only production: `motion_W1_extract-pose_v3`, `motion_W5_quality_v20`, `motion_W6_upscale_v3`.
 
