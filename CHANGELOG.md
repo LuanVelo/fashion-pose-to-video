@@ -11,6 +11,12 @@ Path abbreviations:
 
 ---
 
+## 2026-11-25 — #65 W7 runs: x4 on a 1200 px image is too big; x2 v3 on the same image is good
+**x4 v2 run** (the user) on `IN/Office Discussion Scene.png` (1200×840 → 4800×3360, 16 MP): the SR step itself took 25 s, but the VAE decode at that size filled the 24 GB and crawled; the user interrupted it after ~4 min (only `OUT/image-sr/x4/bicubic_00002_.png` saved). Confirms the x4 rule: input ≤ ~600 px. For bigger outputs a tiled VAE encode/decode version would be needed.
+**x2 v3 run** (the user) on the same image → `OUT/image-sr/x2/kandinsky_00001_.png` (2400×1680) in **17 s** (models cached). First run of v3 (new `image-sr/` prefixes OK).
+**Image:** faces clearly sharper (hair strands, brows, eyes, skin, glasses frames and earring), hands and sweater knit cleaner, binders in the background crisper while staying soft. The out-of-focus foreground and the blurred man on the left **stay out of focus** (the model respects the depth of field; only small highlights on the glasses get a bit crisper). Colors kept (mean abs difference 1.6/255 at the input size).
+**Comparison** in `OUT/image-sr/x2/`: `compare_office_original_vs_kandinsky-x2.jpg` (whole image, stacked) and `compare_office_original_vs_kandinsky-x2_zoom.jpg` (man's face, woman's face, hands, binders, out-of-focus man).
+
 ## 2026-11-25 — #64 W7 image SR gets its own folders (v3 / x4 v2), out of motion/
 **User's decision:** image SR is not part of the motion flow, so its files leave `motion/`.
 **Moved (nothing deleted):** `IN/motion/sr/*` → `IN/image-sr/` (frame0 and the 480×680 product test); `OUT/motion/sr/*` → `OUT/image-sr/` (x2 frame0 results and comparisons in `x2/`, the x4 run in `x4/`). The empty `motion/sr/` folders were removed.
