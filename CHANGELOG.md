@@ -11,6 +11,12 @@ Path abbreviations:
 
 ---
 
+## 2026-11-25 — #66 Six new reference videos for the pose catalog (Pexels)
+**Search:** ~285 vertical Pexels videos (12 queries: model posing, lookbook, catwalk, turning around…) filtered by metadata (≥5 s, one person, no close-ups), then checked at the start, middle and end of each clip (full body in frame all the time, static camera). 13 candidates (10 main + 3 reserves) downloaded in HD to a temporary `candidatos/` folder and reviewed by the user in a local OK / reject page.
+**Kept (6)** in `PROJ/3 - Assets/referencias de pose/` (not versioned): `pexels_3888256` (beige suit), `pexels_7507265` (cardigan), `pexels_7760060` (jeans + coat), `pexels_8798401` (green dress, 720×1366), `pexels_8992290` (dress + turn, back view), `pexels_9558748` (man, white backdrop). **Rejected (7)**, sent to the Windows Recycle Bin: 4831678, 7760072, 9034585, 9558954, 40035918, 40738019, 6323266. The review page, its temporary server config and the `candidatos/` folder were removed.
+**Docs:** `3 - Assets/referencias de pose/README.md` lists the six with size, fps, length, author and Pexels link (license: free for commercial use), and now points to `motion_W1_extract-pose_v3` (was the old v2 name).
+**Note:** five of them are ~1:1.9 (1080×2048), a bit taller than 9:16; W1 v3 keeps the ratio (544×1024 skeleton), so check the W5 framing on the first run. Next: W1 v3 on each → `catalog.py pose <pose>`.
+
 ## 2026-11-25 — #65 W7 runs: x4 on a 1200 px image is too big; x2 v3 on the same image is good
 **x4 v2 run** (the user) on `IN/Office Discussion Scene.png` (1200×840 → 4800×3360, 16 MP): the SR step itself took 25 s, but the VAE decode at that size filled the 24 GB and crawled; the user interrupted it after ~4 min (only `OUT/image-sr/x4/bicubic_00002_.png` saved). Confirms the x4 rule: input ≤ ~600 px. For bigger outputs a tiled VAE encode/decode version would be needed.
 **x2 v3 run** (the user) on the same image → `OUT/image-sr/x2/kandinsky_00001_.png` (2400×1680) in **17 s** (models cached). First run of v3 (new `image-sr/` prefixes OK).
