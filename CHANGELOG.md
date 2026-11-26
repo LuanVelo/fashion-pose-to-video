@@ -11,6 +11,11 @@ Path abbreviations:
 
 ---
 
+## 2026-11-25 — #61 W7 image SR v1 run: 30 s, clearly sharper, no color shift
+**Run** (the user, default values, frame0 1088×1920 → 2176×3840): success, **30 s** end to end (cold start, includes loading the 11.7 GB model and the encoders). Whole image in one pass, no memory problem.
+**Image:** much sharper than the original enlarged with lanczos: eyes, brows, lashes, lips and skin texture defined, curls separated, knit rows visible on the tank, denim twill visible, nails and fingers clean. Identity, garment, color and composition unchanged (global mean RGB within ~1 level, mean abs difference 2.6/255 after reducing back to 1088×1920). A little more local contrast on the face (looks retouched rather than wrong).
+**Comparison** in `OUT/motion/sr/`: `compare_original_vs_kandinsky-x2.jpg` (whole image), `compare_original_vs_kandinsky-x2_zoom.jpg` (face, knit, hand/jeans/bag), `compare_original_vs_kandinsky-x2_full.png` (full resolution). Stills, so an image comparison instead of a video.
+
 ## 2026-11-25 — #60 W7 image SR v1 (TEST): Kandinsky ImageSR 2.0 x2 for stills, native nodes
 **User's request:** test https://github.com/kandinskylab/kandinsky-image-sr (one-step diffusion SR, x2/x4, MIT) in a separate workflow, native nodes only. Image only (no temporal consistency), so it is for stills (frame0, product photos), not for the video (W6 RelayVSR stays).
 **Downloaded (authorized):** `kandinskylab/Kandinsky-ImageSR-2.0@7d5b5ed7` (transformer 10.3 GB + FLUX.1 VAE) into `models/diffusers/Kandinsky-ImageSR-2.0/`; text encoders of the official `image_kandinsky5_t2i` template, `qwen_2.5_vl_7b_fp8_scaled` (9.4 GB) and `clip_l` (0.25 GB), in `models/text_encoders/`.
