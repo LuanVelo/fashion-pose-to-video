@@ -11,6 +11,11 @@ Path abbreviations:
 
 ---
 
+## 2026-11-25 — #63 W7 image SR x4 v1 run: small photo ×4, strong result
+**Run** (the user): `motion_W7_image-sr-x4_v1` on `IN/fernanda_ref.png` (406×483, not a multiple of 16 → the pad/crop fix of #62 worked) → `OUT/motion/sr/x4/kandinsky_00001_.png` + `bicubic_00001_.png`, 1624×1932, saved 21:53. W7 v2 (x2) has not run yet.
+**Image:** from a very soft 406 px photo to a sharp portrait: eyes, lashes, teeth, lips, skin, the rib knit of the top and the book spines are rebuilt; colors kept (mean RGB within ~1 level, mean abs difference 4/255 at the input size). At x4 the model invents plausible detail (e.g. stronger lines around the eyes, exact tooth shapes, the knit ribs): good for a small reference, but it is reconstruction, not recovery.
+**Comparison** in `OUT/motion/sr/x4/`: `compare_original_vs_kandinsky-x4.jpg` (whole image), `compare_original_vs_kandinsky-x4_zoom.jpg` (eyes/smile, top fabric, books).
+
 ## 2026-11-25 — #62 W7 image SR v2 (x2, any size) + W7 image SR x4 v1
 **Bug (W7 v1, user's run on `fernanda_ref.png`, 406×483):** `RuntimeError: size of tensor a (101) must match ... (102)` in SamplerCustomAdvanced. The ×2 image (812×966) gives an odd latent width; the native Kandinsky 5 pads the latent to the 2×2 patch and does not crop its output back. v1 only worked because 1088×1920 ×2 is a multiple of 16.
 **Fix (v2 and x4):** after the bicubic upscale, `PadImageNode` (pad to multiple of 16, mirror, like the official pipeline's replicate padding) → VAE … decode → `ImageCrop` back to exactly factor × input (offsets from `GetImageSize` + `ComfyMathExpression` `((-a) % 16) // 2`). Output prefixes now generic: `OUT/motion/sr/x2/` and `OUT/motion/sr/x4/` (`kandinsky_*`, `bicubic_*`).
