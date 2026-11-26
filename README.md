@@ -77,7 +77,9 @@ Every workflow exists in three forms in this repo:
 
 **Speed (W5 v12 → v16, 2026-11-22):** the video went from ~27 min (v9/v11) to **~8.5 min end to end** with the same garment and motion and a slightly softer face. Steps: turbo LoRA 8 steps (v12, 14 min, but it painted the skeleton on the body) → ControlNet strength 0.6 / end 0.5 (v13, lines gone) → ComfyUI's native INT8 attention on the video model (v14, video 7 → 3.4 min) and on the first frame (v15, 4.9 → 3.1 min). v15 was promoted to production as v16. **W5 v17 → v20 (2026-11-23): ~8.4 → ~4.9 min** with native sparse attention on the video (v17) and the distilled FLUX.2 klein 9B KV for the first frame (4 steps in 3 s instead of 28 steps in 3 min; v18 copied the pose of the product photo, fixed in v19). v19 was promoted as v20. Details in [Speed](#speed) and in `CHANGELOG.md` #39–#58.
 
-The test workflows (W1 v1/v2, W2, W3a, W5 v1–v19, W6 v1/v2) are archived in [`ui_tests/`](2%20-%20files/workflows/ui_tests). Up to W5 v10 / W1 v2 / W6 v2 their labels are in Portuguese.
+**Side tool (test): W7 image super-resolution.** [`motion_W7_image-sr_v3`](2%20-%20files/workflows/ui_tests/motion_W7_image-sr_v3.json) (x2) and [`motion_W7_image-sr-x4_v2`](2%20-%20files/workflows/ui_tests/motion_W7_image-sr-x4_v2.json) (x4) upscale **still images** (first frame, product photos) with [Kandinsky ImageSR 2.0](https://github.com/kandinskylab/kandinsky-image-sr) (MIT, one diffusion step) using only native nodes. The release is a "baked" model without the text path, so [`convert_kandinsky_sr.py`](2%20-%20files/workflows/convert_kandinsky_sr.py) rebuilds it in ComfyUI's native Kandinsky 5 Image format for one timestep (t = 0.15 for x2, 0.244 for x4). Frame0 1088×1920 → 2176×3840 in 30 s; much sharper face, knit and denim, same colors. It works frame by frame, so it is **not** for the video (W6 stays). Inputs in `input/image-sr/`, outputs in `output/image-sr/x2|x4/`. Details in `CHANGELOG.md` #60–#64.
+
+The test workflows (W1 v1/v2, W2, W3a, W5 v1–v19, W6 v1/v2, W7) are archived in [`ui_tests/`](2%20-%20files/workflows/ui_tests). Up to W5 v10 / W1 v2 / W6 v2 their labels are in Portuguese.
 
 ---
 
@@ -140,10 +142,15 @@ No model files are in this repository; download them from the original repositor
 | `loras/` | `minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors` | 2.0 GB | W5 (turbo on by default, 8 steps) | [lightx2v/Minimax-h3-Turbo](https://huggingface.co/lightx2v/Minimax-h3-Turbo/resolve/main/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors) |
 | `diffusion_models/` | `relayvsr_x2_lightx2v_int8_convrot.safetensors` | 4.8 GB | W6 | [Comfy-Org/RelayVSR](https://huggingface.co/Comfy-Org/RelayVSR/resolve/main/diffusion_models/relayvsr_x2_lightx2v_int8_convrot.safetensors) |
 | `vae/` | `relayvsr_flash_vae_x2_fp32.safetensors` | 121 MB | W6 | [Comfy-Org/RelayVSR](https://huggingface.co/Comfy-Org/RelayVSR/resolve/main/vae/relayvsr_flash_vae_x2_fp32.safetensors) |
+| `diffusion_models/` | `kandinsky_imagesr2_t0.15_comfy_bf16.safetensors`, `..._t0.244_...` | 11.7 GB each | W7 (x2 / x4) | made by `convert_kandinsky_sr.py` from [kandinskylab/Kandinsky-ImageSR-2.0](https://huggingface.co/kandinskylab/Kandinsky-ImageSR-2.0) (10.4 GB download) ⁴ |
+| `vae/` | `kandinsky_imagesr2_flux1_vae.safetensors` | 168 MB | W7 | the `vae/` of the same release (FLUX.1 VAE), renamed |
+| `text_encoders/` | `qwen_2.5_vl_7b_fp8_scaled.safetensors` | 9.4 GB | W7 (required by the native model, output ignored) | [Comfy-Org/HunyuanVideo_1.5_repackaged](https://huggingface.co/Comfy-Org/HunyuanVideo_1.5_repackaged/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors) |
+| `text_encoders/` | `clip_l.safetensors` | 246 MB | W7 (same) | [comfyanonymous/flux_text_encoders](https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors) |
 
 ¹ Gated repository: accept the Black Forest Labs license on Hugging Face before downloading.
 ² Use this full VAE. The `full_encoder_small_decoder` from the klein template makes the first frame blurry.
 ³ Public repository. Both klein 9B models are under the FLUX non-commercial license.
+⁴ Download the release to `models/diffusers/Kandinsky-ImageSR-2.0/`, then run `python -I -X utf8 convert_kandinsky_sr.py --t 0.15` (and `--t 0.244`). MIT license.
 
 ```text
 ComfyUI/models/

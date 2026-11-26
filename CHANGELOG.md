@@ -11,6 +11,13 @@ Path abbreviations:
 
 ---
 
+## 2026-11-25 — #64 W7 image SR gets its own folders (v3 / x4 v2), out of motion/
+**User's decision:** image SR is not part of the motion flow, so its files leave `motion/`.
+**Moved (nothing deleted):** `IN/motion/sr/*` → `IN/image-sr/` (frame0 and the 480×680 product test); `OUT/motion/sr/*` → `OUT/image-sr/` (x2 frame0 results and comparisons in `x2/`, the x4 run in `x4/`). The empty `motion/sr/` folders were removed.
+**Created:** `build_W7_v3.py` → `W7_image-sr_v3_api.json` (x2, prefixes `image-sr/x2/kandinsky|bicubic`, default input `fernanda_ref.png`); `build_W7x4_v2.py` → `W7_image-sr-x4_v2_api.json` (x4, `image-sr/x4/…`, default input `image-sr/caramel-tank-jeans_front_480x680.png`). Same graph and values as v2 / x4 v1. `WF/motion_W7_image-sr_v3.json` and `WF/motion_W7_image-sr-x4_v2.json` (copies in `ui_tests/`) were made from the user's 21:56 saves of v2 / x4 v1 by changing only the two save prefixes, the x4 input and the note (ComfyUI was closed, so no `graphToPrompt()` this time; the widget values match the API JSONs).
+**ComfyUI (`WF/`):** removed the superseded `motion_W7_image-sr_v1`, `_v2` and `-x4_v1` (the user's 21:56 saves are archived as `ui_tests/*_resaved-2026-11-25-2156.json`; identical copies checked before removal). `WF/` now has the 3 production workflows + W7 v3 + W7 x4 v2.
+**Docs:** README (W7 side tool paragraph, models table + note ⁴), CLAUDE.md (W7 line).
+
 ## 2026-11-25 — #63 W7 image SR x4 v1 run: small photo ×4, strong result
 **Run** (the user): `motion_W7_image-sr-x4_v1` on `IN/fernanda_ref.png` (406×483, not a multiple of 16 → the pad/crop fix of #62 worked) → `OUT/motion/sr/x4/kandinsky_00001_.png` + `bicubic_00001_.png`, 1624×1932, saved 21:53. W7 v2 (x2) has not run yet.
 **Image:** from a very soft 406 px photo to a sharp portrait: eyes, lashes, teeth, lips, skin, the rib knit of the top and the book spines are rebuilt; colors kept (mean RGB within ~1 level, mean abs difference 4/255 at the input size). At x4 the model invents plausible detail (e.g. stronger lines around the eyes, exact tooth shapes, the knit ribs): good for a small reference, but it is reconstruction, not recovery.
