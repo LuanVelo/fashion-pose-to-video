@@ -16,7 +16,7 @@ Plan: `plan.md`. Runs and flags: `runs.csv`. Videos: `output/motion/experiments/
 - The stripe defect is **not specific to the new poses**: it appears on the production pose `look-02` with the production product (caramel, seed 222).
 - A re-run with the same seed gives the same video (EXP-000 vs EXP-001 at seed 20261121: mean difference 1–2 / 255 per pixel). Results are reproducible, so a good seed stays good for the same input.
 - `w-turn-03` with seed 20261121 does not hold the turn to the back (the skeleton faces back from frame ~64 to the end).
-- The red mark on the neck in every navy `w-turn-03` run comes from **frame 0 (stage 1)**, since it is the same in the 3 seeds: a separate defect of the first frame.
+- **Correction (the user's catch): it is not a "red mark", it is a second face drawn on the neck** in every navy `w-turn-03` run. It comes from **frame 0 (stage 1, FLUX.2 klein)**, so it is the same in the 3 seeds. Cause, from the skeleton overlay on frame 0: the generated person is larger than the skeleton, so the skeleton's face points (eyes, ears, nose) land on the person's neck, and klein paints a face there. A separate defect: **skeleton vs person size mismatch in stage 1**. It is the same mechanism as the stripes (the model draws what the skeleton marks), here on the face points.
 
 ## Review flags
 They missed 2 of the 6 failures: thin white lines on denim (caramel `look-02` s222, navy `w-turn-03` s222 with edge p90 1.03). Denim already has many edges, so the edge share hardly moves. The flags help, but **the human review of every video stays mandatory**. Possible improvement: compare against the product colors (white is not in the jeans) instead of frame 0.
@@ -25,4 +25,4 @@ They missed 2 of the 6 failures: thin white lines on denim (caramel `look-02` s2
 The problem is **robustness**, not pose selection. Next:
 1. **EXP-002 (plan phase 4, H-b):** video prompt without the motion words that fight the pose + a short garment description, same 4 pairs × same 3 seeds, so it compares 1:1 with this baseline (12 runs).
 2. Production rule until then: generate **2–3 seeds per video** and keep the one that passes the review.
-3. Stage 1 neck mark: a separate check on frame 0 (navy + `w-turn-03`).
+3. Stage 1 face on the neck: align the skeleton to the person before stage 1 (plan H-a: same height and head position as the person in the product photo), and add an automatic frame 0 check (skeleton head inside the generated head) before stage 2 runs.
