@@ -11,6 +11,24 @@ Path abbreviations:
 
 ---
 
+## 2026-11-27 — #69 W5 v20 with the new poses: the garment drifts; tests stopped, plan approved
+**Runs** (by Claude, on the user's request; W5 v20 API with only name, product, pose and the tested value changed; 1 video seed each; outputs in `OUT/motion/production/`):
+1. `caramel-tank-jeans_w-side-04` (skeleton 4:5): frame 0 right, then the outfit turns into a beige knit set with the skeleton lines painted on it as stripes; the bag disappears; the turn to profile is not followed.
+2. Same with the skeletons **cropped to 9:16** (all 26 cropped around the body to 576×1024, originals and keyframes too; 4:5 files kept as `.previous-<date>`): same defect.
+3. `navy-polo-jeans_w-side-04` (the user's image `IN/image (3).png`, copied to `IN/motion/products/navy-polo-jeans_front.png`): much better, faint lines on the polo, no turn to profile.
+4. `test_caramel_w-side-04_cn045` (ControlNet 0.45) and `_s080` (skeleton scaled to 80%): the jeans become a striped skirt / dress.
+5. Control `test_control_caramel_look-02` (W5 v20 defaults): good, as before → the environment is fine.
+6. `test_caramel_w-turn-03`: good (turns to profile and back, garment and bag kept). `test_caramel_w-side-04_end025` (ControlNet end 0.25): fails.
+7. **Pose QA batch** `pose-qa/caramel-tank-jeans_<pose>`, stopped by the user after 10: pass `m-side-03`, `m-side-04`, `m-turn-02`, `m-turn-03` (arm artifact), `w-hands-02`, `w-side-01`; fail `m-side-02`, `w-shift-01` (stripes), `m-side-05` (model cut by the frame at frame 0), `w-hands-01` (extra arms at frame 0, stripes).
+8. **Turbo off** (20 steps) on the 4 stripe failures, `pose-qa-turbo-off/`: fixes `w-hands-01` only; the other 3 get worse (garment already wrong at frame 0). Side-by-side `compare_turbo-on-vs-off_<pose>.mp4`.
+9. **Second product on the 8 "approved" poses** `pose-qa/navy-polo-jeans_<pose>`: `look-02` fails (blue waves on the polo), `w-turn-03` has a red mark on the neck (the user also saw an extra face), `m-side-03` ran; the rest was cancelled when the user stopped everything.
+**Analysis:** facing (front/back, from the limb colors) and skeleton jitter do not separate passes from fails; turning to the back is not by itself the cause (5 back turns passed). A model cut by the frame does break frame 0. The defect depends on pose **and** product.
+**Process problem (the user's call):** ~20 single-seed runs in a trial-and-error chain, videos judged on 5–6 frames (missed an extra face and drift), results shown without comparison. The user stopped all runs and asked for a plan.
+**Plan (approved):** `PROJ/1 - AI instructions/plan-2026-11-27-pose-catalog-and-inputs.md` (Portuguese reading copy `.pt.md`, not versioned): rules (hypothesis + control written first, 3 video seeds, full review, comparisons), phase 0 record fix, phase 1 review tools, phase 2 seed baseline, phase 3 input standardization outside ComfyUI, phase 4 causes one at a time, phase 5 pose validation on 3 reference products.
+**New:** `generation_report.py` (per generation `report.mp4`: product | original pose video | skeleton | generated, + local index `OUT/motion/production/reports.html`); rule added to CLAUDE.md. Local W5 pose list cleaned: `IN/motion/poses/` keeps the 7 candidates + `look-02`; `poses_rejected/` (5) and `poses_untested/` (14), nothing deleted.
+**Phase 1 (review tools):** `generation_review.py <name>` writes `review_sheet.jpg` (every 8th frame, each tile with its values) and `review.json` next to the video, with 3 flags on the garment region (person against the plain background, head excluded): *drift* (color histogram vs frame 0), *new colors* (colors absent from frame 0) and *edge* (strong-edge share vs frame 0, catches stripes and painted lines). Calibrated on 12 existing runs: the 7 good ones stay at drift ≤ 0.45 / new ≤ 0.05 / edge p90 ≤ 0.86; all 4 known bad ones are flagged (drift 0.75–0.90, or edge p90 1.5–2.0, which is what catches the navy `look-02` waves). Limits 0.50 / 0.10 / 1.25, flag at ≥ 5 frames. Faces and extra limbs are not detected: the human review stays.
+**Repo (phase 0):** `2 - files/pose-catalog/` now holds the 9:16 skeletons, says "extracted, NOT validated", and `catalog.csv` gets the local group and the W5 results per product. README and CLAUDE.md corrected.
+
 ## 2026-11-27 — #68 Pose catalog: 26 skeletons from the 5.2 s clips (W1 v3 batch) + W1 start bug
 **Run:** on the user's explicit request, Claude queued W1 v3 (`W1_extract-pose_v3_api.json`, values unchanged except pose name, video and start) once per 5.2 s clip of #67. This is an exception to the "never run workflows" rule, for this batch only. Sources were copied to `IN/motion/sources/`. ~45 s per pose.
 **Names:** `<gender>-<type>-<nn>` (`w`/`m`; `turn`, `side`, `hands`, `shift`, `walk`), e.g. `w-turn-01`, `m-side-02`. Local map pose ↔ source clip: `3 - Assets/referencias de pose/ecommerce/review_pose_plan.json` (gitignored).
