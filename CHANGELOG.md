@@ -11,6 +11,12 @@ Path abbreviations:
 
 ---
 
+## 2026-11-27 — #71 EXP-001 seed baseline: the failures are seed luck, not the pose
+**Experiment** `04_experiments/EXP-001_2026-11-27_seed-baseline/` (plan written first, approved by the user; plan phase 2): W5 v20 unchanged, 2 products (caramel, navy polo) × 2 poses (`look-02`, `w-turn-03`) × 3 video seeds (20261121, 111, 222; node 221), image seed fixed. 12 runs (~47 min), outputs in `OUT/motion/experiments/EXP-001_2026-11-27_seed-baseline/` (W5 node 2 prefix overridden at queue time), each with `report.mp4` + `review_sheet.jpg`, plus `seeds_<product>__<pose>.mp4` (skeleton | 3 seeds).
+**Result (full review):** no pair is 3/3 the same. Seed 111 passed all 4 pairs; seed 222 failed all 4 with stripes (including the production pair caramel + `look-02`); seed 20261121 mixed (navy `look-02` waves; `w-turn-03` does not hold the turn to the back). Same-seed re-runs are reproducible (mean difference 1–2/255 vs EXP-000). The navy `w-turn-03` neck mark comes from frame 0 (stage 1).
+**Review flags:** missed 2 of 6 failures (thin white lines on denim) → human review stays mandatory; next flag version should compare with the product colors.
+**Proposed next:** EXP-002 = video prompt without the conflicting motion words + garment description, same 4 pairs × same 3 seeds (1:1 with the baseline); until a fix, production uses 2–3 seeds per video + review.
+
 ## 2026-11-27 — #70 New folder structure (repo + ComfyUI motion folders)
 **Why:** the user found the project hard to follow: tests, library, references and production were mixed, with Portuguese and English names. Approved structure: one folder per job, numbered in the order of the work. Nothing was deleted; repo files moved with `git mv` (history kept). Paths in older CHANGELOG entries are the old ones.
 **Repo, before → after:**

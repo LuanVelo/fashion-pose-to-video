@@ -23,3 +23,4 @@ The videos stay in ComfyUI: `output/motion/experiments/EXP-<nnn>_…/<product>__
 | ID | Date | Question | Result |
 |---|---|---|---|
 | [EXP-000](EXP-000_2026-11-27_trial-chain/result.md) | 2026-11-27 | (no plan) trial-and-error chain on the new poses | garment drift with most new skeletons; process stopped, plan written |
+| [EXP-001](EXP-001_2026-11-27_seed-baseline/result.md) | 2026-11-27 | are the failures systematic or seed luck? (2 products × 2 poses × 3 seeds) | **seed luck**: no pair 3/3; seed 111 passed all 4, seed 222 failed all 4 (stripes), also on `look-02` + caramel |

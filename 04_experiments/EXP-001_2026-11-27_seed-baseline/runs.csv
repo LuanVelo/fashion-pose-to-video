@@ -1,0 +1,13 @@
+generation,product,pose,video_seed,workflow,changed_values,flags (generation_review.py),verdict (full review)
+caramel-tank-jeans__look-02__s20261121,caramel-tank-jeans,look-02,20261121,W5 v20,none (video seed only),ok: drift 0.354 new 0.028 edge 0.67,PASS
+caramel-tank-jeans__look-02__s111,caramel-tank-jeans,look-02,111,W5 v20,none (video seed only),ok: drift 0.33 new 0.027 edge 0.6,PASS
+caramel-tank-jeans__look-02__s222,caramel-tank-jeans,look-02,222,W5 v20,none (video seed only),ok: drift 0.351 new 0.035 edge 0.65,FAIL: white lines on the jeans from frame ~16
+navy-polo-jeans__look-02__s20261121,navy-polo-jeans,look-02,20261121,W5 v20,none (video seed only),FLAG: drift 0.291 new 0.059 edge 2.12,FAIL: blue waves on the polo from frame ~48 (same as EXP-000)
+navy-polo-jeans__look-02__s111,navy-polo-jeans,look-02,111,W5 v20,none (video seed only),ok: drift 0.333 new 0.035 edge 0.72,PASS
+navy-polo-jeans__look-02__s222,navy-polo-jeans,look-02,222,W5 v20,none (video seed only),FLAG: drift 0.206 new 0.034 edge 1.88,FAIL: white stripes on the jeans from frame ~16
+caramel-tank-jeans__w-turn-03__s20261121,caramel-tank-jeans,w-turn-03,20261121,W5 v20,none (video seed only),ok: drift 0.447 new 0.032 edge 0.73,PARTIAL: garment ok; turns to profile and back to front instead of staying back; bag changes hands
+caramel-tank-jeans__w-turn-03__s111,caramel-tank-jeans,w-turn-03,111,W5 v20,none (video seed only),ok: drift 0.466 new 0.042 edge 0.67,"PASS: full turn to the back, garment and bag ok"
+caramel-tank-jeans__w-turn-03__s222,caramel-tank-jeans,w-turn-03,222,W5 v20,none (video seed only),FLAG: drift 0.572 new 0.09 edge 0.63,"FAIL: jeans lighter frames 8-24, striped jeans from frame ~88"
+navy-polo-jeans__w-turn-03__s20261121,navy-polo-jeans,w-turn-03,20261121,W5 v20,none (video seed only),ok: drift 0.357 new 0.036 edge 0.85,"PARTIAL: garment ok; turns back then front again; red mark on the neck (frame 0, stage 1)"
+navy-polo-jeans__w-turn-03__s111,navy-polo-jeans,w-turn-03,111,W5 v20,none (video seed only),ok: drift 0.393 new 0.055 edge 1.0,"PASS (red mark on the neck at the start, from frame 0 / stage 1)"
+navy-polo-jeans__w-turn-03__s222,navy-polo-jeans,w-turn-03,222,W5 v20,none (video seed only),ok: drift 0.232 new 0.039 edge 1.03,FAIL: white stripes on the jeans (back) from frame ~80; neck mark
