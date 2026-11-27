@@ -11,6 +11,16 @@ Path abbreviations:
 
 ---
 
+## 2026-11-27 — #67 E-commerce pose catalog: 30 clips of 5.2 s + 94 of 3 s (ASOS, Zalando)
+**Why:** batch 1 (Pexels, #66) had non-catalog poses and framing problems. Goal: 100+ pose clips from fashion e-commerce product videos (studio, professional models). Internal use only (skeleton reference); originals never published.
+**Source pilot:** ASOS best (direct mp4, 1080×1350, 50 fps); Zalando good but mixed (HLS, ads, close-ups, street shots). Zara hard; COS, H&M, Net-a-Porter, Boohoo, Farm, Animale, Dafiti without product video; Mango and Revolve blocked (403); Renner in a queue.
+**Download** (user approved): 177 ASOS + 57 Zalando = 234 videos, ~900 MB, 0 failures, in `PROJ/3 - Assets/referencias de pose/ecommerce/<store>/` + `manifest.csv` (not versioned).
+**Review:** local review page (OK / reject, clips with type and start, women/men filter, separate 5.2 s / 3 s counters). The user reviewed the first 59 videos (48 OK); then clips were proposed by shot-cut detection (first and last shot of each video) and every proposal was checked on 4-frame strips (start → end): head cropped, close-ups, street shots and cuts inside the clip were dropped. The user approved the result.
+**Finding:** these videos are edited (~3–4 s full body → close-up → full body), so only ~1 in 4 kept videos has 5.2 s of continuous full body; ~1 in 5 ASOS videos crops the head. User's decision: allow 3 s clips, but **keep them apart and use only the 5.2 s clips for now** so the W1 v3 → W5 v20 flow does not change.
+**Result:** `review_clips_5.2s.json` = 30 clips (22 women, 8 men; turn-360 14, side 12, hands 2, walk-in 1, stand-shift 1; ASOS 24, Zalando 6). `review_clips_3s.json` = 94 clips (80 women, 14 men). `review.json` = all verdicts, notes and clips. 131 videos kept; the 103 rejected sent to the Windows Recycle Bin.
+**Repo:** `.gitignore` now also ignores `3 - Assets/**/manifest*.csv` and `review*.json` (videos were already ignored). README of the folder: new e-commerce catalog section.
+**Next:** W1 v3 on the 30 clips of 5.2 s → skeleton catalog. 100 clips of 5.2 s would need another harvest from sources with longer takes, or a 3 s flow (W1 v4 / W5 v21).
+
 ## 2026-11-25 — #66 Six new reference videos for the pose catalog (Pexels)
 **Search:** ~285 vertical Pexels videos (12 queries: model posing, lookbook, catwalk, turning around…) filtered by metadata (≥5 s, one person, no close-ups), then checked at the start, middle and end of each clip (full body in frame all the time, static camera). 13 candidates (10 main + 3 reserves) downloaded in HD to a temporary `candidatos/` folder and reviewed by the user in a local OK / reject page.
 **Kept (6)** in `PROJ/3 - Assets/referencias de pose/` (not versioned): `pexels_3888256` (beige suit), `pexels_7507265` (cardigan), `pexels_7760060` (jeans + coat), `pexels_8798401` (green dress, 720×1366), `pexels_8992290` (dress + turn, back view), `pexels_9558748` (man, white backdrop). **Rejected (7)**, sent to the Windows Recycle Bin: 4831678, 7760072, 9034585, 9558954, 40035918, 40738019, 6323266. The review page, its temporary server config and the `candidatos/` folder were removed.

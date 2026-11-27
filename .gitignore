@@ -19,3 +19,7 @@ __pycache__/
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# E-commerce pose catalog: manifest and review files (third-party links)
+3 - Assets/**/manifest*.csv
+3 - Assets/**/review*.json

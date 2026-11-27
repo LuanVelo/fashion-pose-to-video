@@ -21,3 +21,16 @@ The 1080×2048 / 720×1366 files are slightly taller than 9:16 (~1:1.9). W1 v3 k
 
 A good reference video: one person, full body, static camera, good lighting, at least 5 s, ideally 24 fps and vertical 9:16.
 To use it in ComfyUI, copy it to the `input/` folder and run `motion_W1_extract-pose_v3`, then `catalog.py pose <pose>`.
+
+## E-commerce pose catalog (2026-11-27)
+
+Fashion product videos from **ASOS** and **Zalando** (studio, plain backdrop, professional models), used **only internally as skeleton references**. The videos, the manifest and the review files are never published and never committed (see `.gitignore`).
+
+- Folder: `ecommerce/asos/` and `ecommerce/zalando/` (`<store>_<product id>.mp4`). 234 downloaded, 131 kept after review, 103 sent to the Recycle Bin.
+- `ecommerce/manifest.csv`: store, category (`w-…` women, `m-…` men), size, fps, length, product page, video URL, download date.
+- `ecommerce/review.json`: verdict per video, gender, note when a video has no clip, and its clips (`name`, `start`, `length`, `type`).
+- `ecommerce/review_clips_5.2s.json`: **30 clips of 5.2 s** (22 women, 8 men). These are the ones used for skeletons now, with W1 v3 unchanged.
+- `ecommerce/review_clips_3s.json`: 94 clips of 3 s (80 women, 14 men), kept apart for a future 3 s flow (needs new W1/W5 versions).
+- Pose types: `walk-in`, `walk-turn`, `turn-360`, `stand-shift`, `hands`, `side`, `other`.
+
+What makes a clip usable: full body **with the head** in every frame, static camera, one person, no cut inside the clip. These product videos are edited (about 3–4 s of full body → close-up → full body again), so most of them only give 3 s clips; about 1 in 4 kept videos has 5.2 s of continuous full body. About 1 in 5 ASOS videos crops the head (not usable).
