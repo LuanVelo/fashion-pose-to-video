@@ -6,10 +6,10 @@
 *.gguf
 *.bin
 
-# Reference videos (third-party content)
-3 - Assets/**/*.mp4
-3 - Assets/**/*.mov
-3 - Assets/**/*.webm
+# Reference videos (third-party content): only the READMEs are versioned
+03_references/**/*.mp4
+03_references/**/*.mov
+03_references/**/*.webm
 
 # Files replaced by catalog.py, and OS clutter
 *.anterior-*
@@ -21,5 +21,13 @@ desktop.ini
 .DS_Store
 
 # E-commerce pose catalog: manifest and review files (third-party links)
-3 - Assets/**/manifest*.csv
-3 - Assets/**/review*.json
+03_references/**/manifest*.csv
+03_references/**/review*.json
+03_references/**/.claude/
+
+# Product images may be third-party photos: only their text files (description, meta) are versioned
+02_library/products/**/*.png
+02_library/products/**/*.jpg
+02_library/products/**/*.jpeg
+02_library/products/**/*.webp
+04_experiments/**/reviews/

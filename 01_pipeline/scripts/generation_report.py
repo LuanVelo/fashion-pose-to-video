@@ -1,14 +1,14 @@
 """One report per W5 generation: PRODUCT | ORIGINAL POSE VIDEO | SKELETON | GENERATED, side by side, in sync.
 
-For each generation folder OUT/motion/production/<name>/ it writes:
+For each generation folder OUT/motion/<name>/ it writes:
   report.mp4   4 panels with labels, 24 fps, same length as the generated video (the product photo is a still panel)
 and refreshes one local index page:
-  OUT/motion/production/reports.html   every generation as a row (product image + the 3 videos playing in sync)
+  OUT/motion/reports.html   every generation as a row (product image + the 3 videos playing in sync)
 
 The original pose video is third-party (e-commerce) footage: reports stay local, never in the repository.
 
 Usage (ComfyUI's Python):  python -I -X utf8 generation_report.py <name> <pose> <product image>
-  <name>     generation folder under OUT/motion/production/ (may include a subfolder, e.g. pose-qa/caramel-tank-jeans_w-turn-03)
+  <name>     generation folder under OUT/motion/, e.g. production/<product>_<pose> or experiments/EXP-001_<slug>/<product>__<pose>__s<seed>
   <pose>     pose folder under IN/motion/poses/
   <product>  product image path relative to IN/ (e.g. motion/products/caramel-tank-jeans_front.png)
   --index-only   only rebuild reports.html
@@ -19,8 +19,17 @@ import av, numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 IN_ROOT = r"D:\Comfy-Desktop\ComfyUI-Shared\input"
-OUT = r"D:\Comfy-Desktop\ComfyUI-Shared\output\motion\production"
+OUT = r"D:\Comfy-Desktop\ComfyUI-Shared\output\motion"
 POSES = os.path.join(IN_ROOT, "motion", "poses")
+PARKED = os.path.join(IN_ROOT, "motion", "poses_parked")
+
+
+def pose_dir(pose):
+    """The pose folder: input/motion/poses/<pose>, or input/motion/poses_parked/<group>/<pose> for rejected/untested poses."""
+    for d in [os.path.join(POSES, pose)] + sorted(glob.glob(os.path.join(PARKED, "*", pose))):
+        if os.path.isdir(d):
+            return d
+    raise SystemExit(f"pose not found: {pose}")
 H = 960          # panel height
 BAR = 36         # label bar height
 REGISTRY = os.path.join(OUT, "reports.json")
@@ -57,8 +66,8 @@ def font():
 def build(name, pose, product):
     gdir = os.path.join(OUT, name)
     gen = frames(newest(os.path.join(gdir, "video_0*.mp4")))
-    skel = frames(os.path.join(POSES, pose, "pose.mp4"))
-    orig_path = os.path.join(POSES, pose, "original.mp4")
+    skel = frames(os.path.join(pose_dir(pose), "pose.mp4"))
+    orig_path = os.path.join(pose_dir(pose), "original.mp4")
     orig = frames(orig_path) if os.path.exists(orig_path) else None
     prod = fit(Image.open(os.path.join(IN_ROOT, product)).convert("RGB"))
     n = len(gen)
@@ -106,7 +115,7 @@ def index():
         if not vids:
             continue
         rows.append({"name": name, "pose": r["pose"], "product": rel(os.path.join(IN_ROOT, r["product"])),
-                     "original": rel(os.path.join(POSES, r["pose"], "original.mp4")), "skeleton": rel(os.path.join(POSES, r["pose"], "pose.mp4")),
+                     "original": rel(os.path.join(pose_dir(r["pose"]), "original.mp4")), "skeleton": rel(os.path.join(pose_dir(r["pose"]), "pose.mp4")),
                      "generated": rel(vids[-1]), "report": rel(os.path.join(gdir, "report.mp4"))})
     page = """<!doctype html><meta charset="utf-8"><title>W5 generations</title>
 <style>body{font:14px system-ui,sans-serif;background:#111;color:#eee;margin:0}header{position:sticky;top:0;background:#1b1b1b;padding:10px 16px;z-index:2}

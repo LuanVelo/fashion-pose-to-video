@@ -2,7 +2,7 @@
 
 26 pose skeletons extracted with `motion_W1_extract-pose_v3` (SDPose whole-body, no face, with head) from studio product videos of fashion e-commerce stores (ASOS, Zalando). Each one is **5.2 s, 124 frames at 24 fps, 576×1024 (9:16)**, the same format as `look-02`.
 
-> **Status (2026-11-27): not validated.** In W5 v20 most of these skeletons make stage 2 change the garment and paint the skeleton lines on it as stripes. The defect depends on the pose *and* the product: even `look-02` fails with a second product. All results below come from **one seed** and a sparse review, so a "pass" is not proof. The validation plan is in [`1 - AI instructions/plan-2026-11-27-pose-catalog-and-inputs.md`](../../1%20-%20AI%20instructions/plan-2026-11-27-pose-catalog-and-inputs.md) (CHANGELOG #69).
+> **Status (2026-11-27): not validated.** In W5 v20 most of these skeletons make stage 2 change the garment and paint the skeleton lines on it as stripes. The defect depends on the pose *and* the product: even `look-02` fails with a second product. All results below come from **one seed** and a sparse review, so a "pass" is not proof. The validation plan is in [`00_docs/plans/plan-2026-11-27-pose-catalog-and-inputs.md`](../../00_docs/plans/plan-2026-11-27-pose-catalog-and-inputs.md) (CHANGELOG #69).
 
 ![Skeleton contact sheet](contact_sheet.jpg)
 
@@ -12,7 +12,7 @@
 - `catalog.csv`: one line per pose: gender, type, size, source store, local group (`candidate`, `rejected`, `untested`), W5 v20 result with the caramel product and with the navy polo product (1 seed each), skeleton notes.
 - `contact_sheet.jpg`: the 4 thumbnails of every pose.
 
-**Not here:** the original clips. They are third-party e-commerce videos, so they stay local only (`3 - Assets/referencias de pose/ecommerce/` and `input/motion/poses*/<pose>/original.mp4`).
+**Not here:** the original clips. They are third-party e-commerce videos, so they stay local only (`03_references/pose-videos/ecommerce/` and `input/motion/poses/<pose>/original.mp4` or `input/motion/poses_parked/*/<pose>/`).
 
 ## W5 v20 results so far (1 seed, sparse review)
 | Group | Poses | Caramel product |
@@ -37,5 +37,5 @@ With the navy polo product: `look-02` fails (blue waves on the polo), `w-turn-03
 - In profile, SDPose sometimes drops one leg for a few frames.
 
 ## Local pages (not in the repo)
-- `2 - files/workflows/pose_compare_page.py` → `input/motion/poses/compare.html`: original clip next to its skeleton.
-- `2 - files/workflows/generation_report.py` → `report.mp4` per W5 generation + `output/motion/production/reports.html`: product | original | skeleton | generated.
+- `01_pipeline/scripts/pose_compare_page.py` → `input/motion/poses/compare.html`: original clip next to its skeleton.
+- `01_pipeline/scripts/generation_report.py` → `report.mp4` per W5 generation + `output/motion/reports.html`: product | original | skeleton | generated.

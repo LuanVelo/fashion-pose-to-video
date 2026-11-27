@@ -11,6 +11,20 @@ Path abbreviations:
 
 ---
 
+## 2026-11-27 — #70 New folder structure (repo + ComfyUI motion folders)
+**Why:** the user found the project hard to follow: tests, library, references and production were mixed, with Portuguese and English names. Approved structure: one folder per job, numbered in the order of the work. Nothing was deleted; repo files moved with `git mv` (history kept). Paths in older CHANGELOG entries are the old ones.
+**Repo, before → after:**
+- `1 - AI instructions/` → `00_docs/plans/` (the plan) and `00_docs/research/` (face research); new `00_docs/decisions.md` (one line per decision, seeded with the main ones).
+- `2 - files/workflows/` → `01_pipeline/workflows/` (all `build_*.py` + `*_api.json` stay together because builds import earlier versions) with UI files in `ui/production/` (was `ui_production/`), `ui/tools/` (W7 v3 and x4 v2) and `ui/archive/` (was `ui_tests/`); scripts → `01_pipeline/scripts/` (`catalog.py`, `generation_report.py`, `generation_review.py`, `pose_compare_page.py`, `W4_*.py`, `convert_kandinsky_sr.py`).
+- `2 - files/pose-catalog/` → `02_library/poses/`; new `02_library/products/<product>/meta.json` (caramel-tank-jeans, navy-polo-jeans; images copied but not versioned), `02_library/models/` (future), `02_library/README.md` (status values).
+- `3 - Assets/referencias de pose/` → `03_references/pose-videos/` (contents moved; the old folder is empty but could not be removed while a session used it as its working folder).
+- New `04_experiments/` (README with the experiment rules and an index) with `EXP-000_2026-11-27_trial-chain/` (`result.md` + `runs.csv`: the 21 runs of #69 with flags and verdicts; `reviews/` not versioned).
+- New `05_approvals/approvals.csv`, seeded with the approvals so far (production W5 v16/v20, W6 v3, Pexels and e-commerce references, the plan, this structure; the "26 ready poses" claim marked withdrawn).
+- `.gitignore`: `3 - Assets/**` rules → `03_references/**`; product images and `04_experiments/**/reviews/` ignored.
+**ComfyUI folders (`IN/motion`, `OUT/motion`):** production paths unchanged (`input/motion/poses`, `products`, `sources`, `production`), so the production workflows keep working (checked: the W5 v20 default product and pose exist). Moved: `OUT/motion/{W2, W3a, W4, W5_v1…v19, W6_v1, catalogo, producao}` → `OUT/motion/_archive/`; the #69 test outputs (`production/test_*`, `pose-qa*`, the two `*_w-side-04`) → `OUT/motion/experiments/EXP-000_2026-11-27_trial-chain/`; `IN/motion/{W2, W3a, W6, _teste_B4-P13.mp4}` → `IN/motion/_archive/`; `IN/motion/poses_rejected|poses_untested` → `IN/motion/poses_parked/rejected|untested`.
+**Scripts:** `generation_report.py` / `generation_review.py` now take names relative to `OUT/motion/` (`production/…` or `experiments/EXP-…/…`); the report finds parked poses; the index moved to `OUT/motion/reports.html` (21 generations). Checked: `catalog.py list`, `pose_compare_page.py`, both report scripts and all builds (parse).
+**Docs:** README (layout, folders, links), CLAUDE.md (folder layout, example paths → `_archive/`), plan and pose catalog README links.
+
 ## 2026-11-27 — #69 W5 v20 with the new poses: the garment drifts; tests stopped, plan approved
 **Runs** (by Claude, on the user's request; W5 v20 API with only name, product, pose and the tested value changed; 1 video seed each; outputs in `OUT/motion/production/`):
 1. `caramel-tank-jeans_w-side-04` (skeleton 4:5): frame 0 right, then the outfit turns into a beige knit set with the skeleton lines painted on it as stripes; the bag disappears; the turn to profile is not followed.

@@ -32,7 +32,7 @@ On 2026-11-27 we ran ~20 W5 v20 generations in a trial-and-error chain (crop to 
 ## 4. Phases
 
 ### Phase 0 — Fix the record (no GPU, ~30 min)
-- The public catalog (`2 - files/pose-catalog/`, commit `266ded8`) says the 26 poses work. Change it to **"extracted, not validated"**, with the W5 results so far (pass/fail per product) and the defects found.
+- The public catalog (`02_library/poses/`, commit `266ded8`) says the 26 poses work. Change it to **"extracted, not validated"**, with the W5 results so far (pass/fail per product) and the defects found.
 - CHANGELOG #69: all tests of 2026-11-27 (what, settings, result), including the stop and this plan.
 - Local state stays as it is: approved / rejected / untested folders in `input/motion/poses*`, 9:16 crop with the 4:5 originals kept as `.previous-…`.
 

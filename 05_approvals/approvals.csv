@@ -1,0 +1,12 @@
+date,item,decision,by,evidence,notes
+2026-11-22,motion_W1_extract-pose_v3 / W5 / W6 English production flow,approved as production,user,CHANGELOG #38,
+2026-11-22,motion_W5_quality_v16 (speed: turbo 8 steps + CN 0.6/0.5 + INT8 attention),approved as production,user,CHANGELOG #48,replaced by v20
+2026-11-23,motion_W5_quality_v20 (v19 graph: sparse attention + klein 9B KV first frame),approved as production,user,CHANGELOG #57 #58,current production W5
+2026-11-23,motion_W6_upscale_v3 in the fast flow,approved,user,CHANGELOG #51,
+2026-11-25,6 Pexels reference videos (3888256 7507265 7760060 8798401 8992290 9558748),approved as pose references,user,CHANGELOG #66,7 others rejected
+2026-11-27,Fashion e-commerce sources (ASOS + Zalando) and download of 234 videos,approved,user,CHANGELOG #67,internal use only; originals never published
+2026-11-27,E-commerce clip review: 30 clips of 5.2 s + 94 of 3 s,approved,user,CHANGELOG #67,use only the 5.2 s clips for now
+2026-11-27,Publish skeletons (not originals) in the public repo,approved,user,CHANGELOG #68,
+2026-11-27,26 skeletons as 'ready' catalog,WITHDRAWN,user,CHANGELOG #69,most fail in W5 v20; catalog marked not validated
+2026-11-27,Plan pose catalog and inputs (00_docs/plans/plan-2026-11-27-pose-catalog-and-inputs.md),approved,user,CHANGELOG #69,
+2026-11-27,New folder structure (00_docs … 05_approvals),approved,user,CHANGELOG #70,

@@ -1,0 +1,8 @@
+{
+  "product": "caramel-tank-jeans",
+  "image": "front.png (copy of ComfyUI input/motion/products/caramel-tank-jeans_front.png, 1920x2720)",
+  "source": "the user's image IN/image (2).png, used since W5 v7 (CHANGELOG, W5 v7 entry)",
+  "garment": "caramel knit tank top, wide blue jeans, brown suede tote bag, black flip-flops",
+  "status": "reference product (production tests since W5 v7)",
+  "notes": "Light plain background. Hand in the pocket and a bag in the other hand."
+}

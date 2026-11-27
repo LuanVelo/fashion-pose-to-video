@@ -1,0 +1,22 @@
+generation,product,pose,video_seed,workflow,changed_values,flags (generation_review.py),verdict (sparse human review)
+caramel-tank-jeans_w-side-04,caramel-tank-jeans,w-side-04,20261121,W5 v20,"skeleton 4:5, then 9:16 (video_00002 = 9:16)",FLAG: drift 0.903 new 0.137 edge 0.96,"fail: stripes, garment swap"
+navy-polo-jeans_w-side-04,navy-polo-jeans,w-side-04,20261121,W5 v20,skeleton 9:16,ok: drift 0.196 new 0.03 edge 1.12,"fail: faint lines, no turn"
+pose-qa-turbo-off/caramel-tank-jeans_m-side-02,caramel-tank-jeans,m-side-02,20261121,W5 v20,turbo OFF (20 steps),FLAG: drift 0.33 new 0.006 edge 1.4,fail: striped pink trousers from frame 0
+pose-qa-turbo-off/caramel-tank-jeans_w-hands-01,caramel-tank-jeans,w-hands-01,20261121,W5 v20,turbo OFF (20 steps),ok: drift 0.461 new 0.027 edge 0.42,pass except extra arms at frame 0
+pose-qa-turbo-off/caramel-tank-jeans_w-shift-01,caramel-tank-jeans,w-shift-01,20261121,W5 v20,turbo OFF (20 steps),FLAG: drift 0.786 new 0.141 edge 0.7,fail: striped skirt
+pose-qa-turbo-off/caramel-tank-jeans_w-side-04,caramel-tank-jeans,w-side-04,20261121,W5 v20,turbo OFF (20 steps),ok: drift 0.298 new 0.009 edge 0.91,fail: knit dress from frame 0 (flags miss it: frame 0 already wrong)
+pose-qa/caramel-tank-jeans_m-side-02,caramel-tank-jeans,m-side-02,20261121,W5 v20,defaults (pose QA batch),FLAG: drift 0.751 new 0.125 edge 1.53,fail: stripes
+pose-qa/caramel-tank-jeans_m-side-03,caramel-tank-jeans,m-side-03,20261121,W5 v20,defaults (pose QA batch),ok: drift 0.417 new 0.047 edge 0.75,pass
+pose-qa/caramel-tank-jeans_m-side-04,caramel-tank-jeans,m-side-04,20261121,W5 v20,defaults (pose QA batch),ok: drift 0.359 new 0.022 edge 0.6,pass
+pose-qa/caramel-tank-jeans_m-side-05,caramel-tank-jeans,m-side-05,20261121,W5 v20,defaults (pose QA batch),FLAG: drift 0.336 new 0.071 edge 1.85,fail: model cut at frame 0
+pose-qa/caramel-tank-jeans_m-turn-02,caramel-tank-jeans,m-turn-02,20261121,W5 v20,defaults (pose QA batch),ok: drift 0.406 new 0.04 edge 0.67,pass
+pose-qa/caramel-tank-jeans_m-turn-03,caramel-tank-jeans,m-turn-03,20261121,W5 v20,defaults (pose QA batch),ok: drift 0.409 new 0.034 edge 0.63,pass (arm looks like a sleeve)
+pose-qa/caramel-tank-jeans_w-hands-01,caramel-tank-jeans,w-hands-01,20261121,W5 v20,defaults (pose QA batch),FLAG: drift 0.652 new 0.049 edge 0.46,"fail: extra arms frame 0, stripes"
+pose-qa/caramel-tank-jeans_w-hands-02,caramel-tank-jeans,w-hands-02,20261121,W5 v20,defaults (pose QA batch),ok: drift 0.41 new 0.023 edge 0.61,pass
+pose-qa/caramel-tank-jeans_w-shift-01,caramel-tank-jeans,w-shift-01,20261121,W5 v20,defaults (pose QA batch),FLAG: drift 0.822 new 0.254 edge 0.65,fail: stripes
+pose-qa/caramel-tank-jeans_w-side-01,caramel-tank-jeans,w-side-01,20261121,W5 v20,defaults (pose QA batch),ok: drift 0.395 new 0.025 edge 0.53,pass
+pose-qa/navy-polo-jeans_look-02,navy-polo-jeans,look-02,20261121,W5 v20,defaults (pose QA batch),FLAG: drift 0.293 new 0.059 edge 2.03,fail: blue waves on the polo
+pose-qa/navy-polo-jeans_m-side-03,navy-polo-jeans,m-side-03,20261121,W5 v20,defaults (pose QA batch),ok: drift 0.296 new 0.019 edge 0.77,not reviewed by the user
+pose-qa/navy-polo-jeans_w-turn-03,navy-polo-jeans,w-turn-03,20261121,W5 v20,defaults (pose QA batch),ok: drift 0.354 new 0.031 edge 0.86,issues: red mark on the neck; extra face reported by the user
+test_caramel_w-turn-03,caramel-tank-jeans,w-turn-03,20261121,W5 v20,defaults,ok: drift 0.449 new 0.034 edge 0.73,pass
+test_control_caramel_look-02,caramel-tank-jeans,look-02,20261121,W5 v20,defaults (control),ok: drift 0.35 new 0.029 edge 0.68,pass

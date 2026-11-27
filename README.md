@@ -58,7 +58,7 @@ flowchart LR
 
 **Why two stages?** The video starts from a first frame that already has the right garment in the right pose (stage 1, FLUX.2). H3 then animates from that frame, following the skeleton (stage 2), with the product photo as a reference. Making the frame first keeps the garment much more faithful than generating the video directly.
 
-**The bridge between steps.** ComfyUI only lists files from its `input` folder, while the workflows save to `output`. The [`catalog.py`](2%20-%20files/workflows/catalog.py) script copies results into `input` with fixed names and never deletes anything; a replaced file is kept as `.previous-<date>`.
+**The bridge between steps.** ComfyUI only lists files from its `input` folder, while the workflows save to `output`. The [`catalog.py`](01_pipeline/scripts/catalog.py) script copies results into `input` with fixed names and never deletes anything; a replaced file is kept as `.previous-<date>`.
 
 ---
 
@@ -66,44 +66,44 @@ flowchart LR
 
 | # | Workflow (ComfyUI) | Input | What it does | Output |
 |---|---|---|---|---|
-| 1 | [`motion_W1_extract-pose_v3`](2%20-%20files/workflows/ui_production/motion_W1_extract-pose_v3.json) | reference video, pose name, clip start and length (default 5.2 s) | cuts the clip using the fps (`ComfyMathExpression`), resamples to 124 frames, runs SDPose → skeleton without face and with head, at 24 fps | `output/motion/catalog/<pose>/`: pose, original and 4 thumbnails of each |
-| 2 | [`motion_W5_quality_v20`](2%20-%20files/workflows/ui_production/motion_W5_quality_v20.json) | product photo + `motion/poses/<pose>/pose.mp4` | stage 1: first frame (FLUX.2 klein 9B KV, 4 steps). Stage 2: video (H3 + turbo LoRA + ControlNet + sparse attention). INT8 attention on both. ~5 min. The pose for the first frame is frame 0 of `pose.mp4` | `output/motion/production/<product>_<pose>/`: frame0 and video |
-| 3 | [`motion_W6_upscale_v3`](2%20-%20files/workflows/ui_production/motion_W6_upscale_v3.json) | `motion/production/<name>.mp4` | RelayVSR x2, then downscale to 1080×1920; audio and fps copied from the input | same production folder: `video_2x` and `video_1080x1920` |
+| 1 | [`motion_W1_extract-pose_v3`](01_pipeline/workflows/ui/production/motion_W1_extract-pose_v3.json) | reference video, pose name, clip start and length (default 5.2 s) | cuts the clip using the fps (`ComfyMathExpression`), resamples to 124 frames, runs SDPose → skeleton without face and with head, at 24 fps | `output/motion/catalog/<pose>/`: pose, original and 4 thumbnails of each |
+| 2 | [`motion_W5_quality_v20`](01_pipeline/workflows/ui/production/motion_W5_quality_v20.json) | product photo + `motion/poses/<pose>/pose.mp4` | stage 1: first frame (FLUX.2 klein 9B KV, 4 steps). Stage 2: video (H3 + turbo LoRA + ControlNet + sparse attention). INT8 attention on both. ~5 min. The pose for the first frame is frame 0 of `pose.mp4` | `output/motion/production/<product>_<pose>/`: frame0 and video |
+| 3 | [`motion_W6_upscale_v3`](01_pipeline/workflows/ui/production/motion_W6_upscale_v3.json) | `motion/production/<name>.mp4` | RelayVSR x2, then downscale to 1080×1920; audio and fps copied from the input | same production folder: `video_2x` and `video_1080x1920` |
 
 Every workflow exists in three forms in this repo:
-- **UI** (`ui_production/*.json`): the file you open in ComfyUI, with groups and a usage note.
+- **UI** (`01_pipeline/workflows/ui/production/*.json`): the file you open in ComfyUI, with groups and a usage note.
 - **API** (`*_api.json`): the same graph in ComfyUI's API format.
 - **Generator** (`build_*.py`): the Python script that writes the API JSON. It is the source of truth for each version.
 
 **Speed (W5 v12 → v16, 2026-11-22):** the video went from ~27 min (v9/v11) to **~8.5 min end to end** with the same garment and motion and a slightly softer face. Steps: turbo LoRA 8 steps (v12, 14 min, but it painted the skeleton on the body) → ControlNet strength 0.6 / end 0.5 (v13, lines gone) → ComfyUI's native INT8 attention on the video model (v14, video 7 → 3.4 min) and on the first frame (v15, 4.9 → 3.1 min). v15 was promoted to production as v16. **W5 v17 → v20 (2026-11-23): ~8.4 → ~4.9 min** with native sparse attention on the video (v17) and the distilled FLUX.2 klein 9B KV for the first frame (4 steps in 3 s instead of 28 steps in 3 min; v18 copied the pose of the product photo, fixed in v19). v19 was promoted as v20. Details in [Speed](#speed) and in `CHANGELOG.md` #39–#58.
 
-**Side tool (test): W7 image super-resolution.** [`motion_W7_image-sr_v3`](2%20-%20files/workflows/ui_tests/motion_W7_image-sr_v3.json) (x2) and [`motion_W7_image-sr-x4_v2`](2%20-%20files/workflows/ui_tests/motion_W7_image-sr-x4_v2.json) (x4) upscale **still images** (first frame, product photos) with [Kandinsky ImageSR 2.0](https://github.com/kandinskylab/kandinsky-image-sr) (MIT, one diffusion step) using only native nodes. The release is a "baked" model without the text path, so [`convert_kandinsky_sr.py`](2%20-%20files/workflows/convert_kandinsky_sr.py) rebuilds it in ComfyUI's native Kandinsky 5 Image format for one timestep (t = 0.15 for x2, 0.244 for x4). Frame0 1088×1920 → 2176×3840 in 30 s; much sharper face, knit and denim, same colors. It works frame by frame, so it is **not** for the video (W6 stays). Inputs in `input/image-sr/`, outputs in `output/image-sr/x2|x4/`. Details in `CHANGELOG.md` #60–#64.
+**Side tool (test): W7 image super-resolution.** [`motion_W7_image-sr_v3`](01_pipeline/workflows/ui/tools/motion_W7_image-sr_v3.json) (x2) and [`motion_W7_image-sr-x4_v2`](01_pipeline/workflows/ui/tools/motion_W7_image-sr-x4_v2.json) (x4) upscale **still images** (first frame, product photos) with [Kandinsky ImageSR 2.0](https://github.com/kandinskylab/kandinsky-image-sr) (MIT, one diffusion step) using only native nodes. The release is a "baked" model without the text path, so [`convert_kandinsky_sr.py`](01_pipeline/scripts/convert_kandinsky_sr.py) rebuilds it in ComfyUI's native Kandinsky 5 Image format for one timestep (t = 0.15 for x2, 0.244 for x4). Frame0 1088×1920 → 2176×3840 in 30 s; much sharper face, knit and denim, same colors. It works frame by frame, so it is **not** for the video (W6 stays). Inputs in `input/image-sr/`, outputs in `output/image-sr/x2|x4/`. Details in `CHANGELOG.md` #60–#64.
 
-**Pose catalog: 26 skeletons, extracted but not validated.** [`2 - files/pose-catalog/`](2%20-%20files/pose-catalog/) holds 26 skeletons (5.2 s, 124 frames, 24 fps, 576×1024: 20 women, 6 men; turns, profiles, hands, weight shift, walk) extracted with W1 v3 from studio product videos of fashion e-commerce stores. Only the skeletons are in the repo, not the original clips. **In W5 v20 most of them make the video change the garment** (the skeleton lines turn into stripes), depending on pose and product; see the catalog [README](2%20-%20files/pose-catalog/README.md) and the [validation plan](1%20-%20AI%20instructions/plan-2026-11-27-pose-catalog-and-inputs.md). `look-02` is still the only pose proven in production, with the caramel product.
+**Pose catalog: 26 skeletons, extracted but not validated.** [`02_library/poses/`](02_library/poses/) holds 26 skeletons (5.2 s, 124 frames, 24 fps, 576×1024: 20 women, 6 men; turns, profiles, hands, weight shift, walk) extracted with W1 v3 from studio product videos of fashion e-commerce stores. Only the skeletons are in the repo, not the original clips. **In W5 v20 most of them make the video change the garment** (the skeleton lines turn into stripes), depending on pose and product; see the catalog [README](02_library/poses/README.md) and the [validation plan](00_docs/plans/plan-2026-11-27-pose-catalog-and-inputs.md). `look-02` is still the only pose proven in production, with the caramel product.
 
 > **W1 v3 ignores the clip start (ComfyUI 0.46.2 bug).** `VideoFrameSample` decodes from the start of the file and drops the trim done by `VideoTemporalCrop`, so W1 v3 always takes the first seconds of the video. Until W1 is fixed, cut the clip beforehand so it starts at 0 s, or leave the start at 0. Details in `CHANGELOG.md` #68.
 
-The test workflows (W1 v1/v2, W2, W3a, W5 v1–v19, W6 v1/v2, W7) are archived in [`ui_tests/`](2%20-%20files/workflows/ui_tests). Up to W5 v10 / W1 v2 / W6 v2 their labels are in Portuguese.
+The test workflows (W1 v1/v2, W2, W3a, W5 v1–v19, W6 v1/v2, W7) are archived in [`01_pipeline/workflows/ui/archive/`](01_pipeline/workflows/ui/archive). Up to W5 v10 / W1 v2 / W6 v2 their labels are in Portuguese.
 
 ---
 
 ## Step by step
 
 1. **Install the models** from the [table below](#models-download) into the folders shown.
-2. **Import the 3 workflows** from `2 - files/workflows/ui_production/` into ComfyUI (drag the `.json` onto the canvas, or copy it to `ComfyUI/user/default/workflows/`).
+2. **Import the 3 workflows** from `01_pipeline/workflows/ui/production/` into ComfyUI (drag the `.json` onto the canvas, or copy it to `ComfyUI/user/default/workflows/`).
 3. **Extract a pose:** copy the reference video into `ComfyUI/input/`, open `motion_W1_extract-pose_v3`, fill in the pose name and the clip, and run it.
 4. **Add the pose to the catalog:**
    ```bash
-   python -I -X utf8 "2 - files/workflows/catalog.py" pose look-02
+   python -I -X utf8 "01_pipeline/scripts/catalog.py" pose look-02
    ```
 5. **Generate the video:** put the product photo in `input/` and open `motion_W5_quality_v20`. Pick the product and `motion/poses/<pose>/pose.mp4`, and name it `<product>_<pose>`. Run it (~5 min on an RTX 4090).
 6. **Optional, comparison video:** builds the original | skeleton | generated video.
    ```bash
-   python -I -X utf8 "2 - files/workflows/catalog.py" compare caramel-tank-jeans_look-02 look-02
+   python -I -X utf8 "01_pipeline/scripts/catalog.py" compare caramel-tank-jeans_look-02 look-02
    ```
 7. **Upscale:**
    ```bash
-   python -I -X utf8 "2 - files/workflows/catalog.py" upscale caramel-tank-jeans_look-02
+   python -I -X utf8 "01_pipeline/scripts/catalog.py" upscale caramel-tank-jeans_look-02
    ```
    Open `motion_W6_upscale_v3`, pick `motion/production/<name>.mp4`, use the same name and run it (~1 min).
 
@@ -191,16 +191,22 @@ input/
 ├── <reference-video>.mp4                   ← W1 input
 └── motion/
     ├── products/<product>_front.png        ← product photos
-    ├── poses/<pose>/                       ← catalog (catalog.py pose)
+    ├── poses/<pose>/                       ← catalog (catalog.py pose); the W5 pose list
     │   ├── pose.mp4                        ← read by W5
     │   ├── original.mp4
     │   └── keyframes/pose-1..4.png, original-1..4.png
-    └── production/<product>_<pose>.mp4     ← W6 input (catalog.py upscale)
+    ├── poses_parked/rejected|untested/     ← poses kept out of the W5 list
+    ├── sources/                            ← reference clips for W1 (pre-cut, start 0)
+    ├── production/<product>_<pose>.mp4     ← W6 input (catalog.py upscale)
+    └── _archive/                           ← old test inputs
 
 output/motion/
 ├── catalog/<pose>/                         ← W1 output
 │   ├── pose_00001_.mp4 · original_00001_.mp4
 │   └── keyframes/
+├── experiments/EXP-<nnn>_…/<generation>/   ← tests (video, report.mp4, review_sheet.jpg, review.json)
+├── reports.html                            ← local page: every generation, product | original | skeleton | generated
+├── _archive/                               ← old test outputs (W2…W6 v1, W5_v1…v19, catalogo, producao)
 └── production/<product>_<pose>/            ← W5 and W6 outputs
     ├── frame0_00001_.png                   ← first frame (1536×2720)
     ├── video_00001_.mp4                    ← generated video (896×1600)
@@ -301,37 +307,50 @@ Measured on an RTX 4090, product `caramel-tank-jeans`, pose `look-02`, same seed
 
 ## Repository layout
 
+One folder per job, numbered in the order of the work (since 2026-11-27, `CHANGELOG.md` #70):
+
 ```text
 .
-├── README.md
-├── CHANGELOG.md                      log of every change (what, where, before → after, why)
-├── CLAUDE.md                         project briefing for the AI assistant used to build it
-├── 1 - AI instructions/              research notes (e.g. the face problem, plan A/B/C)
-├── 2 - files/workflows/
-│   ├── ui_production/                the 3 production workflows (open in ComfyUI)
-│   ├── ui_tests/                     archived test workflows (Portuguese labels)
-│   ├── build_*.py                    API JSON generators (one per version)
-│   ├── *_api.json                    workflows in API format
-│   ├── catalog.py                    output → input bridge (pose, upscale, compare, list)
-│   ├── W4_side_by_side.py            original | skeleton | generated video
-│   ├── W4_compare_versions.py        N videos side by side (--height, --frames)
-│   └── pose_compare_page.py          local page: original clip next to its skeleton
-├── 2 - files/pose-catalog/           26 pose skeletons (pose.mp4 + thumbnails, catalog.csv)
-├── 3 - Assets/referencias de pose/   reference videos (not versioned)
-└── docs/media/                       video, GIF and images used in this README
+├── README.md · CHANGELOG.md · CLAUDE.md
+├── 00_docs/                    what we think and decide
+│   ├── plans/                  plans (e.g. the pose catalog / inputs plan)
+│   ├── research/               research notes (e.g. the face problem, plan A/B/C)
+│   └── decisions.md            one line per decision: date, decision, why
+├── 01_pipeline/                what runs
+│   ├── workflows/
+│   │   ├── build_*.py          API JSON generators (one per version; they import each other)
+│   │   ├── *_api.json          workflows in API format
+│   │   └── ui/production|tools|archive/   UI workflows: the 3 in production, side tools (W7), old/test versions
+│   └── scripts/                catalog.py, generation_report.py, generation_review.py, pose_compare_page.py, W4_*.py, convert_kandinsky_sr.py
+├── 02_library/                 the source of truth for inputs, with status
+│   ├── poses/                  pose skeletons + catalog.csv (candidate / validated / rejected / untested)
+│   ├── products/<product>/     meta.json, description (images not versioned)
+│   └── models/                 (future) model identities
+├── 03_references/pose-videos/  reference videos and e-commerce clips (not versioned, README only)
+├── 04_experiments/             every test: EXP-<nnn>_<date>_<slug>/ with plan.md, runs.csv, result.md
+├── 05_approvals/approvals.csv  what was approved, by whom, when, with which evidence
+└── docs/media/                 video, GIF and images used in this README
 ```
+
+| To find… | Look in |
+|---|---|
+| what changed in the project | `CHANGELOG.md` |
+| why we decided something | `00_docs/decisions.md` |
+| what was tested and the result | `04_experiments/EXP-…/result.md` |
+| what is approved | `05_approvals/approvals.csv`, `02_library/poses/catalog.csv` |
 
 **Project rules:**
 - A change to a workflow becomes a new version (`_v2`, `_v3`…); nothing is overwritten.
 - Every change goes into `CHANGELOG.md`.
-- Every comparison becomes a side-by-side video.
+- Every test is an experiment folder with its plan written first (`04_experiments/README.md`).
+- Every comparison becomes a side-by-side video; every W5 generation gets a report (product | original | skeleton | generated).
 
 ---
 
 ## What is not in this repository
 
 - **Models:** download them from the links above.
-- **Reference videos** (`3 - Assets/`): third-party content, not versioned. That includes the e-commerce clips behind the pose catalog: only their skeletons are published.
+- **Reference videos** (`03_references/`): third-party content, not versioned. That includes the e-commerce clips behind the pose catalog: only their skeletons are published.
 - **ComfyUI outputs**, apart from the examples in `docs/media/`.
 
 The project was built with the help of [Claude Code](https://claude.com/claude-code). `CLAUDE.md` holds the briefing the assistant works from.

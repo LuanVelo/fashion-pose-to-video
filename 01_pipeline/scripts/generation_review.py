@@ -1,6 +1,6 @@
 """Review aid for one W5 generation: dense frame sheet + two automatic flags (they help the human review, they do not replace it).
 
-Writes next to the generation's video, in OUT/motion/production/<name>/:
+Writes next to the generation's video, in OUT/motion/<name>/:
   review_sheet.jpg   every 8th frame (16 frames), with the frame number and both flag values on each tile
   review.json        per-frame values and the summary
 
@@ -9,13 +9,13 @@ Flags (computed on the person, found against the plain studio background):
   novel  = share of garment pixels whose color did not exist in frame 0 (new colors: stripes, a different garment)
 
 Usage (ComfyUI's Python):  python -I -X utf8 generation_review.py <name> [<name> ...]
-  <name> = generation folder under OUT/motion/production/ (subfolders allowed, e.g. pose-qa/caramel-tank-jeans_w-turn-03)
+  <name> = generation folder under OUT/motion/, e.g. production/<product>_<pose> or experiments/EXP-001_<slug>/<product>__<pose>__s<seed>
 """
 import sys, os, glob, json
 import av, numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-OUT = r"D:\Comfy-Desktop\ComfyUI-Shared\output\motion\production"
+OUT = r"D:\Comfy-Desktop\ComfyUI-Shared\output\motion"
 STEP, BINS = 8, 12
 
 
