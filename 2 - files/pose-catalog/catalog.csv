@@ -1,0 +1,27 @@
+pose,gender,type,frames,fps,size,source_store,note
+m-side-02,men,side,124,24,800x1024,asos,
+m-side-03,men,side,124,24,704x1024,zalando,
+m-side-04,men,side,124,24,704x1024,zalando,
+m-side-05,men,side,124,24,704x1024,zalando,
+m-turn-02,men,turn-360,124,24,800x1024,asos,
+m-turn-03,men,turn-360,124,24,704x1024,zalando,
+w-hands-01,women,hands,124,24,800x1024,asos,skeleton missing for ~0.9 s while she bends forward (frames 65-85)
+w-hands-02,women,hands,124,24,800x1024,asos,
+w-shift-01,women,stand-shift,124,24,800x1024,asos,
+w-side-01,women,side,124,24,800x1024,asos,
+w-side-03,women,side,124,24,800x1024,asos,
+w-side-04,women,side,124,24,800x1024,asos,
+w-side-05,women,side,124,24,800x1024,asos,
+w-side-06,women,side,124,24,800x1024,asos,
+w-side-07,women,side,124,24,800x1024,asos,
+w-turn-01,women,turn-360,124,24,800x1024,asos,
+w-turn-03,women,turn-360,124,24,800x1024,asos,
+w-turn-04,women,turn-360,124,24,800x1024,asos,
+w-turn-05,women,turn-360,124,24,800x1024,asos,
+w-turn-06,women,turn-360,124,24,800x1024,asos,
+w-turn-07,women,turn-360,124,24,800x1024,asos,
+w-turn-08,women,turn-360,124,24,800x1024,asos,
+w-turn-09,women,turn-360,124,24,800x1024,asos,
+w-turn-10,women,turn-360,124,24,704x1024,zalando,skeleton weak for 3 frames (69-71)
+w-turn-11,women,turn-360,124,24,576x1024,zalando,skeleton weak for 3 frames (75-77)
+w-walk-01,women,walk-in,124,24,800x1024,asos,walks out of frame in the last ~0.3 s (frames 116-123)

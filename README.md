@@ -79,6 +79,10 @@ Every workflow exists in three forms in this repo:
 
 **Side tool (test): W7 image super-resolution.** [`motion_W7_image-sr_v3`](2%20-%20files/workflows/ui_tests/motion_W7_image-sr_v3.json) (x2) and [`motion_W7_image-sr-x4_v2`](2%20-%20files/workflows/ui_tests/motion_W7_image-sr-x4_v2.json) (x4) upscale **still images** (first frame, product photos) with [Kandinsky ImageSR 2.0](https://github.com/kandinskylab/kandinsky-image-sr) (MIT, one diffusion step) using only native nodes. The release is a "baked" model without the text path, so [`convert_kandinsky_sr.py`](2%20-%20files/workflows/convert_kandinsky_sr.py) rebuilds it in ComfyUI's native Kandinsky 5 Image format for one timestep (t = 0.15 for x2, 0.244 for x4). Frame0 1088×1920 → 2176×3840 in 30 s; much sharper face, knit and denim, same colors. It works frame by frame, so it is **not** for the video (W6 stays). Inputs in `input/image-sr/`, outputs in `output/image-sr/x2|x4/`. Details in `CHANGELOG.md` #60–#64.
 
+**Pose catalog: 26 ready skeletons.** [`2 - files/pose-catalog/`](2%20-%20files/pose-catalog/) holds 26 skeletons (5.2 s, 124 frames, 24 fps: 20 women, 6 men; turns, profiles, hands, weight shift, walk) extracted with W1 v3 from studio product videos of fashion e-commerce stores. Only the skeletons are in the repo, not the original clips. Copy a pose folder to `input/motion/poses/` and pick it in W5. See its [README](2%20-%20files/pose-catalog/README.md) and contact sheet.
+
+> **W1 v3 ignores the clip start (ComfyUI 0.46.2 bug).** `VideoFrameSample` decodes from the start of the file and drops the trim done by `VideoTemporalCrop`, so W1 v3 always takes the first seconds of the video. Until W1 is fixed, cut the clip beforehand so it starts at 0 s, or leave the start at 0. Details in `CHANGELOG.md` #68.
+
 The test workflows (W1 v1/v2, W2, W3a, W5 v1–v19, W6 v1/v2, W7) are archived in [`ui_tests/`](2%20-%20files/workflows/ui_tests). Up to W5 v10 / W1 v2 / W6 v2 their labels are in Portuguese.
 
 ---
@@ -290,6 +294,8 @@ Measured on an RTX 4090, product `caramel-tank-jeans`, pose `look-02`, same seed
 | Skeleton without the 68 face points | no effect on the face (kept, since it is cleaner) |
 | Bag carried in the hand | disappeared in the 20-step video (v9); **kept for the whole video** with turbo + ControlNet 0.6/0.5 (v13–v16) |
 | ComfyUI 0.46.2 bug | occasional `IndexError` in `free_memory` during VAEDecode; running again fixes it |
+| ComfyUI 0.46.2 bug (W1) | `VideoFrameSample` after `VideoTemporalCrop` ignores the crop start: W1 v3 always takes the clip from 0 s. Cut the clip beforehand |
+| Pose clips from e-commerce product videos | edited videos (full body ~3–4 s → close-up → full body): only ~1 in 4 has 5.2 s without a cut; check the cut frame by frame, and that the model is fully in frame at frame 0 |
 
 ---
 
@@ -308,7 +314,9 @@ Measured on an RTX 4090, product `caramel-tank-jeans`, pose `look-02`, same seed
 │   ├── *_api.json                    workflows in API format
 │   ├── catalog.py                    output → input bridge (pose, upscale, compare, list)
 │   ├── W4_side_by_side.py            original | skeleton | generated video
-│   └── W4_compare_versions.py        N videos side by side (--height, --frames)
+│   ├── W4_compare_versions.py        N videos side by side (--height, --frames)
+│   └── pose_compare_page.py          local page: original clip next to its skeleton
+├── 2 - files/pose-catalog/           26 pose skeletons (pose.mp4 + thumbnails, catalog.csv)
 ├── 3 - Assets/referencias de pose/   reference videos (not versioned)
 └── docs/media/                       video, GIF and images used in this README
 ```
@@ -323,7 +331,7 @@ Measured on an RTX 4090, product `caramel-tank-jeans`, pose `look-02`, same seed
 ## What is not in this repository
 
 - **Models:** download them from the links above.
-- **Reference videos** (`3 - Assets/`): third-party content, not versioned.
+- **Reference videos** (`3 - Assets/`): third-party content, not versioned. That includes the e-commerce clips behind the pose catalog: only their skeletons are published.
 - **ComfyUI outputs**, apart from the examples in `docs/media/`.
 
 The project was built with the help of [Claude Code](https://claude.com/claude-code). `CLAUDE.md` holds the briefing the assistant works from.
