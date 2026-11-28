@@ -1,6 +1,6 @@
 # EXP-007 — automatic frame-0 selection (stage 1 only)
 
-**Draft for the user's approval. Nothing runs before it.**
+**Approved by the user on 2026-11-28 ("rodar até resultado bom", overnight). Adjusted by the user: the visual approval stays human ("por enquanto somos nós que checamos, igual estamos fazendo"); no VLM checker.**
 
 ## Goal (the user's requirement)
 A **non-manual** fix for the frame-0 pose mismatch, that works the same for 100+ products: the system generates frame-0 candidates, scores them against the skeleton, keeps the best one or rejects the product with a reason. People only calibrate the rule once (this experiment) and approve final videos by sampling.
@@ -26,14 +26,16 @@ The W5 v20 API graph is sent **without the stage-2 nodes** (only what `SaveImage
 
 ## Automatic checks (all scripted, no human in the loop)
 - **A. Pose score:** `pose_keypoints.py extract` on each frame 0 → distance between the generated keypoints and the skeleton's frame-0 keypoints (wrists, elbows, shoulders, hips, knees, ankles, nose), normalized by the body height; plus "hand on the body side": wrist position relative to the hip (catches hand in a pocket vs hanging).
-- **B. Body-part count:** the pose detector looks for one person, so an extra hand may not show in A. Second check with a **local vision-language model through ComfyUI's native `TextGenerate` node** (image input) using the model already on disk `qwen_2.5_vl_7b_fp8_scaled` (no download): fixed question "How many hands does the person have? Is any hand inside a pocket? Answer as JSON." Parsed automatically.
+- **B. (dropped by the user)** VLM body-part count — the approval stays a human review; extra hands are checked by eye with zoom.
 - **C. Frame edges:** head and feet inside the frame (reuse the reframing numbers).
 
 ## Human calibration (once, this experiment only)
-I review all 48 frames 0 with zoom on hands, arms, feet and face and mark good / bad (the reference). Then: how many bad ones A, B, A+B catch (target: all of them), how many good ones they wrongly reject (target: few).
+I review all 48 frames 0 with zoom on hands, arms, feet and face and mark good / bad (the reference). Then: how many bad ones A catches (target: all of them), how many good ones they wrongly reject (target: few).
 
 ## Reading the result → the production rule
-- A+B agree with the review → rule = "generate N frames 0 (N from question 1), keep the best one that passes A+B+C, otherwise reject the product with the reason". N chosen so that every pair gets at least one good frame 0.
+- A agrees with the review → rule = "generate N frames 0 (N from question 1), keep the best one that passes A+C, otherwise reject the product with the reason". N chosen so that every pair gets at least one good frame 0.
 - P1 reduces bad frames 0 → it goes into the stage-1 prompt of W5 v21.
-- If B (VLM) is unreliable → test the larger local VLM (`qwen3vl_32b`, already on disk) before anything else.
 - Only after this: generate the videos of the selected frames 0 (needs a W5 variant that takes a given frame 0 — split stage 1 / stage 2, the speed idea already in CLAUDE.md).
+
+## Tools
+`01_pipeline/scripts/frame0_select.py stage1 …` (stage 1 only, per image seed) and `… score <skeleton.json> <frames>` (keypoint distance to the skeleton frame 0).

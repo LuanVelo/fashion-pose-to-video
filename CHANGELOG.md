@@ -11,6 +11,15 @@ Path abbreviations:
 
 ---
 
+## 2026-11-28 — #78 Overnight work: FARM product, frame-0 candidates, W5 v21 split (TEST) and the replicable flow
+**Requested by the user before sleeping:** keep running until results are good; goal = a replicable workflow for any e-commerce photo (FARM Rio as the reference); visual checks stay human ("por enquanto somos nós que checamos"; a VLM checker was started and removed on the user's word).
+**New product:** `02_library/products/farm-giovanna-jeans/` (FARM "Calça Jeans Giovanna", front photo from the store page, internal test use only).
+**Prep fix:** `reframe_product.py --kp-product --kp-pose` matches the eye line and ankles from SDPose keypoints (the FARM cap made the silhouette mode put the skeleton's eyes on the cap). Pose keypoints stored as `IN/motion/poses/<pose>/keypoints.json` (`look-02`, `w-turn-03`).
+**EXP-008 (FARM, EXP-006 setup):** `look-02` 3/3 clean; `w-turn-03` garment fine but the cap and the raffia bag are reinvented from the back → turning poses need a back photo.
+**EXP-007 (frame-0 candidates, stage 1 only, 48 frames):** frame-0 defects are seed-dependent (extra hand, painted lines, wrong sleeves, extra accessories); the arms/hands sentence (P1) cuts the extra hand on caramel `w-turn-03` from 4/6 to ~1/6; the keypoint score does not see the extra hand → generate candidates, choose by eye.
+**W5 v21 (TEST, production stays v20):** `build_W5_v21.py` → `W5_frame0_v21_api.json` (stage 1 + P1 sentence, output `motion/frame0/`) and `W5_video_v21_api.json` (stage 2 from a chosen first frame via LoadImage, EXP-006 video prompt, output `motion/video/`). UI versions not built yet.
+**Flow script:** `01_pipeline/scripts/run_product.py prep | frame0 | video` (+ `frame0_select.py`, `detail_sheet.py`). EXP-009 runs it end to end.
+
 ## 2026-11-28 — #77 Correction: extra hand in caramel + w-turn-03 (EXP-003, EXP-005, EXP-006)
 **The user's catch:** every caramel + `w-turn-03` video since EXP-003 has an **extra hand**: frame 0 (stage 1, klein) keeps the product's hand in the pocket **and** draws the skeleton's hanging hand on the same side. Same frame 0 for every seed (image seed fixed), so all seeds have it; the video prompt cannot fix it. My review missed it (1/8-frame sheets, no zoom on hands).
 **Corrected counts:** EXP-003 **7/12** (was 8), EXP-005 A **1/4** and B **1/4** (were 3/4), EXP-006 **9/12** (was 12/12). The other 9 confirmed perfect by the user (the line on the navy `look-02` s222 jeans is the trousers' crease and light, not a defect). EXP-004 (retargeted skeleton) had no extra hand on this pair's frame 0.

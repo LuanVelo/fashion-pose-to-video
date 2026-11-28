@@ -1,0 +1,419 @@
+{
+ "1": {
+  "class_type": "PrimitiveString",
+  "inputs": {
+   "value": "caramel-tank-jeans_look-02"
+  },
+  "_meta": {
+   "title": "Video name (<product>_<pose>)"
+  }
+ },
+ "2": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": "motion/frame0/",
+   "string_b": [
+    "1",
+    0
+   ],
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "Base folder (production)"
+  }
+ },
+ "3": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": [
+    "2",
+    0
+   ],
+   "string_b": "/frame0",
+   "delimiter": ""
+  },
+  "_meta": {
+   "title": "First frame prefix"
+  }
+ },
+ "5": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "motion/products/caramel-tank-jeans_front.png"
+  },
+  "_meta": {
+   "title": "Product (front, full body) - used in both stages"
+  }
+ },
+ "100": {
+  "class_type": "UNETLoader",
+  "inputs": {
+   "unet_name": "flux-2-klein-9b-kv-fp8.safetensors",
+   "weight_dtype": "default"
+  },
+  "_meta": {
+   "title": "Image model: klein 9B KV distilled"
+  }
+ },
+ "101": {
+  "class_type": "CLIPLoader",
+  "inputs": {
+   "clip_name": "qwen_3_8b_fp8mixed.safetensors",
+   "type": "flux2",
+   "device": "default"
+  }
+ },
+ "102": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "flux2-vae.safetensors"
+  },
+  "_meta": {
+   "title": "VAE flux2 (full decoder)"
+  }
+ },
+ "103": {
+  "class_type": "PrimitiveString",
+  "inputs": {
+   "value": ""
+  },
+  "_meta": {
+   "title": "Garment description (optional, English; leave empty)"
+  }
+ },
+ "104": {
+  "class_type": "StringConcatenate",
+  "inputs": {
+   "string_a": "Image 1 shows a fashion model wearing the product outfit. Image 2 is a pose skeleton (a colored stick figure on a black background): use it only as the target body pose. Create a new full-body fashion photograph of the same model from image 1, wearing exactly the same outfit from image 1, standing in exactly the pose shown by the skeleton in image 2: same position of head, shoulders, arms, hands, legs and feet, whole body visible from head to feet. The clothing must be copied only from image 1: keep every garment and accessory identical to image 1, with the same colors, fabric, texture, print, stripes, logos, trims, length and fit. Do not invent or replace any clothing. Do not copy the pose of image 1: the arms, hands, legs, head position, body framing and size in the frame come only from the skeleton in image 2. Keep the same face, hair, background and lighting as image 1. Arms, hands and legs must be exactly as in image 2: if image 2 shows the arms hanging, no hand is in a pocket, behind the back or on the hip. The person has exactly two arms and two hands. Photorealistic photo. Do not draw any skeleton lines or colored dots.",
+   "string_b": [
+    "103",
+    0
+   ],
+   "delimiter": "\n\nOutfit details, exactly as in image 1: "
+  },
+  "_meta": {
+   "title": "Image prompt"
+  }
+ },
+ "105": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "101",
+    0
+   ],
+   "text": [
+    "104",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Prompt (positive)"
+  }
+ },
+ "106": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "101",
+    0
+   ],
+   "text": ""
+  },
+  "_meta": {
+   "title": "Negative (empty)"
+  }
+ },
+ "107": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "5",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "megapixels": 2.0,
+   "resolution_steps": 1
+  },
+  "_meta": {
+   "title": "Product 2 MP"
+  }
+ },
+ "108": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "107",
+    0
+   ],
+   "vae": [
+    "102",
+    0
+   ]
+  }
+ },
+ "110": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "240",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "megapixels": 2.0,
+   "resolution_steps": 1
+  },
+  "_meta": {
+   "title": "Skeleton of frame 0, 2 MP"
+  }
+ },
+ "111": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "110",
+    0
+   ],
+   "vae": [
+    "102",
+    0
+   ]
+  }
+ },
+ "112": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "105",
+    0
+   ],
+   "latent": [
+    "108",
+    0
+   ]
+  }
+ },
+ "113": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "112",
+    0
+   ],
+   "latent": [
+    "111",
+    0
+   ]
+  }
+ },
+ "114": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "106",
+    0
+   ],
+   "latent": [
+    "108",
+    0
+   ]
+  }
+ },
+ "115": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "114",
+    0
+   ],
+   "latent": [
+    "111",
+    0
+   ]
+  }
+ },
+ "116": {
+  "class_type": "CFGGuider",
+  "inputs": {
+   "model": [
+    "131",
+    0
+   ],
+   "positive": [
+    "113",
+    0
+   ],
+   "negative": [
+    "115",
+    0
+   ],
+   "cfg": 1.0
+  },
+  "_meta": {
+   "title": "CFG 1 (distilled)"
+  }
+ },
+ "117": {
+  "class_type": "KSamplerSelect",
+  "inputs": {
+   "sampler_name": "euler"
+  }
+ },
+ "118": {
+  "class_type": "Flux2Scheduler",
+  "inputs": {
+   "steps": 4,
+   "width": 1088,
+   "height": 1920
+  },
+  "_meta": {
+   "title": "Image steps (4, distilled)"
+  }
+ },
+ "119": {
+  "class_type": "EmptyFlux2LatentImage",
+  "inputs": {
+   "width": 1088,
+   "height": 1920,
+   "batch_size": 1
+  },
+  "_meta": {
+   "title": "Frame size (1088x1920)"
+  }
+ },
+ "120": {
+  "class_type": "RandomNoise",
+  "inputs": {
+   "noise_seed": 20261121
+  },
+  "_meta": {
+   "title": "Image seed"
+  }
+ },
+ "121": {
+  "class_type": "SamplerCustomAdvanced",
+  "inputs": {
+   "noise": [
+    "120",
+    0
+   ],
+   "guider": [
+    "116",
+    0
+   ],
+   "sampler": [
+    "117",
+    0
+   ],
+   "sigmas": [
+    "118",
+    0
+   ],
+   "latent_image": [
+    "119",
+    0
+   ]
+  }
+ },
+ "122": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "121",
+    0
+   ],
+   "vae": [
+    "102",
+    0
+   ]
+  }
+ },
+ "123": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "122",
+    0
+   ],
+   "filename_prefix": [
+    "3",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Save first frame (STAGE 1)"
+  }
+ },
+ "130": {
+  "class_type": "ModelAttentionBackend",
+  "inputs": {
+   "model": [
+    "100",
+    0
+   ],
+   "attention": "comfy kitchen attention"
+  },
+  "_meta": {
+   "title": "Attention (image): INT8 comfy kitchen"
+  }
+ },
+ "131": {
+  "class_type": "FluxKVCache",
+  "inputs": {
+   "model": [
+    "130",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "KV cache for the reference images"
+  }
+ },
+ "210": {
+  "class_type": "LoadVideo",
+  "inputs": {
+   "file": "motion/poses/look-02/pose.mp4"
+  },
+  "_meta": {
+   "title": "Catalog POSE (motion/poses/<pose>/pose.mp4)"
+  }
+ },
+ "211": {
+  "class_type": "VideoFrameSample",
+  "inputs": {
+   "video": [
+    "210",
+    0
+   ],
+   "num_frames": 124,
+   "strategy": "uniform",
+   "seed": 0
+  },
+  "_meta": {
+   "title": "Ensure 124 frames"
+  }
+ },
+ "212": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "211",
+    0
+   ]
+  }
+ },
+ "240": {
+  "class_type": "ImageFromBatch",
+  "inputs": {
+   "image": [
+    "212",
+    0
+   ],
+   "batch_index": 0,
+   "length": 1
+  },
+  "_meta": {
+   "title": "Skeleton frame 0 (pose for the first frame)"
+  }
+ }
+}

@@ -1,0 +1,8 @@
+{
+  "product": "farm-giovanna-jeans",
+  "image": "front.png (2000x2783, converted from the store's JPEG)",
+  "source": "FARM Rio product page 'Calça Jeans Giovanna Jeans Claro' (373450-0101), image 1 (front), given by the user on 2026-11-28; internal test use only, never published",
+  "garment": "light blue wide-leg jeans with a beaded drawstring; light grey T-shirt with a colorful floral print; white cap; yellow raffia bag; orange sandals",
+  "status": "third reference product (patterned top) for tests",
+  "notes": "Hand in the pocket (her left) and a bag in the other hand: same pose conflict as the caramel product (good test for the frame-0 rule)."
+}
