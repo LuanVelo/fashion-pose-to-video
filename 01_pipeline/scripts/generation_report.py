@@ -7,10 +7,11 @@ and refreshes one local index page:
 
 The original pose video is third-party (e-commerce) footage: reports stay local, never in the repository.
 
-Usage (ComfyUI's Python):  python -I -X utf8 generation_report.py <name> <pose> <product image>
+Usage (ComfyUI's Python):  python -I -X utf8 generation_report.py <name> <pose> <product image> [<skeleton>]
   <name>     generation folder under OUT/motion/, e.g. production/<product>_<pose> or experiments/EXP-001_<slug>/<product>__<pose>__s<seed>
   <pose>     pose folder under IN/motion/poses/
   <product>  product image path relative to IN/ (e.g. motion/products/caramel-tank-jeans_front.png)
+  <skeleton> optional: skeleton video path relative to IN/ when W5 used another one (e.g. an aligned copy)
   --index-only   only rebuild reports.html
 """
 import sys, os, glob, json, html
@@ -63,17 +64,18 @@ def font():
     return ImageFont.load_default()
 
 
-def build(name, pose, product):
+def build(name, pose, product, skeleton=None):
     gdir = os.path.join(OUT, name)
     gen = frames(newest(os.path.join(gdir, "video_0*.mp4")))
-    skel = frames(os.path.join(pose_dir(pose), "pose.mp4"))
+    skel_path = os.path.join(IN_ROOT, skeleton) if skeleton else os.path.join(pose_dir(pose), "pose.mp4")
+    skel = frames(skel_path)
     orig_path = os.path.join(pose_dir(pose), "original.mp4")
     orig = frames(orig_path) if os.path.exists(orig_path) else None
     prod = fit(Image.open(os.path.join(IN_ROOT, product)).convert("RGB"))
     n = len(gen)
     pick = lambda seq, i: seq[min(round(i * (len(seq) - 1) / max(n - 1, 1)), len(seq) - 1)]
     panels = [("PRODUCT", lambda i: prod), ("ORIGINAL POSE VIDEO", (lambda i: fit(pick(orig, i))) if orig else (lambda i: Image.new("RGB", (round(H * 9 / 16), H)))),
-              ("SKELETON", lambda i: fit(pick(skel, i))), ("GENERATED", lambda i: fit(gen[i]))]
+              ("SKELETON (aligned)" if skeleton else "SKELETON", lambda i: fit(pick(skel, i))), ("GENERATED", lambda i: fit(gen[i]))]
     first = [p[1](0) for p in panels]
     W = sum(im.width for im in first) + 6 * (len(first) - 1)
     W += W % 2
@@ -100,7 +102,7 @@ def build(name, pose, product):
         o.mux(pk)
     o.close()
     reg = json.load(open(REGISTRY, encoding="utf-8")) if os.path.exists(REGISTRY) else {}
-    reg[name] = {"pose": pose, "product": product}
+    reg[name] = {"pose": pose, "product": product, **({"skeleton": skeleton} if skeleton else {})}
     json.dump(reg, open(REGISTRY, "w", encoding="utf-8"), indent=1)
     print("ok", out_path, f"{W}x{H + BAR}", n, "frames")
 
@@ -115,7 +117,7 @@ def index():
         if not vids:
             continue
         rows.append({"name": name, "pose": r["pose"], "product": rel(os.path.join(IN_ROOT, r["product"])),
-                     "original": rel(os.path.join(pose_dir(r["pose"]), "original.mp4")), "skeleton": rel(os.path.join(pose_dir(r["pose"]), "pose.mp4")),
+                     "original": rel(os.path.join(pose_dir(r["pose"]), "original.mp4")), "skeleton": rel(os.path.join(IN_ROOT, r["skeleton"]) if r.get("skeleton") else os.path.join(pose_dir(r["pose"]), "pose.mp4")),
                      "generated": rel(vids[-1]), "report": rel(os.path.join(gdir, "report.mp4"))})
     page = """<!doctype html><meta charset="utf-8"><title>W5 generations</title>
 <style>body{font:14px system-ui,sans-serif;background:#111;color:#eee;margin:0}header{position:sticky;top:0;background:#1b1b1b;padding:10px 16px;z-index:2}
@@ -141,5 +143,5 @@ if __name__ == "__main__":
     if sys.argv[1:] == ["--index-only"]:
         index()
     else:
-        build(*sys.argv[1:4])
+        build(*sys.argv[1:5])
         index()

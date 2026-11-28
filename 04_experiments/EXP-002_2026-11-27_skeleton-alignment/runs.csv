@@ -1,0 +1,13 @@
+generation,product,pose,video_seed,workflow,changed_values,flags,EXP-001 baseline verdict,verdict (full review)
+caramel-tank-jeans__look-02__s20261121,caramel-tank-jeans,look-02,20261121,W5 v20,aligned skeleton (align_skeleton.py),FLAG: drift 0.794 new 0.246 edge 0.54,PASS,FAIL: garment swaps to a grey tee + striped trousers at frame ~48
+caramel-tank-jeans__look-02__s111,caramel-tank-jeans,look-02,111,W5 v20,aligned skeleton (align_skeleton.py),FLAG: drift 0.484 new 0.122 edge 0.57,PASS,FAIL: striped sweater from frame ~8
+caramel-tank-jeans__look-02__s222,caramel-tank-jeans,look-02,222,W5 v20,aligned skeleton (align_skeleton.py),ok: drift 0.398 new 0.029 edge 0.31,FAIL,"PASS with defect: garment ok, top of the hair cut by the frame"
+navy-polo-jeans__look-02__s20261121,navy-polo-jeans,look-02,20261121,W5 v20,aligned skeleton (align_skeleton.py),ok: drift 0.267 new 0.038 edge 0.66,FAIL,"PASS with defect: garment ok (no waves), top of the hair cut by the frame"
+navy-polo-jeans__look-02__s111,navy-polo-jeans,look-02,111,W5 v20,aligned skeleton (align_skeleton.py),ok: drift 0.249 new 0.037 edge 0.76,PASS,FAIL: faint light lines on the polo and jeans
+navy-polo-jeans__look-02__s222,navy-polo-jeans,look-02,222,W5 v20,aligned skeleton (align_skeleton.py),ok: drift 0.188 new 0.033 edge 0.9,FAIL,FAIL: white stripes on the jeans
+caramel-tank-jeans__w-turn-03__s20261121,caramel-tank-jeans,w-turn-03,20261121,W5 v20,aligned skeleton (align_skeleton.py),ok: drift 0.447 new 0.035 edge 0.5,PARTIAL,"PARTIAL: garment ok, turns to profile and back to the front"
+caramel-tank-jeans__w-turn-03__s111,caramel-tank-jeans,w-turn-03,111,W5 v20,aligned skeleton (align_skeleton.py),ok: drift 0.481 new 0.053 edge 0.63,PASS,"FAIL: skeleton lines painted on the body (frames 8-40, ~104)"
+caramel-tank-jeans__w-turn-03__s222,caramel-tank-jeans,w-turn-03,222,W5 v20,aligned skeleton (align_skeleton.py),FLAG: drift 0.611 new 0.123 edge 0.36,FAIL,"FAIL: jeans lighter, striped at the end"
+navy-polo-jeans__w-turn-03__s20261121,navy-polo-jeans,w-turn-03,20261121,W5 v20,aligned skeleton (align_skeleton.py),ok: drift 0.299 new 0.023 edge 0.89,PARTIAL (neck face),"PASS with defect: no neck face, turn held; a third shoe between the feet in frames 0-40; top of the hair cut"
+navy-polo-jeans__w-turn-03__s111,navy-polo-jeans,w-turn-03,111,W5 v20,aligned skeleton (align_skeleton.py),FLAG: drift 0.343 new 0.032 edge 1.42,PASS (neck face),FAIL: polo turns into a striped cardigan frames 16-64; third shoe
+navy-polo-jeans__w-turn-03__s222,navy-polo-jeans,w-turn-03,222,W5 v20,aligned skeleton (align_skeleton.py),ok: drift 0.394 new 0.022 edge 0.48,FAIL,FAIL: white stripe on the jeans at the end; third shoe

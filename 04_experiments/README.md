@@ -24,3 +24,4 @@ The videos stay in ComfyUI: `output/motion/experiments/EXP-<nnn>_…/<product>__
 |---|---|---|---|
 | [EXP-000](EXP-000_2026-11-27_trial-chain/result.md) | 2026-11-27 | (no plan) trial-and-error chain on the new poses | garment drift with most new skeletons; process stopped, plan written |
 | [EXP-001](EXP-001_2026-11-27_seed-baseline/result.md) | 2026-11-27 | are the failures systematic or seed luck? (2 products × 2 poses × 3 seeds) | **seed luck**: no pair 3/3; seed 111 passed all 4, seed 222 failed all 4 (stripes), also on `look-02` + caramel |
+| [EXP-002](EXP-002_2026-11-27_skeleton-alignment/result.md) | 2026-11-27 | does aligning the skeleton to the product person fix the neck face and the stripes? | neck face **fixed**; stripes **not** (4 passes → 0 clean); new defects: hair cut by the frame, a third shoe → next: reframe the product to the skeleton (H-c) |
