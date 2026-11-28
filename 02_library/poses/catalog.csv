@@ -5,7 +5,7 @@ m-turn-02,men,turn-360,124,24,576x1024,asos,candidate,pass,not tested,,,
 m-turn-03,men,turn-360,124,24,576x1024,zalando,candidate,pass (left arm looks like a sleeve),not tested,,,
 w-hands-02,women,hands,124,24,576x1024,asos,turning,pass,not tested,,,turns: back with a hand in the hair ~72-123 (front only 0-55); not used (user)
 w-side-01,women,side,124,24,576x1024,asos,turning,pass,not tested,,,"turns: profile ~60, back ~108-123 (front only 0-48); not used (user)"
-w-turn-03,women,turn-360,124,24,576x1024,asos,candidate,pass,issues (red mark on the neck; extra face reported by the user),,,
+w-turn-03,women,turn-360,124,24,576x1024,asos,works-not-approved,pass,issues (red mark on the neck; extra face reported by the user),,,"EXP-009: works (turn followed), but turning poses are out of the approved list (user)"
 m-side-02,men,side,124,24,576x1024,asos,rejected,fail (stripes),not tested,,,
 m-side-05,men,side,124,24,576x1024,zalando,candidate,fail (frame 0: model cut by the frame),not tested,,"partial: bag disappears (caramel, FARM); face defect (navy)",
 w-hands-01,women,hands,124,24,576x1024,asos,rejected,"fail (extra arms at frame 0, stripes; without turbo: no stripes)",not tested,skeleton missing for ~0.9 s while she bends forward (frames 65-85),,

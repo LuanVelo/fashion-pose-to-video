@@ -11,6 +11,9 @@ Path abbreviations:
 
 ---
 
+## 2026-11-28 — #83 Approved pose list: 3 poses
+User: turning poses are not used; `w-turn-03` works but does not enter the approved list. Approved = `look-02`, `w-side-05`, `w-side-04` (cut to 4.2 s, products with free hands). `02_library/poses/catalog.csv` (`w-turn-03` → `works-not-approved`), `00_docs/decisions.md`.
+
 ## 2026-11-28 — #82 Three candidate poses set aside (they turn)
 Before EXP-012, a frame check (original + skeleton every 12 frames) showed that `m-side-03`, `w-hands-02` and `w-side-01` turn to profile and to the back in the second half (the earlier limb-color facing check missed it); frontal only for 2-2.5 s. User: not used ("então fica sem"). `02_library/poses/catalog.csv`: `local_group` = `turning`, with the frame ranges; `00_docs/decisions.md`. No video generated.
 

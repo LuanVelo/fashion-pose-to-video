@@ -4,6 +4,7 @@ One line per decision: date, decision, why, where it is detailed. Newest on top.
 
 | Date | Decision | Why | Details |
 |---|---|---|---|
+| 2026-11-28 | Approved pose list = poses that do not turn: `look-02`, `w-side-05`, `w-side-04` (cut). `w-turn-03` works but stays out | no turns for now (user) | catalog.csv, CHANGELOG #83 |
 | 2026-11-28 | `m-side-03`, `w-hands-02`, `w-side-01` not used | they turn to the back in the second half; cut before the turn they would last only 2-2.5 s | catalog.csv, CHANGELOG #82 |
 | 2026-11-28 | A pose that puts both hands on the body is not matched with a product holding an object in the hand (bag); a bag that floats or changes there is a request mismatch, not a generation defect | the hand cannot be on the hips and hold the bag (user, EXP-011) | EXP-011 result, CHANGELOG #81 |
 | 2026-11-28 | A pose whose end does something the flow cannot follow (e.g. a turn) is cut before it (`trim_pose.py`); the video is shorter, at real speed | `w-side-04` followed 3/3 once cut | EXP-011, CHANGELOG #81 |
