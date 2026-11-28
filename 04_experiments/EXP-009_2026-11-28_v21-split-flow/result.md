@@ -28,3 +28,6 @@ The 4 FARM videos were flagged (drift 0.70–0.78) although 2 are clean: the lig
 - Back photo for turning poses (FARM has more images on the product page; image 3 or 4 may be the back).
 - More poses: validate the 7 candidate poses with this flow.
 - UI workflows for W5 v21 (frame0 / video) so it can also be run from ComfyUI by hand.
+
+## Approval
+Approved by the user on 2026-11-28 ("Approved") after reviewing the 12 videos on `output/motion/video/EXP-009_review.html` → W5 v21 promoted to production (CHANGELOG #79).

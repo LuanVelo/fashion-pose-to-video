@@ -10,3 +10,4 @@ date,item,decision,by,evidence,notes
 2026-11-27,26 skeletons as 'ready' catalog,WITHDRAWN,user,CHANGELOG #69,most fail in W5 v20; catalog marked not validated
 2026-11-27,Plan pose catalog and inputs (00_docs/plans/plan-2026-11-27-pose-catalog-and-inputs.md),approved,user,CHANGELOG #69,
 2026-11-27,New folder structure (00_docs … 05_approvals),approved,user,CHANGELOG #70,
+2026-11-28,W5 v21 split flow (W5_frame0_v21 + W5_video_v21 + run_product.py) as production,approved,user,EXP-009 (10/12 clean; 2 partial = FARM turn accessories without back photo),replaces W5 v20; first frame chosen among candidates by people

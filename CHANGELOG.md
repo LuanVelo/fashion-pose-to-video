@@ -11,6 +11,12 @@ Path abbreviations:
 
 ---
 
+## 2026-11-28 — #79 W5 v21 split promoted to production
+**Approval:** the user reviewed the 12 EXP-009 videos (`output/motion/video/EXP-009_review.html`, report per video) and approved ("Approved"). Recorded in `05_approvals/approvals.csv` and EXP-009 `result.md`.
+**ComfyUI (`WF/`):** new `motion_W5_frame0_v21.json` and `motion_W5_video_v21.json`, built by loading `W5_frame0_v21_api.json` / `W5_video_v21_api.json` in the frontend (`app.loadApiJson`) with a usage note each; `graphToPrompt()` matches both API JSONs (33 and 34 nodes, no differences). `motion_W5_quality_v20.json` removed from `WF/` (moved aside to `IN/_ui_build/`).
+**Repo:** `01_pipeline/workflows/ui/production/` = W1 v3, **W5 frame0 v21, W5 video v21**, W6 v3; `motion_W5_quality_v20.json` → `ui/archive/`.
+**Docs:** README (production table with 2a/2b, v21 paragraph, step 5 with `run_product.py`), CLAUDE.md (production flow and current state).
+
 ## 2026-11-28 — #78 Overnight work: FARM product, frame-0 candidates, W5 v21 split (TEST) and the replicable flow
 **Requested by the user before sleeping:** keep running until results are good; goal = a replicable workflow for any e-commerce photo (FARM Rio as the reference); visual checks stay human ("por enquanto somos nós que checamos"; a VLM checker was started and removed on the user's word).
 **New product:** `02_library/products/farm-giovanna-jeans/` (FARM "Calça Jeans Giovanna", front photo from the store page, internal test use only).

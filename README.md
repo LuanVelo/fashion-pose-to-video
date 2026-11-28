@@ -62,12 +62,13 @@ flowchart LR
 
 ---
 
-## The 3 production workflows
+## The production workflows
 
 | # | Workflow (ComfyUI) | Input | What it does | Output |
 |---|---|---|---|---|
 | 1 | [`motion_W1_extract-pose_v3`](01_pipeline/workflows/ui/production/motion_W1_extract-pose_v3.json) | reference video, pose name, clip start and length (default 5.2 s) | cuts the clip using the fps (`ComfyMathExpression`), resamples to 124 frames, runs SDPose → skeleton without face and with head, at 24 fps | `output/motion/catalog/<pose>/`: pose, original and 4 thumbnails of each |
-| 2 | [`motion_W5_quality_v20`](01_pipeline/workflows/ui/production/motion_W5_quality_v20.json) | product photo + `motion/poses/<pose>/pose.mp4` | stage 1: first frame (FLUX.2 klein 9B KV, 4 steps). Stage 2: video (H3 + turbo LoRA + ControlNet + sparse attention). INT8 attention on both. ~5 min. The pose for the first frame is frame 0 of `pose.mp4` | `output/motion/production/<product>_<pose>/`: frame0 and video |
+| 2a | [`motion_W5_frame0_v21`](01_pipeline/workflows/ui/production/motion_W5_frame0_v21.json) | product photo **reframed to the pose** + `motion/poses/<pose>/pose.mp4` | stage 1 only: first frame (FLUX.2 klein 9B KV, 4 steps), ~5 s; run with several image seeds and **choose one** (hands, arms, sleeves, feet, accessories) | `output/motion/frame0/<product>__<pose>/s<seed>/` |
+| 2b | [`motion_W5_video_v21`](01_pipeline/workflows/ui/production/motion_W5_video_v21.json) | the **chosen** first frame + the reframed product + `pose.mp4` | stage 2 only: video (H3 + turbo LoRA + ControlNet 0.6/0.5 + INT8 + sparse attention), ~3.5 min; video prompt without "stripes", pose-neutral motion | `output/motion/video/<product>__<pose>/<run>/` |
 | 3 | [`motion_W6_upscale_v3`](01_pipeline/workflows/ui/production/motion_W6_upscale_v3.json) | `motion/production/<name>.mp4` | RelayVSR x2, then downscale to 1080×1920; audio and fps copied from the input | same production folder: `video_2x` and `video_1080x1920` |
 
 Every workflow exists in three forms in this repo:
@@ -79,7 +80,9 @@ Every workflow exists in three forms in this repo:
 
 **Side tool (test): W7 image super-resolution.** [`motion_W7_image-sr_v3`](01_pipeline/workflows/ui/tools/motion_W7_image-sr_v3.json) (x2) and [`motion_W7_image-sr-x4_v2`](01_pipeline/workflows/ui/tools/motion_W7_image-sr-x4_v2.json) (x4) upscale **still images** (first frame, product photos) with [Kandinsky ImageSR 2.0](https://github.com/kandinskylab/kandinsky-image-sr) (MIT, one diffusion step) using only native nodes. The release is a "baked" model without the text path, so [`convert_kandinsky_sr.py`](01_pipeline/scripts/convert_kandinsky_sr.py) rebuilds it in ComfyUI's native Kandinsky 5 Image format for one timestep (t = 0.15 for x2, 0.244 for x4). Frame0 1088×1920 → 2176×3840 in 30 s; much sharper face, knit and denim, same colors. It works frame by frame, so it is **not** for the video (W6 stays). Inputs in `input/image-sr/`, outputs in `output/image-sr/x2|x4/`. Details in `CHANGELOG.md` #60–#64.
 
-**Pose catalog: 26 skeletons, extracted but not validated.** [`02_library/poses/`](02_library/poses/) holds 26 skeletons (5.2 s, 124 frames, 24 fps, 576×1024: 20 women, 6 men; turns, profiles, hands, weight shift, walk) extracted with W1 v3 from studio product videos of fashion e-commerce stores. Only the skeletons are in the repo, not the original clips. **In W5 v20 most of them make the video change the garment** (the skeleton lines turn into stripes), depending on pose and product; see the catalog [README](02_library/poses/README.md) and the [validation plan](00_docs/plans/plan-2026-11-27-pose-catalog-and-inputs.md). `look-02` is still the only pose proven in production, with the caramel product.
+**W5 v21 (2026-11-28, `CHANGELOG.md` #79): W5 split in two.** The first frame decides most defects (an extra hand, skeleton lines painted on the clothes, long sleeves instead of 3/4, extra accessories) and costs ~5 s, the video ~3.5 min. So W5 is now two workflows: several first-frame candidates are generated, a person chooses one, and only that one becomes a video. With the product photo reframed to the pose and the corrected video prompt, 10 of 12 test videos were clean (3 products × 2 poses × 2 seeds; the 2 others changed accessories seen from the back: turning poses need a back photo). The whole flow runs with [`run_product.py`](01_pipeline/scripts/run_product.py) `prep | frame0 | video`. Experiments: [`04_experiments/`](04_experiments/README.md) EXP-001…009.
+
+**Pose catalog: 26 skeletons, extracted but not validated.** [`02_library/poses/`](02_library/poses/) holds 26 skeletons (5.2 s, 124 frames, 24 fps, 576×1024: 20 women, 6 men; turns, profiles, hands, weight shift, walk) extracted with W1 v3 from studio product videos of fashion e-commerce stores. Only the skeletons are in the repo, not the original clips. **In W5 v20 most of them made the video change the garment** (the skeleton lines turn into stripes), depending on pose and product; see the catalog [README](02_library/poses/README.md) and the [validation plan](00_docs/plans/plan-2026-11-27-pose-catalog-and-inputs.md). `look-02` is still the only pose proven in production, with the caramel product.
 
 > **W1 v3 ignores the clip start (ComfyUI 0.46.2 bug).** `VideoFrameSample` decodes from the start of the file and drops the trim done by `VideoTemporalCrop`, so W1 v3 always takes the first seconds of the video. Until W1 is fixed, cut the clip beforehand so it starts at 0 s, or leave the start at 0. Details in `CHANGELOG.md` #68.
 
@@ -90,13 +93,19 @@ The test workflows (W1 v1/v2, W2, W3a, W5 v1–v19, W6 v1/v2, W7) are archived i
 ## Step by step
 
 1. **Install the models** from the [table below](#models-download) into the folders shown.
-2. **Import the 3 workflows** from `01_pipeline/workflows/ui/production/` into ComfyUI (drag the `.json` onto the canvas, or copy it to `ComfyUI/user/default/workflows/`).
+2. **Import the production workflows** from `01_pipeline/workflows/ui/production/` into ComfyUI (drag the `.json` onto the canvas, or copy it to `ComfyUI/user/default/workflows/`).
 3. **Extract a pose:** copy the reference video into `ComfyUI/input/`, open `motion_W1_extract-pose_v3`, fill in the pose name and the clip, and run it.
 4. **Add the pose to the catalog:**
    ```bash
    python -I -X utf8 "01_pipeline/scripts/catalog.py" pose look-02
    ```
-5. **Generate the video:** put the product photo in `input/` and open `motion_W5_quality_v20`. Pick the product and `motion/poses/<pose>/pose.mp4`, and name it `<product>_<pose>`. Run it (~5 min on an RTX 4090).
+5. **Generate the video** (W5 v21, see [`run_product.py`](01_pipeline/scripts/run_product.py)):
+   ```bash
+   python -I -X utf8 "01_pipeline/scripts/run_product.py" prep  <product> <photo> <pose>   # reframe the photo to the pose
+   python -I -X utf8 "01_pipeline/scripts/run_product.py" frame0 <product> <pose> 6       # 6 first-frame candidates + candidates.html
+   python -I -X utf8 "01_pipeline/scripts/run_product.py" video <product> <pose> <seed>   # video from the chosen candidate + report
+   ```
+   Or by hand in ComfyUI: `motion_W5_frame0_v21` (a few image seeds), then `motion_W5_video_v21` with the chosen first frame. Poses need `motion/poses/<pose>/keypoints.json` for the reframing (`pose_keypoints.py extract` on `original.mp4`).
 6. **Optional, comparison video:** builds the original | skeleton | generated video.
    ```bash
    python -I -X utf8 "01_pipeline/scripts/catalog.py" compare caramel-tank-jeans_look-02 look-02
