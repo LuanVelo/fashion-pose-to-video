@@ -107,10 +107,14 @@ def video(product, pose, s0, vseeds):
     chosen = os.path.join(IN, "motion", "frame0", f"{name}__s{s0}.png")
     shutil.copy2(src, chosen)
     g0 = json.load(open(os.path.join(WF, "W5_video_v21_api.json"), encoding="utf-8"))
+    # video length follows the pose (124 frames = 5.2 s; trimmed poses are shorter, EXP-011)
+    n = len(json.load(open(os.path.join(IN, "motion", "poses", pose, "keypoints.json"))))
+    g0["211"]["inputs"]["num_frames"] = n
+    g0["216"]["inputs"]["length"] = n
     ids, names = [], []
     for v in vseeds:
         g = json.loads(json.dumps(g0))
-        run_name = f"{name}/s{s0}-v{v}"
+        run_name = f"{name}/s{s0}-v{v}" + os.environ.get("RUN_TAG", "")  # RUN_TAG=-recut keeps earlier runs apart
         g["1"]["inputs"]["value"] = run_name
         g["5"]["inputs"]["image"] = f"motion/prep/{product}/{pose}.png"
         g["210"]["inputs"]["file"] = f"motion/poses/{pose}/pose.mp4"

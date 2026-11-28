@@ -11,6 +11,11 @@ Path abbreviations:
 
 ---
 
+## 2026-11-28 — #81 EXP-011: `w-side-04` cut before the turn → validated
+**Requested by the user** after EXP-010 (the end turn was not followed). The source turns at ~4.25 s → pose cut to its first 100 frames (0–4.17 s) with the new `01_pipeline/scripts/trim_pose.py` (`IN/motion/poses/w-side-04/`: pose.mp4, original.mp4, keypoints.json; old files `.previous-<date>`). No W1 re-run.
+**`run_product.py video`:** the H3 video length (node 216) and the frame sampler (node 211) now follow the pose frame count (was fixed 124); `RUN_TAG` env var appends a suffix to the run folder. Queue-time override only; `W5_video_v21_api.json` unchanged.
+**Result:** same first frames and seed as EXP-010; all 3 videos follow the skeleton to the end (navy PASS; caramel bag floats, FARM bag reshaped while both hands are on the hips). **User decision:** a hand on the hips cannot hold a bag → request mismatch, not a generation defect; `w-side-04` validated for products with free hands. Recorded in `00_docs/decisions.md`, `02_library/poses/catalog.csv` (new column `exp011_v21`, frames 100), experiments index.
+
 ## 2026-11-28 — #80 EXP-010: non-turning poses with the W5 v21 flow
 **Requested by the user:** validate the poses that do not turn to the back. 3 products × 5 poses (`w-side-05`, `w-side-04`, `m-side-05`, `m-side-04`, `w-walk-01`), 6 first-frame candidates per pair, 1 video seed = 15 videos.
 **Preparation:** `m-side-05` re-cut from 1.5 s of the source and re-extracted with W1 v3 (the model entered the frame at frame 0). New `01_pipeline/scripts/normalize_pose.py`: scales a pose that fills the frame (skeleton, original, keypoints) uniformly, anchored on the floor, to the framing of the working poses (eye line 0.145, ankles 0.875), so reframed product photos keep the cap and the feet; old files kept as `.previous-<date>` (scales 0.85–0.94).

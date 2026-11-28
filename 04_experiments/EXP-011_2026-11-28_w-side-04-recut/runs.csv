@@ -1,0 +1,4 @@
+product,pose,frame0_seed,video_seed,frames,output,claude_verdict,user_verdict,note
+caramel-tank-jeans,w-side-04,2,20261121,100,motion/video/caramel-tank-jeans__w-side-04/s2-v20261121-recut,PARTIAL (bag floats ~60-72),accepted,motion followed; bag + hands on the hips = request mismatch (user)
+navy-polo-jeans,w-side-04,4,20261121,100,motion/video/navy-polo-jeans__w-side-04/s4-v20261121-recut,PASS,PASS,motion followed to the end
+farm-giovanna-jeans,w-side-04,1,20261121,100,motion/video/farm-giovanna-jeans__w-side-04/s1-v20261121-recut,PARTIAL (bag reshaped ~48-84),accepted,motion followed; bag + hands on the hips = request mismatch (user)
