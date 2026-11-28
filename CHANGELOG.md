@@ -13,7 +13,7 @@ Path abbreviations:
 
 ## 2026-11-28 — #77 Correction: extra hand in caramel + w-turn-03 (EXP-003, EXP-005, EXP-006)
 **The user's catch:** every caramel + `w-turn-03` video since EXP-003 has an **extra hand**: frame 0 (stage 1, klein) keeps the product's hand in the pocket **and** draws the skeleton's hanging hand on the same side. Same frame 0 for every seed (image seed fixed), so all seeds have it; the video prompt cannot fix it. My review missed it (1/8-frame sheets, no zoom on hands).
-**Corrected counts:** EXP-003 **7/12** (was 8), EXP-005 A **1/4** and B **1/4** (were 3/4), EXP-006 **8/12** (was 12/12): besides the extra hand, navy `look-02` s222 still has a light line down each jeans leg along the skeleton leg lines (second catch by the user; stronger than the product jeans' real seam). EXP-004 (retargeted skeleton) had no extra hand on this pair's frame 0.
+**Corrected counts:** EXP-003 **7/12** (was 8), EXP-005 A **1/4** and B **1/4** (were 3/4), EXP-006 **9/12** (was 12/12). The other 9 confirmed perfect by the user (the line on the navy `look-02` s222 jeans is the trousers' crease and light, not a defect). EXP-004 (retargeted skeleton) had no extra hand on this pair's frame 0.
 **Consequence:** the prompt fix stands; the remaining defect is the stage-1 pose mismatch (product hand in pocket vs skeleton arm hanging). W5 v21 waits for a frame-0 fix/check. Review rule tightened: zoom on hands and arms of frame 0 and the first second of every run.
 
 ## 2026-11-28 — #76 EXP-006 neutral video prompt + reframing: 12/12 clean
