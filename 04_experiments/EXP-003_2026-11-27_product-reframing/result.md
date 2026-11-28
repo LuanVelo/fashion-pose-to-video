@@ -19,6 +19,9 @@ Clean passes: **EXP-001 4 · EXP-002 0 · EXP-003 8** (+1 with a minor defect).
 - **Cost:** the person is smaller in the frame (face ~25–30 % smaller); at 896×1600 the face is still sharp (checked on caramel `look-02` frame 60). The faint seam of the reframed navy photo did not show in the videos (stage 1 redraws the background).
 - The review flags marked only 1 run (navy `w-turn-03` s222, correct) and missed 2 defects (the thigh streak and the white bar on caramel `w-turn-03` s222): human review still mandatory.
 
+## Side effect found later (2026-11-28, the user's question)
+The thigh streak of caramel `w-turn-03` s20261121 did **not** exist in EXP-001 (same seed). Frame-0 comparison with the skeleton overlay: in EXP-001 stage 1 (klein) followed the skeleton (both arms down); in EXP-003 it **copied the product photo's pose** (hand in the pocket), so the skeleton's arm lies on the thigh where there is no arm → streak. With the reframed photo, image 1 already has the same size and position as the skeleton, so klein keeps more of image 1 (the same tendency as W5 v18, which copied the product pose). Rule derived: **frame 0 must match the skeleton**; check the generated frame 0 against the skeleton (keypoints) before stage 2, and prefer product photos with arms down and visible.
+
 ## Lesson
 Match the reference to the skeleton, not the skeleton to the reference: scale and place the person of the product photo where the skeleton is (with its margins). This agrees with the literature advice "frame the reference like the driving pose" (`00_docs/research/research-pose-misalignment.md`).
 

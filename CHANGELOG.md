@@ -11,6 +11,12 @@ Path abbreviations:
 
 ---
 
+## 2026-11-28 — #76 EXP-006 neutral video prompt + reframing: 12/12 clean
+**Experiment** `04_experiments/EXP-006_2026-11-28_neutral-prompt/` (plan approved; order set by the user: the 4 EXP-003 failures first, then the 8 passes). EXP-003 setup (reframed product, catalog skeleton, W5 v20) with only the video prompt (node 215) changed (`prompt.txt`): "stands" → "is shown"; "stripes" removed; motion sentence → "She follows the pose guide exactly, with a calm confident expression." (no movement named).
+**Result:** step 1 4/4, step 2 8/8 → **12/12 clean** (EXP-003 8/12). Stripes, thigh streak, lost turn and unwanted turn all gone; no regression. Comparisons `exp003-vs-exp006_<pair>.mp4`.
+**Side finding (the user's question):** the thigh streak of EXP-003 came from frame 0: with the reframed photo, stage 1 copied the product's hand-in-pocket instead of the skeleton's hanging arm (EXP-001 frame 0 followed the skeleton). Recorded in EXP-003 `result.md`; rule: check frame 0 against the skeleton before stage 2; prefer product photos with arms down.
+**Next (proposed):** W5 v21 = v20 + this prompt (production stays v20 until approved); then validate the 7 candidate poses and a patterned product.
+
 ## 2026-11-28 — #75 EXP-005 video prompt: the word "stripes" and the motion sentence caused most remaining defects
 **Experiment** `04_experiments/EXP-005_2026-11-28_video-prompt/` (plan approved; scope set by the user: the 4 runs that failed in EXP-003 first). EXP-003 setup (reframed product, catalog skeleton, W5 v20), only the video prompt (node 215) changed, two variants (exact text in `prompts.json`): **A** motion words ("stands" → "is shown"; "moves naturally …: subtle weight shifts, relaxed arms" → "follows the pose guide exactly, including turning around … when the guide turns"); **B** "stripes" removed from "same colors, fabric texture, stripes, length and fit". 8 runs. Comparisons `compare_<pair>__s<seed>.mp4` (skeleton | EXP-003 | A | B).
 **Result:** EXP-003 0/4 clean on these runs → A 3/4, B 3/4 (+1 partial). B removes every stripe and the thigh streak; A also keeps the turn to the back, but its wording made the model turn around on `look-02`, a pose that never turns.

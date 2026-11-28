@@ -1,0 +1,3 @@
+A fashion e-commerce video. The model from <Picture 1> is shown full body on a plain light grey studio background, wearing exactly the outfit from <Picture 1>: keep every garment and accessory identical to <Picture 1>, same colors, fabric texture, length and fit, nothing added or removed. She follows the pose guide exactly, with a calm confident expression. Static camera, whole body in frame from head to feet for the entire video, soft even studio light. Photorealistic, natural motion, no text.
+
+Audio: quiet studio room tone, no music, no speech.
