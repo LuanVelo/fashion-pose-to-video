@@ -11,6 +11,13 @@ Path abbreviations:
 
 ---
 
+## 2026-11-28 — #80 EXP-010: non-turning poses with the W5 v21 flow
+**Requested by the user:** validate the poses that do not turn to the back. 3 products × 5 poses (`w-side-05`, `w-side-04`, `m-side-05`, `m-side-04`, `w-walk-01`), 6 first-frame candidates per pair, 1 video seed = 15 videos.
+**Preparation:** `m-side-05` re-cut from 1.5 s of the source and re-extracted with W1 v3 (the model entered the frame at frame 0). New `01_pipeline/scripts/normalize_pose.py`: scales a pose that fills the frame (skeleton, original, keypoints) uniformly, anchored on the floor, to the framing of the working poses (eye line 0.145, ankles 0.875), so reframed product photos keep the cap and the feet; old files kept as `.previous-<date>` (scales 0.85–0.94).
+**Result (two checks, the user's is final):** `w-side-05` **validated** 3/3; `w-side-04` 0/3 (the end turn is not followed → re-cut before the turn); `m-side-05` partial (bag disappears; navy face defect); `m-side-04` 0/3 (crossed arms → three hands at frame 0) → **isolated** (`IN/motion/poses_parked/isolated/`); `w-walk-01` 0/3 (motion not followed) → `poses_parked/rejected/`. No painted lines, no garment swaps.
+**Claude's review missed** the three hands, the turn and the walk not followed and the navy face → reviews now also compare motion vs skeleton and count hands when arms cross.
+**Files:** `04_experiments/EXP-010_…/` (`plan.md`, `runs.csv`, `result.md`), index, `02_library/poses/catalog.csv` (new column `exp010_v21`, `local_group` updated). Local review page `OUT/motion/video/EXP-010_review.html`.
+
 ## 2026-11-28 — #79 W5 v21 split promoted to production
 **Approval:** the user reviewed the 12 EXP-009 videos (`output/motion/video/EXP-009_review.html`, report per video) and approved ("Approved"). Recorded in `05_approvals/approvals.csv` and EXP-009 `result.md`.
 **ComfyUI (`WF/`):** new `motion_W5_frame0_v21.json` and `motion_W5_video_v21.json`, built by loading `W5_frame0_v21_api.json` / `W5_video_v21_api.json` in the frontend (`app.loadApiJson`) with a usage note each; `graphToPrompt()` matches both API JSONs (33 and 34 nodes, no differences). `motion_W5_quality_v20.json` removed from `WF/` (moved aside to `IN/_ui_build/`).
