@@ -11,6 +11,12 @@ Path abbreviations:
 
 ---
 
+## 2026-11-28 — #75 EXP-005 video prompt: the word "stripes" and the motion sentence caused most remaining defects
+**Experiment** `04_experiments/EXP-005_2026-11-28_video-prompt/` (plan approved; scope set by the user: the 4 runs that failed in EXP-003 first). EXP-003 setup (reframed product, catalog skeleton, W5 v20), only the video prompt (node 215) changed, two variants (exact text in `prompts.json`): **A** motion words ("stands" → "is shown"; "moves naturally …: subtle weight shifts, relaxed arms" → "follows the pose guide exactly, including turning around … when the guide turns"); **B** "stripes" removed from "same colors, fabric texture, stripes, length and fit". 8 runs. Comparisons `compare_<pair>__s<seed>.mp4` (skeleton | EXP-003 | A | B).
+**Result:** EXP-003 0/4 clean on these runs → A 3/4, B 3/4 (+1 partial). B removes every stripe and the thigh streak; A also keeps the turn to the back, but its wording made the model turn around on `look-02`, a pose that never turns.
+**Lesson:** the prompt itself was asking for stripes on every product, and the motion sentence ("stands", "subtle weight shifts") fought turning poses; the motion text must stay pose-neutral.
+**Next (proposed):** EXP-006 = B + a pose-neutral motion sentence, on these 4 runs then on the 8 passing ones; if it holds on all 12, build W5 v21.
+
 ## 2026-11-28 — #74 EXP-004 per-bone retargeting: not adopted (6/12 vs 8/12)
 **New scripts (native ComfyUI code, no custom nodes):**
 - `01_pipeline/scripts/pose_keypoints.py extract|draw`: runs ComfyUI's own SDPose (`sdpose_wholebody_fp16`, in-process, in inference mode) to save OpenPose keypoints as JSON (no native node saves them), and redraws them with `SDPoseDrawKeypoints` and the W1 v3 settings. Checked: redrawing the source keypoints reproduces the catalog skeletons (`w-turn-03` 2–5 px differences; `look-02` identical extent, extracted from the reference video since it has no `original.mp4`). Free ComfyUI's VRAM first (`POST /free`).
