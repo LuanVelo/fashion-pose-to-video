@@ -1,10 +1,10 @@
 pose,gender,type,frames,fps,size,source_store,local_group,w5_caramel_1seed,w5_navy_1seed,skeleton_note,exp010_v21,exp011_v21
-m-side-03,men,side,124,24,576x1024,zalando,candidate,pass,"ran, not reviewed",,,
+m-side-03,men,side,124,24,576x1024,zalando,turning,pass,"ran, not reviewed",,,"turns: profile ~72, back ~96-123 (front only 0-60); not used (user)"
 m-side-04,men,side,124,24,576x1024,zalando,isolated,pass,not tested,,FAIL 3/3: crossed arms at frame 0 -> three hands; isolated case,
 m-turn-02,men,turn-360,124,24,576x1024,asos,candidate,pass,not tested,,,
 m-turn-03,men,turn-360,124,24,576x1024,zalando,candidate,pass (left arm looks like a sleeve),not tested,,,
-w-hands-02,women,hands,124,24,576x1024,asos,candidate,pass,not tested,,,
-w-side-01,women,side,124,24,576x1024,asos,candidate,pass,not tested,,,
+w-hands-02,women,hands,124,24,576x1024,asos,turning,pass,not tested,,,turns: back with a hand in the hair ~72-123 (front only 0-55); not used (user)
+w-side-01,women,side,124,24,576x1024,asos,turning,pass,not tested,,,"turns: profile ~60, back ~108-123 (front only 0-48); not used (user)"
 w-turn-03,women,turn-360,124,24,576x1024,asos,candidate,pass,issues (red mark on the neck; extra face reported by the user),,,
 m-side-02,men,side,124,24,576x1024,asos,rejected,fail (stripes),not tested,,,
 m-side-05,men,side,124,24,576x1024,zalando,candidate,fail (frame 0: model cut by the frame),not tested,,"partial: bag disappears (caramel, FARM); face defect (navy)",

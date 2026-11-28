@@ -11,6 +11,9 @@ Path abbreviations:
 
 ---
 
+## 2026-11-28 — #82 Three candidate poses set aside (they turn)
+Before EXP-012, a frame check (original + skeleton every 12 frames) showed that `m-side-03`, `w-hands-02` and `w-side-01` turn to profile and to the back in the second half (the earlier limb-color facing check missed it); frontal only for 2-2.5 s. User: not used ("então fica sem"). `02_library/poses/catalog.csv`: `local_group` = `turning`, with the frame ranges; `00_docs/decisions.md`. No video generated.
+
 ## 2026-11-28 — #81 EXP-011: `w-side-04` cut before the turn → validated
 **Requested by the user** after EXP-010 (the end turn was not followed). The source turns at ~4.25 s → pose cut to its first 100 frames (0–4.17 s) with the new `01_pipeline/scripts/trim_pose.py` (`IN/motion/poses/w-side-04/`: pose.mp4, original.mp4, keypoints.json; old files `.previous-<date>`). No W1 re-run.
 **`run_product.py video`:** the H3 video length (node 216) and the frame sampler (node 211) now follow the pose frame count (was fixed 124); `RUN_TAG` env var appends a suffix to the run folder. Queue-time override only; `W5_video_v21_api.json` unchanged.
