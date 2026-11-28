@@ -11,6 +11,9 @@ Path abbreviations:
 
 ---
 
+## 2026-11-28 — #84 Untested side poses also turn
+Frame check (original + skeleton every 12 frames) of `w-side-03`, `w-side-06`, `w-side-07`: all three turn to profile or the back within the 5.2 s (`w-side-07` frontal only 0-72). With the 9 `turn-360` poses, none of the 12 untested poses fits the no-turn rule as a 5.2 s pose. `02_library/poses/catalog.csv` → `turning`. EXP-012 plan (pre-screen all 131 sources for frontal 5.2 s windows) written, waiting for the user.
+
 ## 2026-11-28 — #83 Approved pose list: 3 poses
 User: turning poses are not used; `w-turn-03` works but does not enter the approved list. Approved = `look-02`, `w-side-05`, `w-side-04` (cut to 4.2 s, products with free hands). `02_library/poses/catalog.csv` (`w-turn-03` → `works-not-approved`), `00_docs/decisions.md`.
 
