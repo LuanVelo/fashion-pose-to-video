@@ -11,6 +11,15 @@ Path abbreviations:
 
 ---
 
+## 2026-11-28 — #74 EXP-004 per-bone retargeting: not adopted (6/12 vs 8/12)
+**New scripts (native ComfyUI code, no custom nodes):**
+- `01_pipeline/scripts/pose_keypoints.py extract|draw`: runs ComfyUI's own SDPose (`sdpose_wholebody_fp16`, in-process, in inference mode) to save OpenPose keypoints as JSON (no native node saves them), and redraws them with `SDPoseDrawKeypoints` and the W1 v3 settings. Checked: redrawing the source keypoints reproduces the catalog skeletons (`w-turn-03` 2–5 px differences; `look-02` identical extent, extracted from the reference video since it has no `original.mp4`). Free ComfyUI's VRAM first (`POST /free`).
+- `01_pipeline/scripts/retarget_skeleton.py`: per-bone retargeting (Wan-Animate style, 2D): ratios target/source per bone (source frame 0; target = reframed product photo; the two segments of a limb share the larger ratio; one head ratio; clip 0.7–1.4; median for hidden bones), tree walk from the mid-hip keeping angles and foreshortening, hands/feet/face carried rigidly, floor anchor smoothed over 15 frames.
+- `generation_report.py` already accepts the retargeted skeleton.
+**Experiment** `04_experiments/EXP-004_2026-11-28_bone-retargeting/` (plan approved; three method fixes made before running and recorded in the plan: reference frame 0, shared limb ratio, smoothed floor anchor): EXP-003 setup + retargeted skeleton, same 4 pairs × 3 seeds. Side-by-side `exp003-vs-exp004_<pair>.mp4`.
+**Result:** clean passes 6/12 (EXP-003 8). Better for caramel (thigh streak gone, white bar gone); worse for navy (3 passes became fails, third shoe back in frame 0 of `w-turn-03`). Cause: the navy photo hides the hands (behind the back), so bone lengths are guessed wrong (forearm 0.72 → 0.82, head 1.10); a wrong skeleton sits off the body. Matches the Wan-Animate caveat (2D posture distorts bone lengths; they measure on T-pose images).
+**Decision (proposed):** keep reframing as the standard; retargeting stays as a tool, off by default; keypoints JSON kept for pose curation and frame-0 checks. Next candidates: skeleton without hands, ControlNet settings, prompt (H-b).
+
 ## 2026-11-27 — #73 EXP-003 product reframing: best result so far (8/12 clean) + research note
 **New script:** `01_pipeline/scripts/reframe_product.py <product> <pose.mp4> <out.png> [overlay.jpg]`: scales and places the person of the product photo where the skeleton is (eye line on the skeleton head, feet on the skeleton feet, same center) on a 9:16 1088×1920 canvas filled with the photo's own background color (soft 24 px seam). `generation_report.py` accepts the reframed product as its product argument.
 **Experiment** `04_experiments/EXP-003_2026-11-27_product-reframing/` (plan written first, approved): same 4 pairs × same 3 seeds; only the product image changed (reframed per pair, `IN/motion/experiments/EXP-003/<pair>/product.png`); catalog skeleton unchanged. 12 runs. Side-by-side `exp001-vs-exp003_<pair>.mp4`.
