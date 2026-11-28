@@ -22,3 +22,6 @@ Caramel `w-turn-03`: frame 0 (stage 1) still keeps the product's hand in the poc
 1. **Build W5 v21** = W5 v20 graph with the new video prompt (node 215) — `build_W5_v21.py`, API JSON, UI workflow. Production stays v20 until the user approves v21.
 2. The prep step (reframing the product to the pose) becomes part of the production flow (script now, later inside the orchestrator).
 3. Scope of the evidence: 2 products × 2 poses × 3 seeds. Next validation: the 7 candidate poses and a third (patterned) product, per the plan phase 5.
+
+## Correction (2026-11-28, the user's catch)
+The 3 caramel `w-turn-03` runs have an **extra hand** from frame 0 (stage 1 copies the hand in the pocket and also draws the skeleton's hanging hand). Corrected count: **9/12 clean**, not 12/12. The other 9 were re-checked by the user: perfect. The prompt fix stands (stripes and turns); the remaining defect is a **stage-1 / frame-0** problem: product pose (hand in pocket) ≠ skeleton pose. In EXP-004 (retargeted skeleton) the same pair's frame 0 had no extra hand. The frame-0 check is now required, not optional.

@@ -11,6 +11,11 @@ Path abbreviations:
 
 ---
 
+## 2026-11-28 — #77 Correction: extra hand in caramel + w-turn-03 (EXP-003, EXP-005, EXP-006)
+**The user's catch:** every caramel + `w-turn-03` video since EXP-003 has an **extra hand**: frame 0 (stage 1, klein) keeps the product's hand in the pocket **and** draws the skeleton's hanging hand on the same side. Same frame 0 for every seed (image seed fixed), so all seeds have it; the video prompt cannot fix it. My review missed it (1/8-frame sheets, no zoom on hands).
+**Corrected counts:** EXP-003 **7/12** (was 8), EXP-005 A **1/4** and B **1/4** (were 3/4), EXP-006 **9/12** (was 12/12). The other 9 EXP-006 runs: confirmed perfect by the user. EXP-004 (retargeted skeleton) had no extra hand on this pair's frame 0.
+**Consequence:** the prompt fix stands; the remaining defect is the stage-1 pose mismatch (product hand in pocket vs skeleton arm hanging). W5 v21 waits for a frame-0 fix/check. Review rule tightened: zoom on hands and arms of frame 0 and the first second of every run.
+
 ## 2026-11-28 — #76 EXP-006 neutral video prompt + reframing: 12/12 clean
 **Experiment** `04_experiments/EXP-006_2026-11-28_neutral-prompt/` (plan approved; order set by the user: the 4 EXP-003 failures first, then the 8 passes). EXP-003 setup (reframed product, catalog skeleton, W5 v20) with only the video prompt (node 215) changed (`prompt.txt`): "stands" → "is shown"; "stripes" removed; motion sentence → "She follows the pose guide exactly, with a calm confident expression." (no movement named).
 **Result:** step 1 4/4, step 2 8/8 → **12/12 clean** (EXP-003 8/12). Stripes, thigh streak, lost turn and unwanted turn all gone; no regression. Comparisons `exp003-vs-exp006_<pair>.mp4`.

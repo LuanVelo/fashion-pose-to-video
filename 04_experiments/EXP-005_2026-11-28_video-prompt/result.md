@@ -21,3 +21,6 @@ A: 3/4 · B: 3/4 clean (+1 partial) · EXP-003 on the same runs: 0/4 clean.
 1. Remove "stripes" from the video prompt (B). Clear win, no side effect seen.
 2. Replace the motion sentence with a **pose-neutral** one: drop "stands" and "subtle weight shifts, relaxed arms", and say only that she follows the pose guide exactly, with no movement named. Draft: "She follows the pose guide exactly, with a calm confident expression."
 3. **EXP-006:** B + neutral motion sentence together, first on these 4 runs, then on the 8 runs that passed in EXP-003 (as the user asked: failures first, then the rest). If it holds on all 12 → build **W5 v21** (prompt change = new workflow version).
+
+## Correction (2026-11-28, the user's catch)
+The caramel `w-turn-03` runs (A and B, both seeds) have the **extra hand** from frame 0 (same frame 0 as EXP-003; the prompt does not touch stage 1). Corrected: A **1/4**, B **1/4** (+1 partial). The prompt findings (stripes, unwanted turn) still hold.

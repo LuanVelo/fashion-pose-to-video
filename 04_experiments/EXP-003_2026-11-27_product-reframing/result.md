@@ -29,3 +29,6 @@ Match the reference to the skeleton, not the skeleton to the reference: scale an
 1. **Adopt reframing** (`reframe_product.py`) as a standard step of the prep layer, per product × pose.
 2. **EXP-004: per-bone retargeting on top of reframing**, to fix the remaining proportion/pose mismatches (arm over the hand-in-pocket, turn to the back), same 4 pairs × 3 seeds, baseline = EXP-003.
 3. Production rule meanwhile: reframed product + 2–3 seeds + human review.
+
+## Correction (2026-11-28, the user's catch)
+All 3 caramel + `w-turn-03` runs have an **extra hand** from frame 0: stage 1 drew the product's hand in the pocket **and** the skeleton's hanging hand on the same side (two hands). Frame 0 is the same for the 3 seeds (same image seed), so the defect is in all three. The review missed it (sheets at 1/8 frames, no zoom on the hands). Corrected count: **7/12 clean** (not 8): caramel `w-turn-03` s111 is a FAIL.
